@@ -1,0 +1,18 @@
+{
+  "name": "gt",
+  "version": "1.1.0",
+  "private": true,
+  "description": "Geoff Thermometer — sniffer, translator, and dashboard for geoff.ai / Stacknet",
+  "type": "module",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js",
+    "sniff": "node server/cli-sniff.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
