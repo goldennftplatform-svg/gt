@@ -43,6 +43,39 @@
     </header>
 
     <main class="shell">
+      <section class="metrics" aria-label="Live network vitals">
+        <article class="metric">
+          <span class="k">Stacknet</span>
+          <strong id="stackVersion">—</strong>
+          <em id="stackHealth">—</em>
+        </article>
+        <article class="metric">
+          <span class="k">Nodes / GPUs</span>
+          <strong id="stackNodes">—</strong>
+          <em id="stackLoad">load —</em>
+        </article>
+        <article class="metric">
+          <span class="k">VRAM free</span>
+          <strong id="vramText">—</strong>
+          <div class="bar"><i id="vramBar"></i></div>
+        </article>
+        <article class="metric">
+          <span class="k">geoff build</span>
+          <strong id="geoffBuild">—</strong>
+          <em id="geoffDeploy">—</em>
+        </article>
+        <article class="metric">
+          <span class="k">Models</span>
+          <strong id="modelCount">—</strong>
+          <em id="apiModelCount">api —</em>
+        </article>
+        <article class="metric">
+          <span class="k">Widgets / MCP</span>
+          <strong id="widgetCount">—</strong>
+          <em id="mcpContract">—</em>
+        </article>
+      </section>
+
       <section id="story" class="story tone-muted" aria-live="polite">
         <p class="story-kicker">Right now</p>
         <h2 id="storyHeadline">Waiting for first sniff</h2>

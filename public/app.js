@@ -8,6 +8,18 @@ const els = {
   tempMeta: document.getElementById("tempMeta"),
   tempPlain: document.getElementById("tempPlain"),
   spark: document.getElementById("spark"),
+  stackVersion: document.getElementById("stackVersion"),
+  stackHealth: document.getElementById("stackHealth"),
+  stackNodes: document.getElementById("stackNodes"),
+  stackLoad: document.getElementById("stackLoad"),
+  vramText: document.getElementById("vramText"),
+  vramBar: document.getElementById("vramBar"),
+  geoffBuild: document.getElementById("geoffBuild"),
+  geoffDeploy: document.getElementById("geoffDeploy"),
+  modelCount: document.getElementById("modelCount"),
+  apiModelCount: document.getElementById("apiModelCount"),
+  widgetCount: document.getElementById("widgetCount"),
+  mcpContract: document.getElementById("mcpContract"),
   story: document.getElementById("story"),
   storyHeadline: document.getElementById("storyHeadline"),
   storySentence: document.getElementById("storySentence"),
@@ -50,6 +62,36 @@ function fmtTime(iso) {
     hour: "2-digit",
     minute: "2-digit",
   });
+}
+
+function short(value, head = 8, tail = 6) {
+  if (!value && value !== 0) return "—";
+  const s = String(value);
+  if (s.length <= head + tail + 1) return s;
+  return `${s.slice(0, head)}…${s.slice(-tail)}`;
+}
+
+function renderMetrics(latest) {
+  const s = latest?.summary ?? {};
+  els.stackVersion.textContent = s.stacknetVersion || "—";
+  els.stackHealth.textContent = s.stacknetStatus || "—";
+  els.stackNodes.textContent =
+    s.nodes != null && s.gpus != null ? `${s.nodes} / ${s.gpus}` : "—";
+  els.stackLoad.textContent =
+    s.averageLoad != null ? `load ${s.averageLoad}` : `in-flight ${s.inFlight ?? "—"}`;
+  if (s.availableVramGb != null && s.vramGb != null) {
+    els.vramText.textContent = `${s.availableVramGb}/${s.vramGb} GB`;
+    els.vramBar.style.width = `${s.vramAvailablePct ?? 0}%`;
+  } else {
+    els.vramText.textContent = "—";
+    els.vramBar.style.width = "0%";
+  }
+  els.geoffBuild.textContent = short(s.geoffBuildId, 10, 6);
+  els.geoffDeploy.textContent = s.geoffDeployId || short(s.chunkHash, 4, 4);
+  els.modelCount.textContent = s.models != null ? String(s.models) : "—";
+  els.apiModelCount.textContent = s.apiModels != null ? `api ${s.apiModels}` : "api —";
+  els.widgetCount.textContent = s.widgets != null ? String(s.widgets) : "—";
+  els.mcpContract.textContent = short(s.mcpContract, 18, 0);
 }
 
 function setConnection(state, label) {
@@ -287,6 +329,7 @@ function applyPayload(payload, { mergeClient = false } = {}) {
   const briefing = payload.briefing;
   const latest = payload.latest || memory.latest;
 
+  renderMetrics(latest);
   renderStory(briefing, payload.temperature, payload.state || { pollCount: memory.pollCount });
   renderPieces(briefing?.pieces || []);
   renderCapGroups(briefing?.capabilityGroups || []);
