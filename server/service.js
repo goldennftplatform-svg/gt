@@ -1,4 +1,5 @@
 import { config } from "./config.js";
+import { compileBriefing } from "./briefing.js";
 import { runSniff } from "./sniffer.js";
 import { computeTemperature, translate } from "./translator.js";
 import {
@@ -20,19 +21,30 @@ export function publicConfig() {
   };
 }
 
+function withBriefing(payload) {
+  return {
+    ...payload,
+    briefing: compileBriefing({
+      latest: payload.latest,
+      temperature: payload.temperature,
+      events: payload.events,
+    }),
+  };
+}
+
 export async function getStoredPayload() {
   const [latest, events, state] = await Promise.all([
     loadLatestSnapshot(),
     loadEvents(),
     loadState(),
   ]);
-  return {
+  return withBriefing({
     latest,
     events,
     state,
     temperature: computeTemperature(events, latest),
     config: publicConfig(),
-  };
+  });
 }
 
 /**
@@ -72,12 +84,12 @@ export async function pollAndTranslate({
 
   if (persist) await saveState(state);
 
-  return {
+  return withBriefing({
     latest: snapshot,
     events,
     newEvents,
     state,
     temperature,
     config: publicConfig(),
-  };
+  });
 }

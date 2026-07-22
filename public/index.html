@@ -6,7 +6,7 @@
     <title>Geoff Thermometer</title>
     <meta
       name="description"
-      content="Live sniffer + translator for geoff.ai deploys and Stacknet API heat."
+      content="Plain-English live board for geoff.ai deploys and Stacknet heat."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -22,10 +22,10 @@
     <header class="topbar">
       <div class="brand-lockup">
         <h1 class="brand">Geoff <span>Thermometer</span></h1>
-        <p class="tag">sniff · translate · track</p>
+        <p class="tag">what’s live · what it means</p>
       </div>
 
-      <div class="gauge-inline" aria-label="Temperature">
+      <div class="gauge-inline" aria-label="Activity temperature">
         <div class="tube-h">
           <div id="mercury" class="mercury-h"></div>
         </div>
@@ -38,57 +38,47 @@
 
       <div class="top-actions">
         <span id="connection" class="pill">connecting</span>
-        <button id="pollBtn" type="button">Sniff</button>
+        <button id="pollBtn" type="button">Refresh</button>
       </div>
     </header>
 
     <main class="shell">
-      <section class="metrics" aria-label="Live metrics">
-        <article class="metric">
-          <span class="k">Stacknet</span>
-          <strong id="stackVersion">—</strong>
-          <em id="stackHealth">—</em>
-        </article>
-        <article class="metric">
-          <span class="k">Nodes / GPUs</span>
-          <strong id="stackNodes">—</strong>
-          <em id="stackLoad">load —</em>
-        </article>
-        <article class="metric">
-          <span class="k">VRAM free</span>
-          <strong id="vramText">—</strong>
-          <div class="bar"><i id="vramBar"></i></div>
-        </article>
-        <article class="metric">
-          <span class="k">geoff build</span>
-          <strong id="geoffBuild">—</strong>
-          <em id="geoffDeploy">—</em>
-        </article>
-        <article class="metric">
-          <span class="k">Models</span>
-          <strong id="modelCount">—</strong>
-          <em id="apiModelCount">api —</em>
-        </article>
-        <article class="metric">
-          <span class="k">Widgets / MCP</span>
-          <strong id="widgetCount">—</strong>
-          <em id="mcpContract">—</em>
-        </article>
+      <section id="story" class="story tone-muted" aria-live="polite">
+        <p class="story-kicker">Right now</p>
+        <h2 id="storyHeadline">Waiting for first sniff</h2>
+        <p id="storySentence">Once live data arrives, this board explains Geoff in plain English.</p>
+        <p id="tempPlain" class="story-temp">—</p>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>The pieces</h2>
+          <p>Four parts that make Geoff work — glance these first</p>
+        </div>
+        <div id="pieces" class="pieces"></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>What it can do</h2>
+          <p id="capMeta">Powers grouped by human job</p>
+        </div>
+        <div id="capGroups" class="cap-groups"></div>
       </section>
 
       <div class="board">
         <section class="panel feed-panel">
           <div class="panel-head">
-            <h2>Translated heat</h2>
-            <p id="tempMeta">Waiting for first sniff…</p>
+            <h2>What’s changing</h2>
+            <p id="tempMeta">Waiting…</p>
           </div>
           <div id="feed" class="feed"></div>
         </section>
 
         <section class="panel models-panel">
           <div class="panel-head">
-            <h2>API models</h2>
-            <p>From Stacknet <code>/v1/models</code></p>
+            <h2>AI brains on duty</h2>
+            <p>Who does what</p>
           </div>
           <div id="modelCards" class="model-cards"></div>
         </section>
@@ -96,27 +86,24 @@
 
       <section class="panel">
         <div class="panel-head">
-          <h2>Widgets</h2>
-          <p>Public Stacknet widget surface</p>
+          <h2>Ready-made answer blocks</h2>
+          <p>Widgets agents can drop into replies</p>
         </div>
         <div id="widgets" class="widget-grid"></div>
       </section>
 
-      <section class="panel">
+      <section class="panel glossary-panel">
         <div class="panel-head">
-          <h2>Network capabilities</h2>
-          <p id="capMeta">—</p>
+          <h2>Glossary</h2>
+          <p>Jargon → meaning</p>
         </div>
-        <div id="caps" class="caps"></div>
+        <div id="glossary" class="glossary"></div>
       </section>
 
-      <section class="panel">
-        <div class="panel-head">
-          <h2>Network model ids</h2>
-          <p>From <code>/network/summary</code></p>
-        </div>
+      <details class="raw-drawer">
+        <summary>Raw network model ids</summary>
         <div id="models" class="models"></div>
-      </section>
+      </details>
     </main>
 
     <script type="module" src="/app.js"></script>
