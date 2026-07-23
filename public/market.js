@@ -2,8 +2,12 @@ const els = {
   reloadBtn: document.getElementById("reloadBtn"),
   heroNote: document.getElementById("heroNote"),
   hints: document.getElementById("hints"),
+  manifesto: document.getElementById("manifesto"),
+  scorecard: document.getElementById("scorecard"),
   liveMeta: document.getElementById("liveMeta"),
   liveGrid: document.getElementById("liveGrid"),
+  incidents: document.getElementById("incidents"),
+  inventories: document.getElementById("inventories"),
   dimTable: document.querySelector("#dimTable tbody"),
   vendors: document.getElementById("vendors"),
   menus: document.getElementById("menus"),
@@ -32,10 +36,68 @@ function statusLabel(indicator, description) {
   return description || indicator;
 }
 
+function gradeClass(grade = "") {
+  if (grade.startsWith("A")) return "A";
+  if (grade.startsWith("B")) return "B";
+  return "C";
+}
 
 function renderHints(hints = []) {
   els.hints.innerHTML = hints
     .map((h) => `<span class="hint">${escapeHtml(h)}</span>`)
+    .join("");
+}
+
+function renderManifesto(manifesto) {
+  if (!manifesto) {
+    els.manifesto.innerHTML = "";
+    return;
+  }
+  els.manifesto.innerHTML = `
+    <div class="manifesto-copy">
+      <p class="kicker">${escapeHtml(manifesto.kicker || "Research desk")}</p>
+      <h3>${escapeHtml(manifesto.title)}</h3>
+      ${(manifesto.paragraphs || [])
+        .map((p) => `<p>${escapeHtml(p)}</p>`)
+        .join("")}
+    </div>
+    <aside class="manifesto-side">
+      <h4>Field checklist</h4>
+      <ul>
+        ${(manifesto.bullets || []).map((b) => `<li>${escapeHtml(b)}</li>`).join("")}
+      </ul>
+    </aside>
+  `;
+}
+
+function renderScorecard(rows = []) {
+  if (!rows.length) {
+    els.scorecard.innerHTML = `<p class="empty">Scorecard loading…</p>`;
+    return;
+  }
+  els.scorecard.innerHTML = rows
+    .map(
+      (r) => `
+      <article class="score">
+        <div class="score-top">
+          <div>
+            <h4>${escapeHtml(r.name)}</h4>
+            <p class="posture">${escapeHtml(r.posture)} · ${escapeHtml(String(r.score))}/100</p>
+          </div>
+          <div class="grade ${gradeClass(r.grade)}">${escapeHtml(r.grade)}</div>
+        </div>
+        <p class="why">${escapeHtml(r.why)}</p>
+        <div class="meter"><i style="width:${Math.max(8, r.score)}%"></i></div>
+        <details>
+          <summary>Receipts &amp; blind spots</summary>
+          <ul>
+            ${(r.reveals || []).map((x) => `<li><strong>Shows:</strong> ${escapeHtml(x)}</li>`).join("")}
+            ${(r.hides || []).map((x) => `<li><strong>Hides:</strong> ${escapeHtml(x)}</li>`).join("")}
+          </ul>
+        </details>
+      </article>
+    `,
+    )
     .join("");
 }
 
@@ -45,12 +107,11 @@ function renderLive(live = {}, takenAt) {
     ? `Quotes refreshed ${new Date(takenAt).toLocaleString()}`
     : "Pulling live quotes…";
 
-
   els.liveGrid.innerHTML = order
     .map((id) => {
       const card = live[id] || {};
       const cls = statusClass(card.indicator);
-      const comps = (card.spotlight || card.components || []).slice(0, 5);
+      const comps = (card.spotlight || card.components || []).slice(0, 6);
       return `
         <article class="live-card">
           <p class="name">${escapeHtml(card.label || id)}</p>
@@ -70,6 +131,53 @@ function renderLive(live = {}, takenAt) {
         </article>
       `;
     })
+    .join("");
+
+  const incidents = live.openai?.recentIncidents || [];
+  if (!incidents.length) {
+    els.incidents.innerHTML = "";
+    return;
+  }
+  els.incidents.innerHTML = `
+    <h4>OpenAI recent incidents (public status feed)</h4>
+    ${incidents
+      .map(
+        (i) => `
+      <div class="incident-row">
+        <span class="impact ${escapeHtml(i.impact || "")}">${escapeHtml(i.impact || "n/a")}</span>
+        <span>${escapeHtml(i.name)} · ${escapeHtml(i.status)}</span>
+        <time>${escapeHtml(i.updatedAt ? new Date(i.updatedAt).toLocaleString() : "")}</time>
+      </div>
+    `,
+      )
+      .join("")}
+  `;
+}
+
+function renderInventories(inventories = []) {
+  if (!inventories.length) {
+    els.inventories.innerHTML = `<p class="empty">No inventories yet.</p>`;
+    return;
+  }
+  els.inventories.innerHTML = inventories
+    .map(
+      (inv) => `
+      <article class="inventory">
+        <h4>${escapeHtml(inv.title)}</h4>
+        <p class="sub">${escapeHtml(inv.subtitle || "")}</p>
+        <div class="chips">
+          ${(inv.items || [])
+            .slice(0, 28)
+            .map((item) => `<span class="chip">${escapeHtml(item)}</span>`)
+            .join("")}
+          ${(inv.extras || [])
+            .slice(0, 12)
+            .map((item) => `<span class="chip extra">${escapeHtml(item)}</span>`)
+            .join("")}
+        </div>
+      </article>
+    `,
+    )
     .join("");
 }
 
@@ -168,15 +276,17 @@ function renderMenus(vendors = []) {
 function applyPayload(data) {
   const catalog = data.catalog || {};
   renderHints(data.compareHints || []);
+  renderManifesto(data.manifesto);
+  renderScorecard(data.scorecard || []);
   renderLive(data.live || {}, data.takenAt);
+  renderInventories(data.inventories || []);
   renderDimensions(catalog.dimensions || []);
   renderVendors(catalog.vendors || []);
   renderMenus(catalog.vendors || []);
   els.footnote.textContent = catalog.updatedNote
-    ? `${catalog.updatedNote} CoverAI is a research desk aesthetic — not an insurer, and not affiliated with Progressive.`
+    ? `${catalog.updatedNote} CoverAI scrapes public pages only. Not an insurer. Not affiliated with Progressive. Not medical advice. Just receipts.`
     : "";
 }
-
 
 async function loadMarket() {
   els.reloadBtn.disabled = true;

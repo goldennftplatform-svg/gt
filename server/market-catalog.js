@@ -266,5 +266,27 @@ export const marketCatalog = {
         copilot: "Monthly seats",
       },
     },
+    {
+      id: "transparency",
+      label: "Public receipts",
+      blurb: "What you can verify without pledging allegiance (or a credit card).",
+      scores: {
+        geoff: "High — live vitals",
+        grok: "Medium — docs, auth API",
+        openai: "Medium — status + docs",
+        copilot: "Medium — model list, seat fog",
+      },
+    },
+    {
+      id: "modularity",
+      label: "Modular vs sealed",
+      blurb: "Can you strap modules on — or only renew the appliance?",
+      scores: {
+        geoff: "Strap-on / network",
+        grok: "API modules",
+        openai: "Platform APIs",
+        copilot: "Sealed cockpit",
+      },
+    },
   ],
 };

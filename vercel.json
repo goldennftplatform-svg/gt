@@ -4,6 +4,10 @@
     "api/**/*.js": {
       "maxDuration": 60,
       "memory": 1024
+    },
+    "api/market.js": {
+      "maxDuration": 60,
+      "memory": 1024
     }
   },
   "headers": [
