@@ -8,21 +8,24 @@
       name="description"
       content="Plain-English live board for geoff.ai deploys and Stacknet heat."
     />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Sora:wght@600;700;800&display=swap"
-      rel="stylesheet"
-    />
+    <meta name="theme-color" content="#050805" />
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
+    <canvas id="matrix" class="matrix" aria-hidden="true"></canvas>
     <div class="atmosphere" aria-hidden="true"></div>
 
     <header class="topbar">
       <div class="brand-lockup">
-        <h1 class="brand">Geoff <span>Thermometer</span></h1>
-        <p class="tag">what’s live · what it means</p>
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3 3 8l9 5 9-5-9-5z"/><path d="M3 12l9 5 9-5M3 16l9 5 9-5"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="brand">Geoff <span>Thermometer</span></h1>
+          <p class="tag">live matrix · plain English</p>
+        </div>
       </div>
 
       <div class="gauge-inline" aria-label="Activity temperature">
@@ -38,62 +41,94 @@
 
       <div class="top-actions">
         <span id="connection" class="pill">connecting</span>
-        <button id="pollBtn" type="button">Refresh</button>
+        <button id="pollBtn" type="button" class="btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M20 12a8 8 0 1 1-2.2-5.4"/><path d="M20 4v5h-5"/>
+          </svg>
+          Refresh
+        </button>
       </div>
     </header>
 
     <main class="shell">
       <section class="metrics" aria-label="Live network vitals">
         <article class="metric">
-          <span class="k">Stacknet</span>
+          <div class="metric-top">
+            <span class="ico-wrap" data-icon="server"></span>
+            <span class="k">Stacknet</span>
+          </div>
           <strong id="stackVersion">—</strong>
           <em id="stackHealth">—</em>
         </article>
         <article class="metric">
-          <span class="k">Nodes / GPUs</span>
+          <div class="metric-top">
+            <span class="ico-wrap" data-icon="cpu"></span>
+            <span class="k">Nodes / GPUs</span>
+          </div>
           <strong id="stackNodes">—</strong>
           <em id="stackLoad">load —</em>
         </article>
         <article class="metric">
-          <span class="k">VRAM free</span>
+          <div class="metric-top">
+            <span class="ico-wrap" data-icon="memory"></span>
+            <span class="k">VRAM free</span>
+          </div>
           <strong id="vramText">—</strong>
           <div class="bar"><i id="vramBar"></i></div>
         </article>
         <article class="metric">
-          <span class="k">geoff build</span>
+          <div class="metric-top">
+            <span class="ico-wrap" data-icon="rocket"></span>
+            <span class="k">geoff build</span>
+          </div>
           <strong id="geoffBuild">—</strong>
           <em id="geoffDeploy">—</em>
         </article>
         <article class="metric">
-          <span class="k">Models</span>
+          <div class="metric-top">
+            <span class="ico-wrap" data-icon="brain"></span>
+            <span class="k">Models</span>
+          </div>
           <strong id="modelCount">—</strong>
           <em id="apiModelCount">api —</em>
         </article>
         <article class="metric">
-          <span class="k">Widgets / MCP</span>
+          <div class="metric-top">
+            <span class="ico-wrap" data-icon="blocks"></span>
+            <span class="k">Widgets / MCP</span>
+          </div>
           <strong id="widgetCount">—</strong>
           <em id="mcpContract">—</em>
         </article>
       </section>
 
       <section id="story" class="story tone-muted" aria-live="polite">
-        <p class="story-kicker">Right now</p>
-        <h2 id="storyHeadline">Waiting for first sniff</h2>
-        <p id="storySentence">Once live data arrives, this board explains Geoff in plain English.</p>
-        <p id="tempPlain" class="story-temp">—</p>
+        <div class="story-icon" data-icon="pulse"></div>
+        <div class="story-copy">
+          <p class="story-kicker">Right now</p>
+          <h2 id="storyHeadline">Waiting for first sniff</h2>
+          <p id="storySentence">Once live data arrives, this board explains Geoff in plain English.</p>
+          <p id="tempPlain" class="story-temp">—</p>
+        </div>
       </section>
 
       <section class="panel">
         <div class="panel-head">
-          <h2>The pieces</h2>
-          <p>Four parts that make Geoff work — glance these first</p>
+          <div class="panel-title">
+            <span class="ico-wrap sm" data-icon="layers"></span>
+            <h2>The pieces</h2>
+          </div>
+          <p>Four parts that make Geoff work</p>
         </div>
         <div id="pieces" class="pieces"></div>
       </section>
 
       <section class="panel">
         <div class="panel-head">
-          <h2>What it can do</h2>
+          <div class="panel-title">
+            <span class="ico-wrap sm" data-icon="bolt"></span>
+            <h2>What it can do</h2>
+          </div>
           <p id="capMeta">Powers grouped by human job</p>
         </div>
         <div id="capGroups" class="cap-groups"></div>
@@ -102,7 +137,10 @@
       <div class="board">
         <section class="panel feed-panel">
           <div class="panel-head">
-            <h2>What’s changing</h2>
+            <div class="panel-title">
+              <span class="ico-wrap sm" data-icon="activity"></span>
+              <h2>What’s changing</h2>
+            </div>
             <p id="tempMeta">Waiting…</p>
           </div>
           <div id="feed" class="feed"></div>
@@ -110,7 +148,10 @@
 
         <section class="panel models-panel">
           <div class="panel-head">
-            <h2>AI brains on duty</h2>
+            <div class="panel-title">
+              <span class="ico-wrap sm" data-icon="brain"></span>
+              <h2>AI brains on duty</h2>
+            </div>
             <p>Who does what</p>
           </div>
           <div id="modelCards" class="model-cards"></div>
@@ -119,7 +160,10 @@
 
       <section class="panel">
         <div class="panel-head">
-          <h2>Ready-made answer blocks</h2>
+          <div class="panel-title">
+            <span class="ico-wrap sm" data-icon="blocks"></span>
+            <h2>Ready-made answer blocks</h2>
+          </div>
           <p>Widgets agents can drop into replies</p>
         </div>
         <div id="widgets" class="widget-grid"></div>
@@ -127,14 +171,20 @@
 
       <section class="panel glossary-panel">
         <div class="panel-head">
-          <h2>Glossary</h2>
+          <div class="panel-title">
+            <span class="ico-wrap sm" data-icon="book"></span>
+            <h2>Glossary</h2>
+          </div>
           <p>Jargon → meaning</p>
         </div>
         <div id="glossary" class="glossary"></div>
       </section>
 
       <details class="raw-drawer">
-        <summary>Raw network model ids</summary>
+        <summary>
+          <span class="ico-wrap sm" data-icon="code"></span>
+          Raw network model ids
+        </summary>
         <div id="models" class="models"></div>
       </details>
     </main>

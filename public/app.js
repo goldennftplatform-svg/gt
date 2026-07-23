@@ -1,3 +1,5 @@
+import { icon } from "./icons.js";
+
 const STORAGE_KEY = "geoff-thermometer-v2";
 const els = {
   pollBtn: document.getElementById("pollBtn"),
@@ -33,6 +35,29 @@ const els = {
   models: document.getElementById("models"),
 };
 
+const PIECE_ICONS = { app: "app", network: "network", brains: "brain", tools: "tools" };
+const CAP_ICONS = {
+  chat: "chat",
+  media: "image",
+  audio: "music",
+  code: "code",
+  infra: "chip",
+  other: "spark",
+};
+const EVENT_ICONS = {
+  deploy: "rocket",
+  version: "layers",
+  models: "brain",
+  apiModels: "brain",
+  capabilities: "bolt",
+  widgets: "blocks",
+  network: "server",
+  health: "pulse",
+  catalog: "layers",
+  treasury: "spark",
+  baseline: "activity",
+};
+
 let mode = "local";
 let memory = loadMemory();
 let pollTimer = null;
@@ -54,6 +79,15 @@ function saveMemory() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(memory));
 }
 
+function hydrateIcons(root = document) {
+  root.querySelectorAll("[data-icon]").forEach((node) => {
+    const name = node.getAttribute("data-icon");
+    if (!name || node.dataset.hydrated === "1") return;
+    node.innerHTML = icon(name);
+    node.dataset.hydrated = "1";
+  });
+}
+
 function fmtTime(iso) {
   if (!iso) return "—";
   return new Date(iso).toLocaleString(undefined, {
@@ -69,6 +103,19 @@ function short(value, head = 8, tail = 6) {
   const s = String(value);
   if (s.length <= head + tail + 1) return s;
   return `${s.slice(0, head)}…${s.slice(-tail)}`;
+}
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
+}
+
+function setConnection(state, label) {
+  els.connection.className = `pill ${state}`;
+  els.connection.textContent = label;
 }
 
 function renderMetrics(latest) {
@@ -94,19 +141,6 @@ function renderMetrics(latest) {
   els.mcpContract.textContent = short(s.mcpContract, 18, 0);
 }
 
-function setConnection(state, label) {
-  els.connection.className = `pill ${state}`;
-  els.connection.textContent = label;
-}
-
-function escapeHtml(value) {
-  return String(value ?? "")
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;");
-}
-
 function renderSpark(temps = []) {
   const pts = temps.slice(-24);
   if (pts.length < 2) {
@@ -124,7 +158,13 @@ function renderSpark(temps = []) {
     return `${x.toFixed(1)},${y.toFixed(1)}`;
   });
   els.spark.innerHTML = `
-    <polyline fill="none" stroke="rgba(240,162,2,0.85)" stroke-width="2"
+    <defs>
+      <linearGradient id="g" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#059669"/>
+        <stop offset="100%" stop-color="#4ade80"/>
+      </linearGradient>
+    </defs>
+    <polyline fill="none" stroke="url(#g)" stroke-width="2.2" stroke-linecap="round"
       points="${coords.join(" ")}" />
   `;
 }
@@ -161,8 +201,13 @@ function renderPieces(pieces = []) {
     .map(
       (p) => `
       <article class="piece tone-${escapeHtml(p.tone || "muted")}">
-        <p class="plain">${escapeHtml(p.plain)}</p>
-        <h3>${escapeHtml(p.title)}</h3>
+        <div class="piece-top">
+          <span class="ico-wrap">${icon(PIECE_ICONS[p.id] || "spark")}</span>
+          <div>
+            <h3>${escapeHtml(p.title)}</h3>
+            <p class="plain">${escapeHtml(p.plain)}</p>
+          </div>
+        </div>
         <p class="status">${escapeHtml(p.status)}</p>
         <p class="meaning">${escapeHtml(p.meaning)}</p>
         <ul>${(p.facts || []).map((f) => `<li>${escapeHtml(f)}</li>`).join("")}</ul>
@@ -183,7 +228,10 @@ function renderCapGroups(groups = []) {
     .map(
       (g) => `
       <article class="cap-group ${g.on ? "on" : "off"}">
-        <h3>${escapeHtml(g.label)}</h3>
+        <div class="cap-group-top">
+          <span class="ico-wrap sm">${icon(CAP_ICONS[g.id] || "spark")}</span>
+          <h3>${escapeHtml(g.label)}</h3>
+        </div>
         <div class="count">${g.count} powers ${g.on ? "on" : "off"}</div>
         <p>${escapeHtml(g.blurb)}</p>
         <div class="chips">
@@ -209,6 +257,7 @@ function renderFeed(events = []) {
     .map(
       (event) => `
       <article class="event">
+        <div class="event-ico">${icon(EVENT_ICONS[event.kind] || "activity")}</div>
         <time datetime="${event.at}">${fmtTime(event.at)}</time>
         <div>
           <h3>${escapeHtml(event.title)}</h3>
@@ -232,7 +281,10 @@ function renderModelCards(models = []) {
       (m) => `
       <article class="model-card">
         <header>
-          <h3>${escapeHtml(m.displayName || m.id)}</h3>
+          <div class="title-row">
+            <span class="ico-wrap sm">${icon("brain")}</span>
+            <h3>${escapeHtml(m.displayName || m.id)}</h3>
+          </div>
           <span class="role">${escapeHtml(m.role || "Network model")}</span>
         </header>
         <p class="use">${escapeHtml(m.use || m.description || "")}</p>
@@ -261,7 +313,10 @@ function renderWidgets(widgets = []) {
     .map(
       (w) => `
       <article class="widget">
-        <h3>${escapeHtml(w.name || w.id)}</h3>
+        <div class="widget-top">
+          <span class="ico-wrap sm">${icon("blocks")}</span>
+          <h3>${escapeHtml(w.name || w.id)}</h3>
+        </div>
         <div class="meta">${escapeHtml(w.audience || (w.isSystem ? "Built-in" : "Community"))} · ${escapeHtml(w.version || "v?")}</div>
         <p>${escapeHtml(w.glance || w.description || "Reusable answer block")}</p>
       </article>
@@ -394,7 +449,46 @@ function startClientPolling() {
   }, 30_000);
 }
 
+function startMatrix() {
+  const canvas = document.getElementById("matrix");
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  let width = 0;
+  let height = 0;
+  let columns = [];
+  const glyphs = "01アイウエオカキクケコGEOFFSTACKNET<>/=";
+
+  function resize() {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+    const colCount = Math.floor(width / 18);
+    columns = Array.from({ length: colCount }, () => Math.random() * -40);
+  }
+
+  function tick() {
+    ctx.fillStyle = "rgba(5, 8, 5, 0.08)";
+    ctx.fillRect(0, 0, width, height);
+    ctx.fillStyle = "rgba(74, 222, 128, 0.55)";
+    ctx.font = "12px ui-monospace, SF Mono, Menlo, monospace";
+    for (let i = 0; i < columns.length; i++) {
+      const ch = glyphs[(Math.random() * glyphs.length) | 0];
+      const x = i * 18;
+      const y = columns[i] * 18;
+      ctx.fillText(ch, x, y);
+      if (y > height && Math.random() > 0.975) columns[i] = 0;
+      columns[i] += 0.65;
+    }
+    requestAnimationFrame(tick);
+  }
+
+  resize();
+  window.addEventListener("resize", resize);
+  requestAnimationFrame(tick);
+}
+
 els.pollBtn.addEventListener("click", pollNow);
+hydrateIcons();
+startMatrix();
 
 async function boot() {
   try {
