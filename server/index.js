@@ -8,6 +8,7 @@ import {
 } from "./poller.js";
 import { prettyCapability } from "./translator.js";
 import { publicConfig } from "./service.js";
+import { buildMarketPayload } from "./market.js";
 
 const app = express();
 app.disable("x-powered-by");
@@ -109,6 +110,15 @@ app.get("/api/stream", async (req, res) => {
     clearInterval(heartbeat);
     unsubscribe();
   });
+});
+
+app.get("/api/market", async (_req, res) => {
+  try {
+    const payload = await buildMarketPayload();
+    res.json(payload);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 app.get("/api/meta/capabilities", async (_req, res) => {

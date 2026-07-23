@@ -48,6 +48,10 @@ npm run sniff   # one-shot CLI sniff
 npm run dev     # watch mode
 ```
 
+## Market deep dive
+
+Home page stays the Geoff Thermometer. Use **Market deep dive** → `/market.html` for a separate Apple-clean comparison of **Geoff · Grok · OpenAI · Copilot** (catalog + live status).
+
 ## API
 
 - `GET /api/health`
@@ -55,3 +59,4 @@ npm run dev     # watch mode
 - `POST /api/poll` — `{ previous, events }` → latest snapshot + translated events
 - `GET /api/sniff` — raw snapshot
 - `GET /api/stream` — SSE (local only)
+- `GET /api/market` — competitor catalog + live status intel

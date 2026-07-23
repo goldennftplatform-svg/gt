@@ -203,6 +203,19 @@ body { overflow-x: hidden; }
   transform: none;
 }
 
+a.btn {
+  text-decoration: none;
+}
+
+.btn-market {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+.btn-market:hover {
+  border-color: rgba(74, 222, 128, 0.45);
+}
+
 .pill {
   display: inline-flex;
   align-items: center;

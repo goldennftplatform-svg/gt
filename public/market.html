@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Market Deep Dive · Geoff Thermometer</title>
+    <meta
+      name="description"
+      content="Compare Geoff, Grok, OpenAI, and GitHub Copilot — models, horsepower, pricing shape, and live status."
+    />
+    <meta name="theme-color" content="#050805" />
+    <link rel="stylesheet" href="/market.css" />
+  </head>
+  <body>
+    <div class="glow" aria-hidden="true"></div>
+
+    <header class="bar">
+      <a class="back" href="/">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M15 18 9 12l6-6"/>
+        </svg>
+        Thermometer
+      </a>
+      <div class="bar-title">
+        <h1>Market deep dive</h1>
+        <p>Geoff · Grok · OpenAI · Copilot</p>
+      </div>
+      <button id="reloadBtn" class="btn" type="button">Reload intel</button>
+    </header>
+
+    <main class="wrap">
+      <section class="hero">
+        <p class="eyebrow">Research cockpit</p>
+        <h2>Who has the horsepower — and what do they actually deliver?</h2>
+        <p class="lede" id="heroNote">
+          Same questions for every lab: brains on the menu, context window, modalities, how you pay, and whether the pipes are healthy right now.
+        </p>
+        <div id="hints" class="hints"></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h3>Live conditions</h3>
+          <p id="liveMeta">Sniffing status…</p>
+        </div>
+        <div id="liveGrid" class="live-grid"></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h3>Head-to-head dimensions</h3>
+          <p>Glanceable market shape</p>
+        </div>
+        <div class="table-scroll">
+          <table class="compare" id="dimTable">
+            <thead>
+              <tr>
+                <th>Dimension</th>
+                <th>Geoff</th>
+                <th>Grok</th>
+                <th>OpenAI</th>
+                <th>Copilot</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h3>Vendor dossiers</h3>
+          <p>What they ship, flagship brains, research links</p>
+        </div>
+        <div id="vendors" class="vendors"></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h3>Model menus</h3>
+          <p>Flagship + workhorse lanes (public docs)</p>
+        </div>
+        <div id="menus" class="menus"></div>
+      </section>
+
+      <p class="footnote" id="footnote"></p>
+    </main>
+
+    <script type="module" src="/market.js"></script>
+  </body>
+</html>
