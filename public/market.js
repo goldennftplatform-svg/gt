@@ -26,10 +26,12 @@ function statusClass(indicator) {
 }
 
 function statusLabel(indicator, description) {
-  if (indicator === "none") return "Operational";
-  if (indicator === "unknown") return "Unknown";
+  if (indicator === "none") return "Covered · all clear";
+  if (indicator === "unknown") return "Quote pending";
+  if (indicator === "minor") return "Minor claim noise";
   return description || indicator;
 }
+
 
 function renderHints(hints = []) {
   els.hints.innerHTML = hints
@@ -40,8 +42,9 @@ function renderHints(hints = []) {
 function renderLive(live = {}, takenAt) {
   const order = ["geoff", "grok", "openai", "copilot"];
   els.liveMeta.textContent = takenAt
-    ? `Updated ${new Date(takenAt).toLocaleString()}`
-    : "Live sniff";
+    ? `Quotes refreshed ${new Date(takenAt).toLocaleString()}`
+    : "Pulling live quotes…";
+
 
   els.liveGrid.innerHTML = order
     .map((id) => {
@@ -169,12 +172,11 @@ function applyPayload(data) {
   renderDimensions(catalog.dimensions || []);
   renderVendors(catalog.vendors || []);
   renderMenus(catalog.vendors || []);
-  els.footnote.textContent = catalog.updatedNote || "";
-  if (catalog.updatedNote) {
-    els.heroNote.textContent =
-      "Same research lens on every vendor: deliverables, flagship brains, context horsepower, payment shape, and live pipe health.";
-  }
+  els.footnote.textContent = catalog.updatedNote
+    ? `${catalog.updatedNote} CoverAI is a research desk aesthetic — not an insurer, and not affiliated with Progressive.`
+    : "";
 }
+
 
 async function loadMarket() {
   els.reloadBtn.disabled = true;

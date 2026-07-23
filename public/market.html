@@ -3,59 +3,107 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Market Deep Dive · Geoff Thermometer</title>
+    <title>CoverAI · Compare AI coverage</title>
     <meta
       name="description"
-      content="Compare Geoff, Grok, OpenAI, and GitHub Copilot — models, horsepower, pricing shape, and live status."
+      content="Compare Geoff, Grok, OpenAI, and Copilot coverage — horsepower, modalities, pricing shape, and live status. Progressive-style AI quotes."
     />
-    <meta name="theme-color" content="#050805" />
+    <meta name="theme-color" content="#0077C8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&family=Source+Sans+3:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="/market.css" />
   </head>
   <body>
-    <div class="glow" aria-hidden="true"></div>
+    <div class="sky" aria-hidden="true"></div>
 
     <header class="bar">
       <a class="back" href="/">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M15 18 9 12l6-6"/>
         </svg>
-        Thermometer
+        Back to Thermometer
       </a>
-      <div class="bar-title">
-        <h1>Market deep dive</h1>
-        <p>Geoff · Grok · OpenAI · Copilot</p>
+      <div class="brand-lock">
+        <div class="logo" aria-hidden="true">C</div>
+        <div>
+          <h1>Cover<span>AI</span></h1>
+          <p>Compare AI coverage in minutes</p>
+        </div>
       </div>
-      <button id="reloadBtn" class="btn" type="button">Reload intel</button>
+      <button id="reloadBtn" class="btn btn-primary" type="button">Refresh quotes</button>
     </header>
 
     <main class="wrap">
       <section class="hero">
-        <p class="eyebrow">Research cockpit</p>
-        <h2>Who has the horsepower — and what do they actually deliver?</h2>
-        <p class="lede" id="heroNote">
-          Same questions for every lab: brains on the menu, context window, modalities, how you pay, and whether the pipes are healthy right now.
-        </p>
-        <div id="hints" class="hints"></div>
+        <div class="hero-copy">
+          <p class="eyebrow">Multi-policy AI shopping</p>
+          <h2>Let’s find the right AI coverage for the job.</h2>
+          <p class="lede" id="heroNote">
+            Same friendly comparison energy as shopping insurance — but for brains, context windows, modalities, and whether the network is actually up today.
+          </p>
+          <div class="hero-pills">
+            <span>No hard sell</span>
+            <span>Public docs only</span>
+            <span>Bundle your research</span>
+          </div>
+        </div>
+        <aside class="hero-card">
+          <p class="hero-card-kicker">Today’s quote desk</p>
+          <p class="hero-card-title">4 carriers on the board</p>
+          <ul>
+            <li><strong>Geoff</strong> — network / multimodal</li>
+            <li><strong>Grok</strong> — xAI API horsepower</li>
+            <li><strong>OpenAI</strong> — platform + frontier</li>
+            <li><strong>Copilot</strong> — IDE seat coverage</li>
+          </ul>
+          <p class="hero-card-note">Not affiliated with Progressive Casualty Insurance. Just vibes.</p>
+        </aside>
       </section>
+
+      <section class="strip">
+        <div>
+          <strong>Name your horsepower</strong>
+          <span>Flagship model, context, modalities</span>
+        </div>
+        <div>
+          <strong>Compare coverages</strong>
+          <span>API vs product vs network seats</span>
+        </div>
+        <div>
+          <strong>Check the pipes</strong>
+          <span>Live status before you commit</span>
+        </div>
+      </section>
+
+      <div id="hints" class="hints"></div>
 
       <section class="panel">
         <div class="panel-head">
-          <h3>Live conditions</h3>
-          <p id="liveMeta">Sniffing status…</p>
+          <div>
+            <h3>Live claim status</h3>
+            <p>Are the carriers’ pipes healthy right now?</p>
+          </div>
+          <p id="liveMeta" class="meta">Checking…</p>
         </div>
         <div id="liveGrid" class="live-grid"></div>
       </section>
 
       <section class="panel">
         <div class="panel-head">
-          <h3>Head-to-head dimensions</h3>
-          <p>Glanceable market shape</p>
+          <div>
+            <h3>Coverage comparison chart</h3>
+            <p>Like a rate table — for AI capabilities</p>
+          </div>
         </div>
         <div class="table-scroll">
           <table class="compare" id="dimTable">
             <thead>
               <tr>
-                <th>Dimension</th>
+                <th>Coverage type</th>
                 <th>Geoff</th>
                 <th>Grok</th>
                 <th>OpenAI</th>
@@ -69,18 +117,30 @@
 
       <section class="panel">
         <div class="panel-head">
-          <h3>Vendor dossiers</h3>
-          <p>What they ship, flagship brains, research links</p>
+          <div>
+            <h3>Carrier dossiers</h3>
+            <p>What each policy actually covers</p>
+          </div>
         </div>
         <div id="vendors" class="vendors"></div>
       </section>
 
       <section class="panel">
         <div class="panel-head">
-          <h3>Model menus</h3>
-          <p>Flagship + workhorse lanes (public docs)</p>
+          <div>
+            <h3>Plan menus</h3>
+            <p>Flagship &amp; workhorse “policy tiers”</p>
+          </div>
         </div>
         <div id="menus" class="menus"></div>
+      </section>
+
+      <section class="cta-banner">
+        <div>
+          <h3>Ready to dig deeper?</h3>
+          <p>Official docs are the fine print. Always read before you buy tokens or seats.</p>
+        </div>
+        <a class="btn btn-primary" href="https://docs.github.com/en/copilot/reference/ai-models/supported-models" target="_blank" rel="noopener noreferrer">Start with Copilot models</a>
       </section>
 
       <p class="footnote" id="footnote"></p>

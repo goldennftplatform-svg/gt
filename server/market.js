@@ -130,9 +130,10 @@ export async function buildMarketPayload() {
     catalog: marketCatalog,
     live,
     compareHints: [
-      "Same questions for every vendor: What do they sell? What’s the flagship brain? How much context? How do you pay?",
-      "Geoff column refreshes from live Stacknet sniff. OpenAI/GitHub columns refresh from public status JSON.",
-      "Grok pricing/context comes from public xAI docs — re-check before production spend.",
+      "Tip: shop coverages the same way every time — deliverables, flagship brain, context limits, and how you pay.",
+      "Geoff rates refresh from a live Stacknet sniff. OpenAI & GitHub status come from public status boards.",
+      "Grok numbers are from public xAI docs — always re-quote before you spend in production.",
     ],
   };
 }
+

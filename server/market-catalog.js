@@ -5,7 +5,7 @@
 
 export const marketCatalog = {
   updatedNote:
-    "Catalog compiled from public vendor docs. Live status is sniffed separately. Always verify pricing on official pages before buying.",
+    "These “quotes” are compiled from public vendor docs. Live status is sniffed separately. Always verify pricing on official pages before you buy tokens or seats.",
   vendors: [
     {
       id: "geoff",
@@ -218,14 +218,14 @@ export const marketCatalog = {
   dimensions: [
     {
       id: "api",
-      label: "Raw API access",
-      blurb: "Can you call models programmatically like OpenAI Chat Completions?",
+      label: "API access coverage",
+      blurb: "Can you call models programmatically (Chat Completions-style)?",
       scores: { geoff: "Partial / network", grok: "Yes", openai: "Yes", copilot: "Product only" },
     },
     {
       id: "context",
-      label: "Context horsepower",
-      blurb: "How much you can stuff into one prompt/session.",
+      label: "Context limits",
+      blurb: "How much fits in one prompt/session — your deductible on memory.",
       scores: {
         geoff: "Lane-dependent",
         grok: "500k–2M",
@@ -235,8 +235,8 @@ export const marketCatalog = {
     },
     {
       id: "multimodal",
-      label: "Multimodal breadth",
-      blurb: "Text is table stakes — who ships image/music/video/voice too?",
+      label: "Multimodal riders",
+      blurb: "Add-ons beyond text: image, music, video, voice, realtime.",
       scores: {
         geoff: "Very wide (incl. music)",
         grok: "Text + image/video/voice",
@@ -246,8 +246,8 @@ export const marketCatalog = {
     },
     {
       id: "agents",
-      label: "Agent / tool surface",
-      blurb: "MCP, tool calling, IDE agents, sandboxes.",
+      label: "Agent / tools coverage",
+      blurb: "MCP, tool calling, IDE agents, sandboxes — who shows up when work gets messy.",
       scores: {
         geoff: "MCP + widgets + sandboxes",
         grok: "Strong tool calling",
@@ -257,8 +257,8 @@ export const marketCatalog = {
     },
     {
       id: "price",
-      label: "How you pay",
-      blurb: "Tokens vs seats vs network credits.",
+      label: "Premium style",
+      blurb: "How the bill shows up: tokens, seats, or network credits.",
       scores: {
         geoff: "App / network",
         grok: "$ / 1M tokens",
