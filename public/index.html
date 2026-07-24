@@ -118,10 +118,19 @@
         </div>
       </section>
 
+      <section id="coverage" class="coverage-strip" aria-label="Sniff coverage">
+        <div class="coverage-head">
+          <p class="story-kicker">Data coverage · public only</p>
+          <p id="coverageMeta">Waiting for first sniff…</p>
+        </div>
+        <div id="coverageChips" class="coverage-chips"></div>
+        <ul id="coverageNotes" class="coverage-notes"></ul>
+      </section>
+
       <section id="agentDesk" class="agent-desk status-quiet" aria-live="polite" hidden>
         <div class="agent-desk-icon" data-icon="bolt"></div>
         <div class="agent-desk-copy">
-          <p class="story-kicker">Agent desk · inferred</p>
+          <p class="story-kicker">Queue desk · measured counters</p>
           <h2 id="agentHeadline">—</h2>
           <p id="agentSentence">—</p>
           <div id="agentSignals" class="agent-signals"></div>
@@ -138,12 +147,13 @@
           </div>
           <p id="pumpMeta">Building history from live sniffs…</p>
         </div>
+        <p class="feed-hint">Heat = ranked public diffs · cyan dots = sampled in_flight · no fake volume</p>
         <div id="pumpStats" class="pump-stats"></div>
         <div class="pump-chart-wrap">
           <svg id="pumpChart" class="pump-chart" viewBox="0 0 720 140" role="img" aria-label="72 hour activity chart"></svg>
           <div class="pump-legend">
             <span><i class="lg-heat"></i> update heat</span>
-            <span><i class="lg-agent"></i> agent queue</span>
+            <span><i class="lg-agent"></i> in_flight sample</span>
             <span><i class="lg-crazy"></i> crazy / spike</span>
           </div>
         </div>
@@ -170,7 +180,7 @@
             <span class="ico-wrap sm" data-icon="bolt"></span>
             <h2>What it can do</h2>
           </div>
-          <p id="capMeta">Powers grouped by human job</p>
+          <p id="capMeta">Ids from /network/summary · grouped for humans</p>
         </div>
         <div id="capGroups" class="cap-groups"></div>
       </section>
@@ -194,7 +204,7 @@
               <span class="ico-wrap sm" data-icon="brain"></span>
               <h2>AI brains on duty</h2>
             </div>
-            <p>Who does what</p>
+            <p>Prefer API descriptions · guessed roles labeled</p>
           </div>
           <div id="modelCards" class="model-cards"></div>
         </section>

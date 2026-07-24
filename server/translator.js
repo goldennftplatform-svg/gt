@@ -544,7 +544,7 @@ export function translate(previous, current) {
 function agentActivityEvent(previous, current) {
   const prevFlight = previous.summary?.inFlight;
   const currFlight = current.summary?.inFlight;
-  const maxFlight = current.summary?.maxInFlight ?? 512;
+  const maxFlight = current.summary?.maxInFlight;
   const prevTasks = previous.summary?.taskCount ?? previous.sources?.["stacknet.node"]?.taskCount;
   const currTasks = current.summary?.taskCount ?? current.sources?.["stacknet.node"]?.taskCount;
   const prevLoad = previous.summary?.averageLoad;
@@ -563,28 +563,34 @@ function agentActivityEvent(previous, current) {
 
   const signals = [];
   if (isNumber(prevFlight) && isNumber(currFlight) && currFlight !== prevFlight) {
-    signals.push(`in-flight ${prevFlight} → ${currFlight} (max ${maxFlight})`);
+    signals.push(
+      isNumber(maxFlight)
+        ? `in-flight ${prevFlight} → ${currFlight} (max ${maxFlight})`
+        : `in-flight ${prevFlight} → ${currFlight}`,
+    );
   } else if (isNumber(currFlight)) {
-    signals.push(`in-flight ${currFlight}/${maxFlight}`);
+    signals.push(
+      isNumber(maxFlight) ? `in-flight ${currFlight}/${maxFlight}` : `in-flight ${currFlight}`,
+    );
   }
   if (taskJump) signals.push(`node tasks ${prevTasks} → ${currTasks}`);
   if (loadJump) signals.push(`avg load ${prevLoad} → ${currLoad}`);
 
   const heavy =
-    (isNumber(currFlight) && maxFlight > 0 && currFlight / maxFlight >= 0.05) ||
+    (isNumber(currFlight) && isNumber(maxFlight) && maxFlight > 0 && currFlight / maxFlight >= 0.05) ||
     (isNumber(currFlight) && currFlight >= 8) ||
     (flightJump && Math.abs(currFlight - prevFlight) >= 8);
 
   let rank = "note";
   let title = "Queue metrics shifted";
   if (wokeUp) {
-    title = "Agent lane woke up";
+    title = "Queue woke up";
     rank = heavy ? "move" : "note";
   } else if (wentIdle) {
-    title = "Agent lane went quiet";
+    title = "Queue went quiet";
     rank = "whisper";
   } else if (heavy) {
-    title = "Agent lane looks busy";
+    title = "Queue looks busy";
     rank = "move";
   }
 
@@ -645,7 +651,7 @@ function agentClusterEvent(events) {
 export function inferAgentDesk(latest, newEvents = []) {
   if (!latest) return null;
   const inFlight = latest.summary?.inFlight;
-  const maxInFlight = latest.summary?.maxInFlight ?? 512;
+  const maxInFlight = latest.summary?.maxInFlight;
   const taskCount = latest.summary?.taskCount ?? latest.sources?.["stacknet.node"]?.taskCount;
   const load = latest.summary?.averageLoad;
   const signals = [];
@@ -654,7 +660,7 @@ export function inferAgentDesk(latest, newEvents = []) {
     signals.push({
       key: "in_flight",
       label: "In-flight jobs",
-      value: `${inFlight} / ${maxInFlight}`,
+      value: isNumber(maxInFlight) ? `${inFlight} / ${maxInFlight}` : String(inFlight),
       raw: inFlight,
     });
   }
@@ -683,32 +689,39 @@ export function inferAgentDesk(latest, newEvents = []) {
   const clustered = surface.length >= 2;
 
   const busy = isNumber(inFlight) && inFlight > 0;
+  const disclaimer =
+    "Queue counters from public Stacknet /health + /node only. Not private agent transcripts. No invented identity.";
+
   if (!busy && !clustered) {
     return {
       status: "quiet",
-      headline: "Agent lane quiet",
-      sentence: "No in-flight jobs on the public health counter right now.",
+      headline: "Queue quiet",
+      sentence: isNumber(inFlight)
+        ? `in_flight = ${inFlight} on public health.`
+        : "No in_flight counter in this sniff.",
       signals,
       cluster: [],
-      disclaimer: "Inferred from public Stacknet/Geoff metrics only — no private agent logs.",
+      disclaimer,
     };
   }
 
   let status = "watching";
   let headline = "Watching the queue";
-  let sentence = "Counters are live; nothing clustered yet.";
+  let sentence = "Public counters are live; nothing clustered yet.";
 
   if (busy) {
     status = "busy";
-    headline = "Agent lane busy";
-    sentence = `${inFlight} job${inFlight === 1 ? "" : "s"} in flight (max ${maxInFlight}). That’s a real queue signal, not a vibe.`;
+    headline = "Queue has work";
+    sentence = isNumber(maxInFlight)
+      ? `${inFlight} in flight (max ${maxInFlight}) — measured on /health.`
+      : `${inFlight} in flight — measured on /health (max not published).`;
   }
   if (clustered) {
     status = busy ? "busy_cluster" : "cluster";
-    headline = busy ? "Busy — and a cluster just landed" : "Cluster of public diffs";
+    headline = busy ? "Queue busy + same-sniff diffs" : "Same-sniff public diffs";
     sentence = busy
-      ? `${sentence} Same sniff also moved ${surface.length} surface signals.`
-      : `${surface.length} surface changes arrived together in one sniff — clustered from measurable diffs.`;
+      ? `${sentence} Also ${surface.length} surface diffs in this sniff (clustered, not an agent name).`
+      : `${surface.length} surface changes in one sniff — clustered from public diffs only.`;
   }
 
   return {
@@ -722,7 +735,7 @@ export function inferAgentDesk(latest, newEvents = []) {
       title: e.title,
       summary: e.summary,
     })),
-    disclaimer: "Inferred from public Stacknet/Geoff metrics only — no private agent logs.",
+    disclaimer,
   };
 }
 
@@ -764,11 +777,9 @@ export function computeTemperature(events, latestSnapshot) {
   }, 0);
 
   let temp = Math.min(100, Math.round(decayed * 2.8));
+  // No fake warmth floors — 0 means no ranked heat in the window
 
-  if (latestSnapshot?.summary?.stacknetStatus === "healthy") temp = Math.max(temp, 12);
-  if ((latestSnapshot?.summary?.models ?? 0) > 0) temp = Math.max(temp, 16);
-
-  // Only crazy/spike in the last 6h can force warmer bands
+  // Only crazy/spike in the last 6h can force warmer bands from real events
   const recentHot = recent.filter(
     (e) =>
       now - Date.parse(e.at) < 6 * 60 * 60 * 1000 &&
@@ -781,9 +792,9 @@ export function computeTemperature(events, latestSnapshot) {
   return {
     value: temp,
     label: temperatureLabel(temp),
-    // Count must match the feed's 72h window (all ranked items), not just heat contributors
     recentEventCount: recent.length,
     trackWindowHours: TRACK_WINDOW_HOURS,
+    basis: "ranked public diffs only — not a sensor, no padded floors",
   };
 }
 
@@ -791,8 +802,9 @@ function temperatureLabel(value) {
   if (value >= 75) return "blazing";
   if (value >= 50) return "hot";
   if (value >= 30) return "warming";
-  if (value >= 14) return "steady";
-  return "cool";
+  if (value >= 10) return "steady";
+  if (value > 0) return "cool";
+  return "flat";
 }
 
 function humanListChange(noun, { added, removed }) {

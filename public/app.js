@@ -184,6 +184,9 @@ const els = {
   agentSignals: document.getElementById("agentSignals"),
   agentCluster: document.getElementById("agentCluster"),
   agentDisclaimer: document.getElementById("agentDisclaimer"),
+  coverageMeta: document.getElementById("coverageMeta"),
+  coverageChips: document.getElementById("coverageChips"),
+  coverageNotes: document.getElementById("coverageNotes"),
   pieces: document.getElementById("pieces"),
   capGroups: document.getElementById("capGroups"),
   capMeta: document.getElementById("capMeta"),
@@ -337,7 +340,13 @@ function renderMetrics(latest) {
     els.vramBar.style.width = "0%";
   }
   els.geoffBuild.textContent = short(s.geoffBuildId, 10, 6);
-  els.geoffDeploy.textContent = s.geoffDeployId || short(s.chunkHash, 4, 4);
+  if (s.geoffDeployId) {
+    els.geoffDeploy.textContent = s.geoffDeployId;
+  } else if (s.chunkHash) {
+    els.geoffDeploy.textContent = `asset ${short(s.chunkHash, 4, 4)}`;
+  } else {
+    els.geoffDeploy.textContent = "—";
+  }
   els.modelCount.textContent = s.models != null ? String(s.models) : "—";
   els.apiModelCount.textContent = s.apiModels != null ? `api ${s.apiModels}` : "api —";
   els.widgetCount.textContent = s.widgets != null ? String(s.widgets) : "—";
@@ -559,7 +568,7 @@ function renderPieces(pieces = []) {
 
 function renderCapGroups(groups = []) {
   const onCount = groups.filter((g) => g.on).length;
-  els.capMeta.textContent = `${onCount} active lanes · grouped for humans`;
+  els.capMeta.textContent = `${onCount} active lanes · ids from /network/summary · grouped for humans`;
   if (!groups.length) {
     els.capGroups.innerHTML = `<p class="empty">Waiting for capability map…</p>`;
     return;
@@ -593,6 +602,26 @@ function sortFeed(events = []) {
     if (rw !== 0) return rw;
     return Date.parse(b.at || 0) - Date.parse(a.at || 0);
   });
+}
+
+function renderCoverage(coverage) {
+  if (!els.coverageMeta) return;
+  if (!coverage) {
+    els.coverageMeta.textContent = "Waiting for first sniff…";
+    els.coverageChips.innerHTML = "";
+    els.coverageNotes.innerHTML = "";
+    return;
+  }
+  els.coverageMeta.textContent = `${coverage.live}/${coverage.total} live · ${coverage.skipped} not shared · ${coverage.failed} failed`;
+  els.coverageChips.innerHTML = (coverage.rows || [])
+    .map(
+      (r) =>
+        `<span class="cov-chip ${escapeHtml(r.state)}" title="${escapeHtml(r.reason || r.source)}">${escapeHtml(r.label)} · ${escapeHtml(r.state)}</span>`,
+    )
+    .join("");
+  els.coverageNotes.innerHTML = (coverage.notes || [])
+    .map((n) => `<li>${escapeHtml(n)}</li>`)
+    .join("");
 }
 
 function renderAgentDesk(desk) {
@@ -678,7 +707,7 @@ function renderModelCards(models = []) {
             <span class="ico-wrap sm">${icon("brain")}</span>
             <h3>${escapeHtml(m.displayName || m.id)}</h3>
           </div>
-          <span class="role">${escapeHtml(m.role || "Network model")}</span>
+          <span class="role">${escapeHtml(m.role || "Network model")}${m.roleGuessed ? " · guessed" : ""}</span>
         </header>
         <p class="use">${escapeHtml(m.use || m.description || "")}</p>
         <div class="chips">
@@ -690,6 +719,7 @@ function renderModelCards(models = []) {
             .slice(0, 5)
             .map((c) => `<span class="chip type">${escapeHtml(c)}</span>`)
             .join("")}
+          ${m.roleGuessed ? `<span class="chip guessed">role guessed</span>` : `<span class="chip type">api text</span>`}
         </div>
       </article>
     `,
@@ -781,6 +811,7 @@ function applyPayload(payload, { mergeClient = false } = {}) {
   recordTracking(latest, payload.temperature);
   renderMetrics(latest);
   renderStory(briefing, payload.temperature);
+  renderCoverage(briefing?.coverage || null);
   renderAgentDesk(payload.agentDesk || briefing?.agentDesk || null);
   renderPumpTape(feedEvents, memory.agentSamples || []);
   renderPieces(briefing?.pieces || []);

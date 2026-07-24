@@ -521,6 +521,80 @@ a.btn {
   max-width: 48rem;
 }
 
+.coverage-strip {
+  border: 1px solid var(--line);
+  background: rgba(0, 0, 0, 0.32);
+  border-radius: var(--radius);
+  padding: 0.85rem 1rem;
+  margin-bottom: 0.85rem;
+}
+
+.coverage-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.coverage-head #coverageMeta {
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+}
+
+.coverage-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.65rem;
+}
+
+.cov-chip {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.04em;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.28rem 0.5rem;
+  color: var(--muted);
+}
+
+.cov-chip.live {
+  color: #bbf7d0;
+  border-color: rgba(74, 222, 128, 0.4);
+}
+
+.cov-chip.skipped {
+  color: #fde68a;
+  border-color: rgba(251, 191, 36, 0.4);
+}
+
+.cov-chip.fail {
+  color: #fda4af;
+  border-color: rgba(251, 113, 133, 0.4);
+}
+
+.coverage-notes {
+  margin: 0.65rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.25rem;
+}
+
+.coverage-notes li {
+  color: var(--muted);
+  font-size: 0.72rem;
+  line-height: 1.4;
+}
+
+.chip.guessed {
+  color: #fde68a;
+  border-color: rgba(251, 191, 36, 0.45);
+}
+
 .agent-desk {
   display: grid;
   grid-template-columns: auto 1fr;

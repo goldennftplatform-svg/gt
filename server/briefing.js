@@ -44,15 +44,22 @@ const MODEL_ROLE = {
 };
 
 function modelRole(id = "") {
-  if (MODEL_ROLE[id]) return MODEL_ROLE[id];
-  if (id.includes("voice")) return { role: "Voice model", use: "Speech and spoken sessions." };
-  if (id.includes("vision")) return { role: "Vision model", use: "Understands images and visual input." };
-  if (id.includes("media")) return { role: "Media model", use: "Generates or orchestrates media." };
-  if (id.includes("embed")) return { role: "Embedding model", use: "Indexes meaning for search." };
-  if (id.includes("chat")) return { role: "Chat model", use: "Conversation and instruction following." };
-  if (id.includes("pyro")) return { role: "Pyro family", use: "Creative generation lane." };
-  if (id.includes("magma")) return { role: "Magma family", use: "High-end creative / agent work." };
-  return { role: "Network model", use: "Available on the Geoff compute network." };
+  if (MODEL_ROLE[id]) return { ...MODEL_ROLE[id], guessed: true };
+  if (id.includes("voice"))
+    return { role: "Voice-related id", use: "Named like voice — guessed from id only.", guessed: true };
+  if (id.includes("vision"))
+    return { role: "Vision-related id", use: "Named like vision — guessed from id only.", guessed: true };
+  if (id.includes("media"))
+    return { role: "Media-related id", use: "Named like media — guessed from id only.", guessed: true };
+  if (id.includes("embed"))
+    return { role: "Embedding-related id", use: "Named like embed — guessed from id only.", guessed: true };
+  if (id.includes("chat"))
+    return { role: "Chat-related id", use: "Named like chat — guessed from id only.", guessed: true };
+  if (id.includes("pyro"))
+    return { role: "Pyro family id", use: "Pyro family — role guessed from id only.", guessed: true };
+  if (id.includes("magma"))
+    return { role: "Magma family id", use: "Magma family — role guessed from id only.", guessed: true };
+  return { role: "Network model", use: "Listed publicly — no role metadata published.", guessed: true };
 }
 
 function groupCapabilities(capabilities = []) {
@@ -115,6 +122,11 @@ function healthStory(summary) {
 
 function pieceApp(summary) {
   const shipped = Boolean(summary.geoffBuildId);
+  const deployFact = summary.geoffDeployId
+    ? `Vercel deploy id present`
+    : summary.chunkHash
+      ? `No deploy id — asset fingerprint ${summary.chunkHash} (derived from JS chunk names)`
+      : "Deploy id and asset fingerprint both missing";
   return {
     id: "app",
     title: "The app",
@@ -122,24 +134,27 @@ function pieceApp(summary) {
     status: shipped ? "Live build detected" : "Build unknown",
     tone: shipped ? "good" : "muted",
     meaning:
-      "When this changes, Geoff shipped new UI or product code. Users may see new features without a store update.",
+      "When buildId changes, geoff.ai shipped. Measured from public /api/version + HTML scrape.",
     facts: [
-      summary.geoffDeployId ? "Fresh web deploy fingerprint present" : "Deploy fingerprint missing",
-      summary.chunkCount != null ? `${summary.chunkCount} frontend bundles loaded` : "Bundle count unknown",
+      deployFact,
+      summary.chunkCount != null ? `${summary.chunkCount} frontend bundles fingerprint` : "Bundle count unknown",
     ],
   };
 }
 
 function pieceNetwork(summary) {
-  const nodes = summary.nodes ?? 0;
-  const gpus = summary.gpus ?? 0;
+  const nodes = summary.nodes;
+  const gpus = summary.gpus;
   const vramPct = summary.vramAvailablePct;
-  let headroom = "unknown headroom";
+  let headroom = "VRAM headroom unknown";
   if (vramPct != null) {
     if (vramPct >= 55) headroom = "comfortable GPU memory free";
     else if (vramPct >= 30) headroom = "moderate GPU memory free";
     else headroom = "GPU memory running tight";
   }
+
+  const nodeBit = nodes != null ? `${nodes} machines` : "machine count unknown";
+  const gpuBit = gpus != null ? `${gpus} GPUs` : "GPU count unknown";
 
   return {
     id: "network",
@@ -147,7 +162,7 @@ function pieceNetwork(summary) {
     plain: "Stacknet — shared computers that run AI jobs",
     status: summary.stacknetStatus === "healthy" ? "Healthy" : summary.stacknetStatus || "Unknown",
     tone: summary.stacknetStatus === "healthy" ? "good" : "warn",
-    meaning: `${nodes} machines online with ${gpus} GPUs. This is the farm that actually generates images, music, video, and agent work.`,
+    meaning: `${nodeBit} online with ${gpuBit}. From public /network/summary — not estimated.`,
     facts: [
       summary.stacknetVersion ? `Software ${summary.stacknetVersion}` : "Version unknown",
       headroom,
@@ -158,18 +173,19 @@ function pieceNetwork(summary) {
 
 function pieceBrains(summary, models = []) {
   const featured = models.slice(0, 4).map((m) => {
+    if (m.description) return `${m.displayName || m.id}: ${m.description.split(/(?<=\.)\s/)[0]}`;
     const role = modelRole(m.id);
-    return `${m.displayName || m.id}: ${role.role}`;
+    return `${m.displayName || m.id}: ${role.role} (guessed from id)`;
   });
 
   return {
     id: "brains",
     title: "The brains",
     plain: "Models — different AI personalities / skills",
-    status: `${summary.apiModels ?? models.length ?? 0} API models · ${summary.models ?? 0} network ids`,
+    status: `${summary.apiModels ?? models.length ?? "—"} API models · ${summary.models ?? "—"} network ids`,
     tone: (summary.apiModels || summary.models) > 0 ? "good" : "muted",
     meaning:
-      "Think of models as specialist workers. Magma leans creative/media; chat models talk; embed models help search; voice/vision handle senses.",
+      "Prefer live /v1/models descriptions. Role labels say guessed when the API doesn’t publish one.",
     facts: featured.length ? featured : ["No public model cards yet"],
   };
 }
@@ -195,22 +211,20 @@ function pieceTools(summary, capabilityGroups = [], widgets = []) {
 
 function explainTemperature(temperature) {
   const value = temperature?.value ?? 0;
-  const label = temperature?.label ?? "cool";
+  const label = temperature?.label ?? "flat";
   const map = {
-    cool: "Quiet — almost no ranked change lately.",
-    steady: "Normal ops — healthy network, no spikes.",
-    warming: "A real move showed up — not hype, just a measurable diff.",
-    hot: "Spike territory — deploy or catalog shift worth a look.",
-    blazing: "Crazy window — multiple high-rank changes stacked.",
+    flat: "Flat — no ranked public diffs in the window (not padded).",
+    cool: "Cool — tiny ranked movement only.",
+    steady: "Steady — a few real ranked diffs.",
+    warming: "Warming — measurable moves showed up.",
+    hot: "Hot — spike-class public diffs recently.",
+    blazing: "Blazing — crazy-class public diffs stacked.",
   };
   return {
     value,
     label,
-    plain: map[label] || "Activity score from ranked, measurable updates only.",
-    detail:
-      value >= 50
-        ? "Crazy/spike items float to the top of the feed."
-        : "Whisper/note noise stays quiet unless something clusters.",
+    plain: map[label] || "Score from ranked public diffs only.",
+    detail: temperature?.basis || "Not a thermometer sensor. No fake floors.",
   };
 }
 
@@ -229,12 +243,16 @@ function humanModels(models = []) {
   return models.map((m) => {
     const role = modelRole(m.id);
     const skills = (m.capabilities || []).map(prettyCapability);
+    const hasApiDesc = Boolean(m.description);
     return {
       ...m,
-      role: role.role,
+      role: hasApiDesc ? "From API description" : role.role,
       use: m.description || role.use,
       skillLabels: skills,
-      glance: `${role.role} — ${(m.contentTypes || []).length ? (m.contentTypes || []).join(", ") : "general"}`,
+      roleGuessed: !hasApiDesc,
+      glance: hasApiDesc
+        ? m.description.split(/(?<=\.)\s/)[0]
+        : `${role.role} (guessed) — ${(m.contentTypes || []).length ? (m.contentTypes || []).join(", ") : "types unknown"}`,
     };
   });
 }
@@ -311,6 +329,7 @@ export function compileBriefing({ latest, temperature, events = [], agentDesk = 
       widgets: [],
       events: [],
       agentDesk: null,
+      coverage: null,
       glossary: glossary(),
     };
   }
@@ -325,10 +344,12 @@ export function compileBriefing({ latest, temperature, events = [], agentDesk = 
     latest.sources?.["stacknet.network"]?.capabilities || [],
   );
   const story = healthStory(summary);
+  const coverage = buildCoverage(latest, summary);
 
   return {
     story,
     temperature: explainTemperature(temperature),
+    coverage,
     pieces: [
       pieceApp(summary),
       pieceNetwork(summary),
@@ -348,15 +369,58 @@ export function compileBriefing({ latest, temperature, events = [], agentDesk = 
   };
 }
 
+function buildCoverage(latest, summary) {
+  const rows = (summary.coverage || latest.summary?.coverage || []).map((row) => {
+    let state = "fail";
+    if (row.skipped) state = "skipped";
+    else if (row.ok) state = "live";
+    return {
+      ...row,
+      state,
+      label: row.source,
+    };
+  });
+
+  const catalogSkipped = Boolean(summary.catalogSkipped);
+  const notes = [];
+  if (catalogSkipped) {
+    notes.push(
+      summary.catalogSkipReason ||
+        "Geoff /api/catalog/* is auth-gated — not measured without GEOFF_COOKIE / GEOFF_PREVIEW_CODE.",
+    );
+  }
+  notes.push("Temperature + ranks are derived from public diffs — not a physical sensor.");
+  notes.push("Model roles marked guessed when /v1/models has no description.");
+  notes.push("Queue desk uses /health in_flight + /node task_count only.");
+
+  return {
+    live: summary.healthySources ?? rows.filter((r) => r.state === "live").length,
+    skipped: summary.skippedSources ?? rows.filter((r) => r.state === "skipped").length,
+    failed: summary.failedSources ?? rows.filter((r) => r.state === "fail").length,
+    total: summary.totalSources ?? rows.length,
+    rows,
+    notes,
+    catalogSkipped,
+  };
+}
+
 function glossary() {
   return [
     {
       term: "Temperature",
-      meaning: "How much meaningful change we’ve seen across the 72h pump tape — not room temperature.",
+      meaning: "Derived score from ranked public diffs over 72h. Not a sensor. No padded floors.",
     },
     {
       term: "Pump tape",
-      meaning: "72-hour chart of real ranked updates + sampled agent queue (in-flight). No fake volume.",
+      meaning: "72h chart of real ranked updates + sampled in_flight. Heat = rank weights, not fake volume.",
+    },
+    {
+      term: "Coverage",
+      meaning: "Which public endpoints answered. Skipped = auth-gated / not shared. Failed = request error.",
+    },
+    {
+      term: "Guessed role",
+      meaning: "Model role inferred from the id string when /v1/models publishes no description.",
     },
     {
       term: "Stacknet",

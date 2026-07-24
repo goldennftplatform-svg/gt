@@ -259,7 +259,7 @@ async function sniffStacknetWidgets() {
       tags: normalizeList(w.tags),
       isSystem: Boolean(w.is_system ?? w.isSystem),
       isPublic: w.is_public ?? w.isPublic ?? true,
-      usageCount: w.usage_count ?? w.usageCount ?? 0,
+      usageCount: w.usage_count ?? w.usageCount ?? null,
       updatedAt: w.updated_at ?? w.updatedAt ?? null,
     }))
     .sort((a, b) => a.id.localeCompare(b.id));
@@ -337,8 +337,19 @@ export async function runSniff() {
       capabilities: network.capabilities?.length ?? null,
       solPriceUsd: network.treasury?.solPriceUsd ?? null,
       catalogModels: bySource["geoff.catalog"]?.models?.length ?? null,
-      healthySources: sources.filter((s) => s.ok || s.skipped).length,
+      catalogSkipped: Boolean(bySource["geoff.catalog"]?.skipped),
+      catalogSkipReason: bySource["geoff.catalog"]?.reason ?? null,
+      healthySources: sources.filter((s) => s.ok).length,
+      skippedSources: sources.filter((s) => s.skipped).length,
+      failedSources: sources.filter((s) => !s.ok && !s.skipped).length,
       totalSources: sources.length,
+      coverage: sources.map((s) => ({
+        source: s.source,
+        ok: Boolean(s.ok),
+        skipped: Boolean(s.skipped),
+        reason: s.reason || s.error || null,
+        ms: s.ms ?? null,
+      })),
     },
   };
 }
