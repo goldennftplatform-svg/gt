@@ -713,7 +713,7 @@ html, body {
 
 .grade.A { background: #0b8f5a; }
 .grade.B, .grade.B- { background: #1a8fd8; }
-.grade.C, .grade.C\+ { background: #c98500; }
+.grade.C, .grade.Cplus { background: #c98500; }
 
 .score .posture {
   margin: 0.35rem 0 0;

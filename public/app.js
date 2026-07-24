@@ -1,6 +1,156 @@
 import { icon } from "./icons.js";
 
-const STORAGE_KEY = "geoff-thermometer-v2";
+const STORAGE_KEY = "geoff-thermometer-v5";
+const RANK_WEIGHT = { crazy: 5, spike: 4, move: 3, note: 2, whisper: 1 };
+const VIBE = { crazy: "Crazy", spike: "Spike", move: "Move", note: "Note", whisper: "Whisper" };
+const TRACK_HOURS = 72;
+const TRACK_MS = TRACK_HOURS * 60 * 60 * 1000;
+const MAX_MEMORY_EVENTS = 2000;
+
+/** Website deploys = Note. Spike/Crazy are rare. Never trust "Big deal". */
+function inferRank(e = {}) {
+  const blob = `${e.title || ""} ${e.summary || ""}`;
+  if (/full-stack ship/i.test(blob)) return "crazy";
+  if (e.kind === "baseline" || e.kind === "treasury") return "whisper";
+  if (e.kind === "agent") return "note";
+  if (e.kind === "agentCluster") {
+    if (/crazy|full-stack/i.test(blob)) return "crazy";
+    if (/spike/i.test(blob)) return "spike";
+    return "move";
+  }
+  if (e.kind === "deploy") return "note";
+  if (e.kind === "version") return /mcp|plug-in|contract/i.test(blob) ? "note" : "spike";
+  if (e.kind === "health") {
+    if (/unhealthy|degrad|down|fail/i.test(blob)) return "spike";
+    return "note";
+  }
+  if (e.kind === "network") return "note";
+  if (
+    e.kind === "models" ||
+    e.kind === "apiModels" ||
+    e.kind === "widgets" ||
+    e.kind === "capabilities" ||
+    e.kind === "catalog"
+  ) {
+    const n =
+      (e.details?.added?.length || 0) +
+      (e.details?.removed?.length || 0) +
+      (e.details?.raw?.added?.length || 0) +
+      (e.details?.raw?.removed?.length || 0);
+    if (n >= 8) return "crazy";
+    if (n >= 5) return "spike";
+    if (n >= 2) return "move";
+    if (n >= 1) return "note";
+    const m = blob.match(/\+(\d+)/);
+    if (m) {
+      const c = Number(m[1]);
+      if (c >= 8) return "crazy";
+      if (c >= 5) return "spike";
+      if (c >= 2) return "move";
+      return "note";
+    }
+    return "note";
+  }
+  if (e.severity === "high" || e.severity === "medium") return "note";
+  if (e.severity === "low" || e.severity === "info") return "whisper";
+  return "note";
+}
+
+function displayVibe(e) {
+  // Always derive from rank. Never paint legacy "Big deal" / "Notable" even if server sends them.
+  return VIBE[inferRank(e)] || "Note";
+}
+
+function deployFingerprint(e) {
+  const d = e.details || {};
+  const to = d.to || d.build?.to || d.deploy?.to || d.chunks?.to || e.summary || e.title || "";
+  const from = d.from || d.build?.from || d.deploy?.from || d.chunks?.from || "";
+  return `${e.kind}|${from}|${to}|${(e.title || "").replace(/\s+/g, " ").slice(0, 48)}`;
+}
+
+function dedupeDeployBursts(events = []) {
+  const sorted = [...events].sort((a, b) => Date.parse(b.at || 0) - Date.parse(a.at || 0));
+  const used = new Set();
+  const seen = new Set();
+  const out = [];
+  for (const e of sorted) {
+    if (!e?.id || used.has(e.id)) continue;
+    if (e.kind !== "deploy") {
+      if (
+        ["health", "version", "models", "apiModels", "widgets", "capabilities", "catalog"].includes(
+          e.kind,
+        )
+      ) {
+        const fp = deployFingerprint(e);
+        if (seen.has(fp)) {
+          used.add(e.id);
+          continue;
+        }
+        seen.add(fp);
+      }
+      out.push(e);
+      used.add(e.id);
+      continue;
+    }
+    const t = Date.parse(e.at || 0);
+    const siblings = sorted.filter(
+      (o) =>
+        o.kind === "deploy" &&
+        o.id &&
+        !used.has(o.id) &&
+        Math.abs(Date.parse(o.at || 0) - t) < 120_000,
+    );
+    for (const s of siblings) used.add(s.id);
+    const keep = siblings.find((s) => /shipped|build/i.test(s.title || "")) || siblings[0] || e;
+    const rank = inferRank({ ...keep, kind: "deploy", title: "Geoff website shipped" });
+    const item = {
+      ...keep,
+      rank,
+      vibe: VIBE[rank],
+      title: siblings.length > 1 ? "Geoff website shipped" : keep.title,
+      summary:
+        siblings.length > 1
+          ? `Coalesced ${siblings.length} deploy signals: ${siblings.map((s) => s.title).join(" · ")}`
+          : keep.summary,
+    };
+    const fp = deployFingerprint(item);
+    if (seen.has(fp)) continue;
+    seen.add(fp);
+    out.push(item);
+  }
+  return out;
+}
+
+function isFlapEvent(e) {
+  if (
+    !["models", "apiModels", "widgets", "capabilities", "catalog"].includes(e.kind)
+  ) {
+    return false;
+  }
+  const added = e.details?.added?.length || e.details?.raw?.added?.length || 0;
+  const removed = e.details?.removed?.length || e.details?.raw?.removed?.length || 0;
+  if (removed === 0 && added >= 4) return true;
+  if (added === 0 && removed >= 4) return true;
+  if (added >= 8 && removed >= 8) return true;
+  if (/\+\d{2,} (models|capabilities|widgets|powers|API models)/i.test(e.summary || "")) {
+    return true;
+  }
+  if (/-\d{2,} (models|capabilities|widgets|powers|API models)/i.test(e.summary || "")) {
+    return true;
+  }
+  return false;
+}
+
+function normalizeFeedEvents(events = []) {
+  return dedupeDeployBursts(
+    events
+      .filter((e) => !isFlapEvent(e))
+      .map((e) => {
+        const rank = inferRank(e);
+        return { ...e, rank, vibe: displayVibe({ ...e, rank }) };
+      }),
+  );
+}
 const els = {
   pollBtn: document.getElementById("pollBtn"),
   connection: document.getElementById("connection"),
@@ -10,6 +160,9 @@ const els = {
   tempMeta: document.getElementById("tempMeta"),
   tempPlain: document.getElementById("tempPlain"),
   spark: document.getElementById("spark"),
+  pumpMeta: document.getElementById("pumpMeta"),
+  pumpStats: document.getElementById("pumpStats"),
+  pumpChart: document.getElementById("pumpChart"),
   stackVersion: document.getElementById("stackVersion"),
   stackHealth: document.getElementById("stackHealth"),
   stackNodes: document.getElementById("stackNodes"),
@@ -25,6 +178,12 @@ const els = {
   story: document.getElementById("story"),
   storyHeadline: document.getElementById("storyHeadline"),
   storySentence: document.getElementById("storySentence"),
+  agentDesk: document.getElementById("agentDesk"),
+  agentHeadline: document.getElementById("agentHeadline"),
+  agentSentence: document.getElementById("agentSentence"),
+  agentSignals: document.getElementById("agentSignals"),
+  agentCluster: document.getElementById("agentCluster"),
+  agentDisclaimer: document.getElementById("agentDisclaimer"),
   pieces: document.getElementById("pieces"),
   capGroups: document.getElementById("capGroups"),
   capMeta: document.getElementById("capMeta"),
@@ -56,23 +215,64 @@ const EVENT_ICONS = {
   catalog: "layers",
   treasury: "spark",
   baseline: "activity",
+  agent: "bolt",
+  agentCluster: "spark",
 };
 
 let mode = "local";
 let memory = loadMemory();
 let pollTimer = null;
 
+function emptyMemory() {
+  return { latest: null, events: [], temps: [], agentSamples: [], pollCount: 0 };
+}
+
 function loadMemory() {
+  // Kill poisoned hyped histories from older clients
+  for (const key of [
+    "geoff-thermometer-v1",
+    "geoff-thermometer-v2",
+    "geoff-thermometer-v3",
+    "geoff-thermometer-v4",
+  ]) {
+    try {
+      localStorage.removeItem(key);
+    } catch {
+      /* ignore */
+    }
+  }
   try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "null") || {
-      latest: null,
-      events: [],
-      temps: [],
-      pollCount: 0,
+    const raw = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+    if (!raw) return emptyMemory();
+    return {
+      ...emptyMemory(),
+      ...raw,
+      events: normalizeFeedEvents(raw.events || []),
+      temps: normalizeTempSeries(raw.temps),
+      agentSamples: Array.isArray(raw.agentSamples) ? raw.agentSamples : [],
     };
   } catch {
-    return { latest: null, events: [], temps: [], pollCount: 0 };
+    return emptyMemory();
   }
+}
+
+function normalizeTempSeries(temps) {
+  if (!Array.isArray(temps)) return [];
+  return temps
+    .map((t) =>
+      typeof t === "number"
+        ? { at: new Date().toISOString(), value: t }
+        : { at: t.at || new Date().toISOString(), value: Number(t.value) || 0 },
+    )
+    .filter((t) => Number.isFinite(t.value));
+}
+
+function pruneWindow(list, getAt = (x) => x.at) {
+  const cutoff = Date.now() - TRACK_MS;
+  return (list || []).filter((item) => {
+    const t = Date.parse(getAt(item));
+    return Number.isFinite(t) && t >= cutoff;
+  });
 }
 
 function saveMemory() {
@@ -124,8 +324,11 @@ function renderMetrics(latest) {
   els.stackHealth.textContent = s.stacknetStatus || "—";
   els.stackNodes.textContent =
     s.nodes != null && s.gpus != null ? `${s.nodes} / ${s.gpus}` : "—";
-  els.stackLoad.textContent =
-    s.averageLoad != null ? `load ${s.averageLoad}` : `in-flight ${s.inFlight ?? "—"}`;
+  const loadBits = [];
+  if (s.averageLoad != null) loadBits.push(`load ${s.averageLoad}`);
+  if (s.inFlight != null) loadBits.push(`in-flight ${s.inFlight}`);
+  if (s.taskCount != null) loadBits.push(`tasks ${s.taskCount}`);
+  els.stackLoad.textContent = loadBits.length ? loadBits.join(" · ") : "load —";
   if (s.availableVramGb != null && s.vramGb != null) {
     els.vramText.textContent = `${s.availableVramGb}/${s.vramGb} GB`;
     els.vramBar.style.width = `${s.vramAvailablePct ?? 0}%`;
@@ -142,7 +345,8 @@ function renderMetrics(latest) {
 }
 
 function renderSpark(temps = []) {
-  const pts = temps.slice(-24);
+  const series = pruneWindow(normalizeTempSeries(temps));
+  const pts = series.map((t) => t.value);
   if (pts.length < 2) {
     els.spark.innerHTML = "";
     return;
@@ -169,7 +373,31 @@ function renderSpark(temps = []) {
   `;
 }
 
-function renderStory(briefing, temperature, state) {
+function recordTracking(latest, temperature) {
+  const at = latest?.takenAt || new Date().toISOString();
+  const value = temperature?.value ?? 0;
+  memory.temps = pruneWindow([
+    ...normalizeTempSeries(memory.temps),
+    { at, value },
+  ]).slice(-500);
+
+  const s = latest?.summary || {};
+  memory.agentSamples = pruneWindow([
+    ...(memory.agentSamples || []),
+    {
+      at,
+      inFlight: s.inFlight ?? null,
+      taskCount: s.taskCount ?? null,
+      load: s.averageLoad ?? null,
+    },
+  ]).slice(-500);
+
+  memory.events = pruneWindow(memory.events || []).slice(0, MAX_MEMORY_EVENTS);
+  saveMemory();
+  renderSpark(memory.temps);
+}
+
+function renderStory(briefing, temperature) {
   const story = briefing?.story || {};
   const temp = briefing?.temperature || {};
   els.story.className = `story tone-${story.tone || "muted"}`;
@@ -184,12 +412,124 @@ function renderStory(briefing, temperature, state) {
   els.mercury.style.width = `${Math.max(8, value)}%`;
   els.tempValue.textContent = String(value);
   els.tempLabel.textContent = temperature?.label || temp.label || "cool";
+}
 
-  const recent = temperature?.recentEventCount ?? 0;
-  const polls = state?.pollCount ?? memory.pollCount ?? 0;
-  els.tempMeta.textContent = `${recent} updates in 6h · ${polls} refreshes`;
-  memory.temps = [...(memory.temps || []), value].slice(-48);
-  renderSpark(memory.temps);
+function eventsInTrackWindow(events = []) {
+  return pruneWindow(events);
+}
+
+function setFeedMeta(count, pollCount) {
+  els.tempMeta.textContent = `${count} updates in ${TRACK_HOURS}h · ${pollCount ?? 0} refreshes`;
+}
+
+function hourBuckets(now = Date.now()) {
+  const start = now - TRACK_MS;
+  const buckets = Array.from({ length: TRACK_HOURS }, (_, i) => ({
+    i,
+    start: start + i * 3_600_000,
+    end: start + (i + 1) * 3_600_000,
+    heat: 0,
+    count: 0,
+    crazy: 0,
+    spike: 0,
+    agent: 0,
+    maxInFlight: 0,
+  }));
+  return buckets;
+}
+
+function renderPumpTape(events = [], agentSamples = []) {
+  if (!els.pumpChart) return;
+  const now = Date.now();
+  const buckets = hourBuckets(now);
+  const windowed = eventsInTrackWindow(events);
+
+  for (const e of windowed) {
+    const t = Date.parse(e.at);
+    const idx = Math.min(TRACK_HOURS - 1, Math.max(0, Math.floor((t - (now - TRACK_MS)) / 3_600_000)));
+    const b = buckets[idx];
+    b.count += 1;
+    b.heat += e.heat || RANK_WEIGHT[e.rank] || 1;
+    if (e.rank === "crazy") b.crazy += 1;
+    if (e.rank === "spike") b.spike += 1;
+    if (e.kind === "agent" || e.kind === "agentCluster") b.agent += 1;
+  }
+
+  for (const sample of pruneWindow(agentSamples)) {
+    const t = Date.parse(sample.at);
+    const idx = Math.min(TRACK_HOURS - 1, Math.max(0, Math.floor((t - (now - TRACK_MS)) / 3_600_000)));
+    const flight = Number(sample.inFlight) || 0;
+    buckets[idx].maxInFlight = Math.max(buckets[idx].maxInFlight, flight);
+  }
+
+  const crazy = windowed.filter((e) => e.rank === "crazy").length;
+  const spike = windowed.filter((e) => e.rank === "spike").length;
+  const agentMoves = windowed.filter((e) => e.kind === "agent" || e.kind === "agentCluster").length;
+  const peakFlight = Math.max(0, ...buckets.map((b) => b.maxInFlight));
+  const heatSum = buckets.reduce((a, b) => a + b.heat, 0);
+
+  els.pumpMeta.textContent =
+    windowed.length || peakFlight
+      ? `${windowed.length} ranked moves · peak queue ${peakFlight} · heat ${heatSum}`
+      : `Waiting for measurable moves across ${TRACK_HOURS}h`;
+
+  els.pumpStats.innerHTML = `
+    <span class="pump-stat"><em>Crazy</em><strong>${crazy}</strong></span>
+    <span class="pump-stat"><em>Spike</em><strong>${spike}</strong></span>
+    <span class="pump-stat"><em>Agent signals</em><strong>${agentMoves}</strong></span>
+    <span class="pump-stat"><em>Peak in-flight</em><strong>${peakFlight}</strong></span>
+    <span class="pump-stat hot"><em>Tape heat</em><strong>${heatSum}</strong></span>
+  `;
+
+  const w = 720;
+  const h = 140;
+  const pad = { top: 12, bottom: 18, left: 4, right: 4 };
+  const innerW = w - pad.left - pad.right;
+  const innerH = h - pad.top - pad.bottom;
+  const gap = 1.5;
+  const barW = innerW / TRACK_HOURS - gap;
+  const maxHeat = Math.max(3, ...buckets.map((b) => b.heat));
+  const maxFlight = Math.max(1, ...buckets.map((b) => b.maxInFlight));
+
+  const bars = buckets
+    .map((b) => {
+      const x = pad.left + b.i * (barW + gap);
+      const bh = Math.max(b.heat > 0 ? 4 : 0, (b.heat / maxHeat) * (innerH * 0.72));
+      const y = pad.top + innerH - bh;
+      const hot = b.crazy > 0 || b.spike > 0;
+      const fill = hot ? (b.crazy > 0 ? "#fb7185" : "#fbbf24") : "#34d399";
+      const opacity = b.heat > 0 ? 0.85 : 0.12;
+      return `<rect class="pump-bar" x="${x.toFixed(2)}" y="${y.toFixed(2)}" width="${barW.toFixed(2)}" height="${bh.toFixed(2)}" rx="1.5" fill="${fill}" opacity="${opacity}">
+        <title>${b.count} updates · heat ${b.heat}${b.maxInFlight ? ` · queue ${b.maxInFlight}` : ""}</title>
+      </rect>`;
+    })
+    .join("");
+
+  const agentDots = buckets
+    .filter((b) => b.maxInFlight > 0)
+    .map((b) => {
+      const x = pad.left + b.i * (barW + gap) + barW / 2;
+      const y = pad.top + innerH * (1 - b.maxInFlight / maxFlight) * 0.85 + 4;
+      const r = Math.min(4.5, 1.8 + b.maxInFlight / maxFlight * 3);
+      return `<circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="${r.toFixed(2)}" fill="#67e8f9" opacity="0.9">
+        <title>Agent queue peak ${b.maxInFlight}</title>
+      </circle>`;
+    })
+    .join("");
+
+  const baselineY = pad.top + innerH;
+  els.pumpChart.setAttribute("viewBox", `0 0 ${w} ${h}`);
+  els.pumpChart.innerHTML = `
+    <defs>
+      <linearGradient id="pumpGlow" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#4ade80" stop-opacity="0.35"/>
+        <stop offset="100%" stop-color="#4ade80" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    <line x1="${pad.left}" y1="${baselineY}" x2="${w - pad.right}" y2="${baselineY}" stroke="rgba(74,222,128,0.2)" stroke-width="1"/>
+    ${bars}
+    ${agentDots}
+  `;
 }
 
 function renderPieces(pieces = []) {
@@ -247,16 +587,69 @@ function renderCapGroups(groups = []) {
     .join("");
 }
 
-function renderFeed(events = []) {
-  if (!events.length) {
-    els.feed.innerHTML = `<p class="empty">No changes yet. The first refresh sets a baseline; later ones explain what moved.</p>`;
+function sortFeed(events = []) {
+  return [...events].sort((a, b) => {
+    const rw = (RANK_WEIGHT[inferRank(b)] || 0) - (RANK_WEIGHT[inferRank(a)] || 0);
+    if (rw !== 0) return rw;
+    return Date.parse(b.at || 0) - Date.parse(a.at || 0);
+  });
+}
+
+function renderAgentDesk(desk) {
+  if (!els.agentDesk) return;
+  if (!desk) {
+    els.agentDesk.hidden = true;
     return;
   }
-  els.feed.innerHTML = events
-    .slice(0, 40)
+  els.agentDesk.hidden = false;
+  els.agentDesk.className = `agent-desk status-${escapeHtml(desk.status || "quiet")}`;
+  els.agentHeadline.textContent = desk.headline || "Agent desk";
+  els.agentSentence.textContent = desk.sentence || "";
+  els.agentDisclaimer.textContent = desk.disclaimer || "";
+  els.agentSignals.innerHTML = (desk.signals || [])
     .map(
-      (event) => `
-      <article class="event">
+      (s) =>
+        `<span class="agent-signal"><em>${escapeHtml(s.label)}</em><strong>${escapeHtml(s.value)}</strong></span>`,
+    )
+    .join("");
+  els.agentCluster.innerHTML = (desk.cluster || [])
+    .map(
+      (c) =>
+        `<li><span class="badge ${escapeHtml(c.rank || "note")}">${escapeHtml(c.rank || "note")}</span> ${escapeHtml(c.title)} — ${escapeHtml(c.summary)}</li>`,
+    )
+    .join("");
+  hydrateIcons(els.agentDesk);
+}
+
+function resolveFeedEvents(payload, memoryEvents = []) {
+  const raw =
+    mode === "vercel"
+      ? memoryEvents
+      : payload.events?.length
+        ? payload.events
+        : memoryEvents;
+  const briefMap = new Map((payload.briefing?.events || []).map((e) => [e.id, e]));
+  const merged = raw.map((e) => (e?.id && briefMap.has(e.id) ? briefMap.get(e.id) : e));
+  return normalizeFeedEvents(merged);
+}
+
+function renderFeed(events = [], { pollCount = 0 } = {}) {
+  // Same list drives the cards and the "updates in 72h" number
+  const windowed = sortFeed(eventsInTrackWindow(events));
+  setFeedMeta(windowed.length, pollCount);
+
+  if (!windowed.length) {
+    els.feed.innerHTML = `<p class="empty">No changes in the last ${TRACK_HOURS} hours. Keep sniffing — the pump tape fills as real diffs land.</p>`;
+    return;
+  }
+  els.feed.innerHTML = windowed
+    .slice(0, 80)
+    .map((event) => {
+      const rank = inferRank(event);
+      const vibe = displayVibe(event);
+      const float = rank === "crazy" || rank === "spike";
+      return `
+      <article class="event rank-${escapeHtml(rank)}${float ? " float" : ""}">
         <div class="event-ico">${icon(EVENT_ICONS[event.kind] || "activity")}</div>
         <time datetime="${event.at}">${fmtTime(event.at)}</time>
         <div>
@@ -264,10 +657,10 @@ function renderFeed(events = []) {
           <p class="take">${escapeHtml(event.userTake || event.summary)}</p>
           <p class="tech">${escapeHtml(event.summary)}</p>
         </div>
-        <span class="badge ${escapeHtml(event.severity || "info")}">${escapeHtml(event.vibe || event.kind)}</span>
+        <span class="badge ${escapeHtml(rank)}">${escapeHtml(vibe)}</span>
       </article>
-    `,
-    )
+    `;
+    })
     .join("");
 }
 
@@ -363,32 +756,36 @@ function applyPayload(payload, { mergeClient = false } = {}) {
     const incoming = payload.newEvents || [];
     const merged = [...incoming, ...(memory.events || [])];
     const seen = new Set();
-    memory.events = merged
+    memory.events = pruneWindow(merged)
       .filter((e) => {
         if (!e?.id || seen.has(e.id)) return false;
         seen.add(e.id);
         return true;
       })
-      .slice(0, 500);
+      .slice(0, MAX_MEMORY_EVENTS);
     memory.latest = payload.latest || memory.latest;
     memory.pollCount = (memory.pollCount || 0) + (payload.newEvents ? 1 : 0);
     saveMemory();
   } else {
     memory.latest = payload.latest;
-    memory.events = payload.events || [];
+    memory.events = pruneWindow(payload.events || []).slice(0, MAX_MEMORY_EVENTS);
     memory.pollCount = payload.state?.pollCount || memory.pollCount;
     saveMemory();
   }
 
-  const events = mode === "vercel" ? memory.events : payload.events || memory.events;
   const briefing = payload.briefing;
   const latest = payload.latest || memory.latest;
+  const pollCount = payload.state?.pollCount ?? memory.pollCount ?? 0;
+  const feedEvents = resolveFeedEvents(payload, memory.events || []);
 
+  recordTracking(latest, payload.temperature);
   renderMetrics(latest);
-  renderStory(briefing, payload.temperature, payload.state || { pollCount: memory.pollCount });
+  renderStory(briefing, payload.temperature);
+  renderAgentDesk(payload.agentDesk || briefing?.agentDesk || null);
+  renderPumpTape(feedEvents, memory.agentSamples || []);
   renderPieces(briefing?.pieces || []);
   renderCapGroups(briefing?.capabilityGroups || []);
-  renderFeed(briefing?.events?.length ? briefing.events : events);
+  renderFeed(feedEvents, { pollCount });
   renderModelCards(briefing?.models || latest?.sources?.["stacknet.models"]?.models || []);
   renderWidgets(briefing?.widgets || latest?.sources?.["stacknet.widgets"]?.widgets || []);
   renderGlossary(briefing?.glossary || []);
@@ -405,7 +802,7 @@ async function pollNow() {
   try {
     const body = {
       previous: memory.latest,
-      events: memory.events.slice(0, 200),
+      events: memory.events.slice(0, MAX_MEMORY_EVENTS),
     };
     const res = await fetch("/api/poll", {
       method: "POST",

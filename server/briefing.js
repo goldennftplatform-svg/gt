@@ -1,4 +1,4 @@
-import { prettyCapability } from "./translator.js";
+import { inferRank, normalizeEvents, prettyCapability, vibeForRank } from "./translator.js";
 
 const CAPABILITY_GROUPS = [
   {
@@ -99,16 +99,16 @@ function healthStory(summary) {
 
   const tempHint =
     summary._temperatureLabel === "blazing"
-      ? "Lots of change just landed."
+      ? "A real cluster of meaningful change just landed."
       : summary._temperatureLabel === "hot"
-        ? "Things are moving quickly."
+        ? "A spike showed up recently — check the feed."
         : summary._temperatureLabel === "warming"
-          ? "Some fresh movement detected."
-          : "Operations look calm.";
+          ? "Some measurable movement, nothing crazy."
+          : "Ops look calm — routine telemetry only.";
 
   return {
     tone: "good",
-    headline: "Geoff is online and cooking",
+    headline: "Geoff is online",
     sentence: `${tempHint} App + network are reachable.`,
   };
 }
@@ -197,21 +197,32 @@ function explainTemperature(temperature) {
   const value = temperature?.value ?? 0;
   const label = temperature?.label ?? "cool";
   const map = {
-    cool: "Quiet — little has changed lately.",
-    steady: "Normal ops — network is up, no big storms.",
-    warming: "Movement — something noteworthy changed recently.",
-    hot: "Active — deploys or catalog shifts are landing.",
-    blazing: "Very active — multiple meaningful updates in a short window.",
+    cool: "Quiet — almost no ranked change lately.",
+    steady: "Normal ops — healthy network, no spikes.",
+    warming: "A real move showed up — not hype, just a measurable diff.",
+    hot: "Spike territory — deploy or catalog shift worth a look.",
+    blazing: "Crazy window — multiple high-rank changes stacked.",
   };
   return {
     value,
     label,
-    plain: map[label] || "Activity score from recent translated updates.",
+    plain: map[label] || "Activity score from ranked, measurable updates only.",
     detail:
-      value >= 55
-        ? "Worth checking the update feed — users may notice new behavior."
-        : "Glance the pieces below; nothing urgent unless health turns red.",
+      value >= 50
+        ? "Crazy/spike items float to the top of the feed."
+        : "Whisper/note noise stays quiet unless something clusters.",
   };
+}
+
+const RANK_WEIGHT = { crazy: 5, spike: 4, move: 3, note: 2, whisper: 1, info: 1 };
+
+function sortEvents(events = []) {
+  return [...events].sort((a, b) => {
+    const ra = RANK_WEIGHT[inferRank(a)] || 0;
+    const rb = RANK_WEIGHT[inferRank(b)] || 0;
+    if (rb !== ra) return rb - ra;
+    return Date.parse(b.at || 0) - Date.parse(a.at || 0);
+  });
 }
 
 function humanModels(models = []) {
@@ -239,18 +250,15 @@ function humanWidgets(widgets = []) {
 }
 
 function humanEvents(events = []) {
-  return events.map((e) => ({
-    ...e,
-    vibe:
-      e.severity === "high"
-        ? "Big deal"
-        : e.severity === "medium"
-          ? "Notable"
-          : e.severity === "low"
-            ? "Minor"
-            : "FYI",
-    userTake: userTakeForEvent(e),
-  }));
+  return sortEvents(normalizeEvents(events)).map((e) => {
+    const rank = inferRank(e);
+    return {
+      ...e,
+      rank,
+      vibe: vibeForRank(rank),
+      userTake: userTakeForEvent(e),
+    };
+  });
 }
 
 function userTakeForEvent(event) {
@@ -276,6 +284,10 @@ function userTakeForEvent(event) {
       return "On-chain treasury pricing moved; usually not user-facing.";
     case "baseline":
       return "First reading captured — this is the starting snapshot.";
+    case "agent":
+      return "Queue/load counters moved. Inferred busyness from public metrics only.";
+    case "agentCluster":
+      return "Several public diffs landed in one sniff — clustered, not invented.";
     default:
       return event.summary;
   }
@@ -284,7 +296,7 @@ function userTakeForEvent(event) {
 /**
  * Compile a glanceable human briefing from a raw snapshot + temperature/events.
  */
-export function compileBriefing({ latest, temperature, events = [] } = {}) {
+export function compileBriefing({ latest, temperature, events = [], agentDesk = null } = {}) {
   if (!latest) {
     return {
       story: {
@@ -298,6 +310,7 @@ export function compileBriefing({ latest, temperature, events = [] } = {}) {
       models: [],
       widgets: [],
       events: [],
+      agentDesk: null,
       glossary: glossary(),
     };
   }
@@ -326,6 +339,7 @@ export function compileBriefing({ latest, temperature, events = [] } = {}) {
     models,
     widgets,
     events: humanEvents(events),
+    agentDesk,
     networkModelGuide: (latest.sources?.["stacknet.network"]?.models || []).map((id) => ({
       id,
       ...modelRole(id),
@@ -338,7 +352,11 @@ function glossary() {
   return [
     {
       term: "Temperature",
-      meaning: "How much meaningful change we’ve seen lately — not room temperature.",
+      meaning: "How much meaningful change we’ve seen across the 72h pump tape — not room temperature.",
+    },
+    {
+      term: "Pump tape",
+      meaning: "72-hour chart of real ranked updates + sampled agent queue (in-flight). No fake volume.",
     },
     {
       term: "Stacknet",
@@ -363,6 +381,14 @@ function glossary() {
     {
       term: "Build / deploy",
       meaning: "Proof the geoff.ai website shipped a new version.",
+    },
+    {
+      term: "Rank",
+      meaning: "Whisper → note → move → spike → crazy. Only spike/crazy float hard.",
+    },
+    {
+      term: "Agent desk",
+      meaning: "Inferred busyness from public in-flight / task / load counters + same-sniff clusters. Not private agent chat.",
     },
   ];
 }

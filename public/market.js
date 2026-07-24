@@ -39,6 +39,7 @@ function statusLabel(indicator, description) {
 function gradeClass(grade = "") {
   if (grade.startsWith("A")) return "A";
   if (grade.startsWith("B")) return "B";
+  if (grade.startsWith("C")) return grade.includes("+") ? "Cplus" : "C";
   return "C";
 }
 

@@ -118,6 +118,41 @@
         </div>
       </section>
 
+      <section id="agentDesk" class="agent-desk status-quiet" aria-live="polite" hidden>
+        <div class="agent-desk-icon" data-icon="bolt"></div>
+        <div class="agent-desk-copy">
+          <p class="story-kicker">Agent desk · inferred</p>
+          <h2 id="agentHeadline">—</h2>
+          <p id="agentSentence">—</p>
+          <div id="agentSignals" class="agent-signals"></div>
+          <ul id="agentCluster" class="agent-cluster"></ul>
+          <p id="agentDisclaimer" class="agent-disclaimer"></p>
+        </div>
+      </section>
+
+      <section class="panel pump-panel" aria-label="72 hour pump tape">
+        <div class="panel-head">
+          <div class="panel-title">
+            <span class="ico-wrap sm" data-icon="activity"></span>
+            <h2>72h pump tape</h2>
+          </div>
+          <p id="pumpMeta">Building history from live sniffs…</p>
+        </div>
+        <div id="pumpStats" class="pump-stats"></div>
+        <div class="pump-chart-wrap">
+          <svg id="pumpChart" class="pump-chart" viewBox="0 0 720 140" role="img" aria-label="72 hour activity chart"></svg>
+          <div class="pump-legend">
+            <span><i class="lg-heat"></i> update heat</span>
+            <span><i class="lg-agent"></i> agent queue</span>
+            <span><i class="lg-crazy"></i> crazy / spike</span>
+          </div>
+        </div>
+        <div class="pump-axis">
+          <span>72h ago</span>
+          <span>now</span>
+        </div>
+      </section>
+
       <section class="panel">
         <div class="panel-head">
           <div class="panel-title">
@@ -149,6 +184,7 @@
             </div>
             <p id="tempMeta">Waiting…</p>
           </div>
+          <p class="feed-hint">Last 72 hours · crazy &amp; spike float first</p>
           <div id="feed" class="feed"></div>
         </section>
 

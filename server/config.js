@@ -44,6 +44,7 @@ export const config = {
   geoffPreviewCode: process.env.GEOFF_PREVIEW_CODE || "",
   dataDir: path.join(root, "data"),
   publicDir: path.join(root, "public"),
-  maxEvents: 500,
-  maxSnapshots: 120,
+  maxEvents: 2000,
+  maxSnapshots: 216, // ~72h at 20m cadence
+  trackWindowHours: 72,
 };

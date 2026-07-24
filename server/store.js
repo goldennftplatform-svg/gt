@@ -1,6 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { config } from "./config.js";
+import { normalizeEvents } from "./translator.js";
 
 async function ensureDataDir() {
   await fs.mkdir(config.dataDir, { recursive: true });
@@ -43,14 +44,41 @@ export async function saveState(state) {
   await writeJson(paths.state(), state);
 }
 
+function pruneTrackWindow(events = []) {
+  const cutoff = Date.now() - config.trackWindowHours * 60 * 60 * 1000;
+  return events.filter((e) => {
+    const t = Date.parse(e?.at || "");
+    return Number.isFinite(t) && t >= cutoff;
+  });
+}
+
+function needsLegacyCleanup(events = []) {
+  return events.some(
+    (e) =>
+      !e?.rank ||
+      e.vibe === "Big deal" ||
+      e.vibe === "Notable" ||
+      (typeof e.heat === "number" && e.heat >= 7) ||
+      (e.severity === "high" && !e.rank),
+  );
+}
+
 export async function loadEvents() {
-  return readJson(paths.events(), []);
+  const raw = pruneTrackWindow(await readJson(paths.events(), []));
+  const next = normalizeEvents(raw).slice(0, config.maxEvents);
+  if (needsLegacyCleanup(raw) || next.length !== raw.length) {
+    await writeJson(paths.events(), next);
+  }
+  return next;
 }
 
 export async function appendEvents(newEvents) {
-  if (!newEvents.length) return loadEvents();
   const events = await loadEvents();
-  const next = [...newEvents, ...events].slice(0, config.maxEvents);
+  if (!newEvents.length) return events;
+  const next = normalizeEvents(pruneTrackWindow([...newEvents, ...events])).slice(
+    0,
+    config.maxEvents,
+  );
   await writeJson(paths.events(), next);
   return next;
 }

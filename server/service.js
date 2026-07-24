@@ -1,7 +1,7 @@
 import { config } from "./config.js";
 import { compileBriefing } from "./briefing.js";
 import { runSniff } from "./sniffer.js";
-import { computeTemperature, translate } from "./translator.js";
+import { computeTemperature, inferAgentDesk, translate } from "./translator.js";
 import {
   appendEvents,
   loadEvents,
@@ -18,16 +18,20 @@ export function publicConfig() {
     stacknetBaseUrl: config.stacknetBaseUrl,
     catalogAuthConfigured: Boolean(config.geoffCookie || config.geoffPreviewCode),
     mode: process.env.VERCEL ? "vercel" : "local",
+    trackWindowHours: config.trackWindowHours,
   };
 }
 
 function withBriefing(payload) {
+  const agentDesk = inferAgentDesk(payload.latest, payload.newEvents || []);
   return {
     ...payload,
+    agentDesk,
     briefing: compileBriefing({
       latest: payload.latest,
       temperature: payload.temperature,
       events: payload.events,
+      agentDesk,
     }),
   };
 }

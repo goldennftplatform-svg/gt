@@ -322,6 +322,8 @@ export async function runSniff() {
       mcpContract: bySource["stacknet.health"]?.remoteMcp?.contract_id ?? null,
       inFlight: bySource["stacknet.health"]?.inFlight ?? null,
       maxInFlight: bySource["stacknet.health"]?.maxInFlight ?? null,
+      taskCount: bySource["stacknet.node"]?.taskCount ?? null,
+      nodeId: bySource["stacknet.node"]?.nodeId ?? bySource["stacknet.health"]?.nodeId ?? null,
       nodes: network.availableNodes ?? null,
       totalNodes: network.totalNodes ?? null,
       gpus: network.totalGpus ?? null,
