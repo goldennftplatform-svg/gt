@@ -345,11 +345,13 @@ export function compileBriefing({ latest, temperature, events = [], agentDesk = 
   );
   const story = healthStory(summary);
   const coverage = buildCoverage(latest, summary);
+  const horsepower = buildHorsepower(summary, models, capabilityGroups, widgets, coverage);
 
   return {
     story,
     temperature: explainTemperature(temperature),
     coverage,
+    horsepower,
     pieces: [
       pieceApp(summary),
       pieceNetwork(summary),
@@ -366,6 +368,92 @@ export function compileBriefing({ latest, temperature, events = [], agentDesk = 
       ...modelRole(id),
     })),
     glossary: glossary(),
+  };
+}
+
+/**
+ * Tight on-demand map: compute → brains → power lanes → tools.
+ * Only public measured signals; not-shared called out.
+ */
+function buildHorsepower(summary, models = [], lanes = [], widgets = [], coverage = null) {
+  const onLanes = lanes.filter((l) => l.on);
+  const offLanes = lanes.filter((l) => !l.on);
+  const powers = lanes.reduce((n, l) => n + (l.count || 0), 0);
+
+  const compute = {
+    status: summary.stacknetStatus || "unknown",
+    version: summary.stacknetVersion || null,
+    nodes: summary.nodes ?? null,
+    totalNodes: summary.totalNodes ?? null,
+    gpus: summary.gpus ?? null,
+    vramFree: summary.availableVramGb ?? null,
+    vramTotal: summary.vramGb ?? null,
+    vramPct: summary.vramAvailablePct ?? null,
+    load: summary.averageLoad ?? null,
+    inFlight: summary.inFlight ?? null,
+    maxInFlight: summary.maxInFlight ?? null,
+  };
+
+  const brains = models.map((m) => ({
+    id: m.id,
+    name: m.displayName || m.id,
+    types: m.contentTypes || [],
+    caps: (m.skillLabels || m.capabilities || []).slice(0, 8),
+    blurb: m.glance || m.use || "",
+    fromApi: !m.roleGuessed,
+  }));
+
+  const notShared = [];
+  if (coverage?.catalogSkipped) {
+    notShared.push({
+      id: "geoff.catalog",
+      label: "Geoff private catalogs",
+      reason: "Auth-gated /api/catalog — not on the public on-demand map",
+    });
+  }
+  for (const lane of offLanes) {
+    notShared.push({
+      id: lane.id,
+      label: lane.label,
+      reason: "No matching powers in the public capability list right now",
+    });
+  }
+
+  return {
+    kicker: "On-demand horsepower · public Stacknet",
+    headline: "What you can call right now",
+    sentence:
+      "Live map of compute, model brains, power lanes, and widgets. Corps hide this. Geoff publishes it.",
+    scoreboard: {
+      onLanes: onLanes.length,
+      totalLanes: lanes.length,
+      powers,
+      apiModels: summary.apiModels ?? brains.length,
+      widgets: summary.widgets ?? widgets.length,
+      nodes: summary.nodes ?? null,
+      gpus: summary.gpus ?? null,
+    },
+    compute,
+    lanes: lanes.map((l) => ({
+      id: l.id,
+      label: l.label,
+      blurb: l.blurb,
+      on: l.on,
+      count: l.count,
+      verbs: (l.items || []).map((i) => i.label || i.id),
+    })),
+    brains,
+    tools: {
+      widgets: summary.widgets ?? widgets.length,
+      mcp: summary.mcpContract || null,
+      items: widgets.slice(0, 12).map((w) => ({
+        id: w.id,
+        name: w.name || w.id,
+        audience: w.audience || (w.isSystem ? "Built-in" : "Community"),
+        glance: w.glance || w.description || "",
+      })),
+    },
+    notShared,
   };
 }
 
@@ -419,8 +507,12 @@ function glossary() {
       meaning: "Which public endpoints answered. Skipped = auth-gated / not shared. Failed = request error.",
     },
     {
-      term: "Guessed role",
-      meaning: "Model role inferred from the id string when /v1/models publishes no description.",
+      term: "On-demand horsepower",
+      meaning: "Public map of what Stacknet can do right now: compute, brains, power lanes, widgets — plus what isn’t shared.",
+    },
+    {
+      term: "Power lane",
+      meaning: "A human bucket of capability ids from /network/summary. On = at least one matching power is live.",
     },
     {
       term: "Stacknet",

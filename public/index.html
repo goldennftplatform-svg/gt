@@ -139,6 +139,43 @@
         </div>
       </section>
 
+      <section class="panel hp-panel" aria-label="On-demand horsepower">
+        <div class="panel-head">
+          <div class="panel-title">
+            <span class="ico-wrap sm" data-icon="bolt"></span>
+            <h2 id="hpHeadline">On-demand horsepower</h2>
+          </div>
+          <p id="hpMeta">Public Stacknet map · what you can call now</p>
+        </div>
+        <p id="hpSentence" class="hp-sentence">Live compute, brains, power lanes, and widgets — plus what isn’t shared.</p>
+        <div id="hpScore" class="hp-score"></div>
+
+        <div class="hp-layer">
+          <div class="hp-layer-label"><span>01</span> Compute</div>
+          <div id="hpCompute" class="hp-compute"></div>
+        </div>
+
+        <div class="hp-layer">
+          <div class="hp-layer-label"><span>02</span> Power lanes</div>
+          <div id="hpLanes" class="hp-lanes"></div>
+        </div>
+
+        <div class="hp-layer">
+          <div class="hp-layer-label"><span>03</span> Brains</div>
+          <div id="hpBrains" class="hp-brains"></div>
+        </div>
+
+        <div class="hp-layer">
+          <div class="hp-layer-label"><span>04</span> Answer tools</div>
+          <div id="hpTools" class="hp-tools"></div>
+        </div>
+
+        <div class="hp-layer muted">
+          <div class="hp-layer-label"><span>✕</span> Not on the public map</div>
+          <div id="hpBlocked" class="hp-blocked"></div>
+        </div>
+      </section>
+
       <section class="panel pump-panel" aria-label="72 hour pump tape">
         <div class="panel-head">
           <div class="panel-title">
@@ -163,28 +200,6 @@
         </div>
       </section>
 
-      <section class="panel">
-        <div class="panel-head">
-          <div class="panel-title">
-            <span class="ico-wrap sm" data-icon="layers"></span>
-            <h2>The pieces</h2>
-          </div>
-          <p>Four parts that make Geoff work</p>
-        </div>
-        <div id="pieces" class="pieces"></div>
-      </section>
-
-      <section class="panel">
-        <div class="panel-head">
-          <div class="panel-title">
-            <span class="ico-wrap sm" data-icon="bolt"></span>
-            <h2>What it can do</h2>
-          </div>
-          <p id="capMeta">Ids from /network/summary · grouped for humans</p>
-        </div>
-        <div id="capGroups" class="cap-groups"></div>
-      </section>
-
       <div class="board">
         <section class="panel feed-panel">
           <div class="panel-head">
@@ -198,45 +213,27 @@
           <div id="feed" class="feed"></div>
         </section>
 
-        <section class="panel models-panel">
+        <section class="panel glossary-panel">
           <div class="panel-head">
             <div class="panel-title">
-              <span class="ico-wrap sm" data-icon="brain"></span>
-              <h2>AI brains on duty</h2>
+              <span class="ico-wrap sm" data-icon="book"></span>
+              <h2>Glossary</h2>
             </div>
-            <p>Prefer API descriptions · guessed roles labeled</p>
+            <p>Jargon → meaning</p>
           </div>
-          <div id="modelCards" class="model-cards"></div>
+          <div id="glossary" class="glossary"></div>
         </section>
       </div>
 
-      <section class="panel">
-        <div class="panel-head">
-          <div class="panel-title">
-            <span class="ico-wrap sm" data-icon="blocks"></span>
-            <h2>Ready-made answer blocks</h2>
-          </div>
-          <p>Widgets agents can drop into replies</p>
-        </div>
-        <div id="widgets" class="widget-grid"></div>
-      </section>
-
-      <section class="panel glossary-panel">
-        <div class="panel-head">
-          <div class="panel-title">
-            <span class="ico-wrap sm" data-icon="book"></span>
-            <h2>Glossary</h2>
-          </div>
-          <p>Jargon → meaning</p>
-        </div>
-        <div id="glossary" class="glossary"></div>
-      </section>
-
       <details class="raw-drawer">
         <summary>
-          <span class="ico-wrap sm" data-icon="code"></span>
-          Raw network model ids
+          <span class="ico-wrap sm" data-icon="layers"></span>
+          Legacy pieces · raw model ids · full widget list
         </summary>
+        <div id="pieces" class="pieces"></div>
+        <div id="capGroups" class="cap-groups" hidden></div>
+        <div id="modelCards" class="model-cards"></div>
+        <div id="widgets" class="widget-grid"></div>
         <div id="models" class="models"></div>
       </details>
     </main>

@@ -187,6 +187,15 @@ const els = {
   coverageMeta: document.getElementById("coverageMeta"),
   coverageChips: document.getElementById("coverageChips"),
   coverageNotes: document.getElementById("coverageNotes"),
+  hpHeadline: document.getElementById("hpHeadline"),
+  hpMeta: document.getElementById("hpMeta"),
+  hpSentence: document.getElementById("hpSentence"),
+  hpScore: document.getElementById("hpScore"),
+  hpCompute: document.getElementById("hpCompute"),
+  hpLanes: document.getElementById("hpLanes"),
+  hpBrains: document.getElementById("hpBrains"),
+  hpTools: document.getElementById("hpTools"),
+  hpBlocked: document.getElementById("hpBlocked"),
   pieces: document.getElementById("pieces"),
   capGroups: document.getElementById("capGroups"),
   capMeta: document.getElementById("capMeta"),
@@ -567,8 +576,11 @@ function renderPieces(pieces = []) {
 }
 
 function renderCapGroups(groups = []) {
+  if (!els.capGroups || els.capGroups.hidden) return;
   const onCount = groups.filter((g) => g.on).length;
-  els.capMeta.textContent = `${onCount} active lanes · ids from /network/summary · grouped for humans`;
+  if (els.capMeta) {
+    els.capMeta.textContent = `${onCount} active lanes · ids from /network/summary · grouped for humans`;
+  }
   if (!groups.length) {
     els.capGroups.innerHTML = `<p class="empty">Waiting for capability map…</p>`;
     return;
@@ -594,6 +606,156 @@ function renderCapGroups(groups = []) {
     `,
     )
     .join("");
+}
+
+function renderHorsepower(hp) {
+  if (!els.hpScore) return;
+  if (!hp) {
+    els.hpHeadline.textContent = "On-demand horsepower";
+    els.hpMeta.textContent = "Waiting for public Stacknet map…";
+    els.hpSentence.textContent = "";
+    els.hpScore.innerHTML = "";
+    els.hpCompute.innerHTML = "";
+    els.hpLanes.innerHTML = "";
+    els.hpBrains.innerHTML = "";
+    els.hpTools.innerHTML = "";
+    els.hpBlocked.innerHTML = "";
+    return;
+  }
+
+  const s = hp.scoreboard || {};
+  const c = hp.compute || {};
+  els.hpHeadline.textContent = hp.headline || "On-demand horsepower";
+  els.hpMeta.textContent = hp.kicker || "Public Stacknet map";
+  els.hpSentence.textContent = hp.sentence || "";
+
+  els.hpScore.innerHTML = [
+    ["Lanes on", `${s.onLanes ?? 0}/${s.totalLanes ?? 0}`],
+    ["Powers", s.powers ?? "—"],
+    ["Brains", s.apiModels ?? "—"],
+    ["Widgets", s.widgets ?? "—"],
+    ["Nodes", s.nodes ?? "—"],
+    ["GPUs", s.gpus ?? "—"],
+  ]
+    .map(
+      ([k, v]) =>
+        `<span class="hp-stat"><em>${escapeHtml(k)}</em><strong>${escapeHtml(String(v))}</strong></span>`,
+    )
+    .join("");
+
+  const nodeLine =
+    c.nodes != null
+      ? c.totalNodes != null
+        ? `${c.nodes}/${c.totalNodes} nodes`
+        : `${c.nodes} nodes`
+      : "nodes —";
+  const vramLine =
+    c.vramFree != null && c.vramTotal != null
+      ? `${c.vramFree}/${c.vramTotal} GB free`
+      : "VRAM —";
+  const flightLine = isFiniteNumber(c.inFlight)
+    ? isFiniteNumber(c.maxInFlight)
+      ? `${c.inFlight}/${c.maxInFlight} in flight`
+      : `${c.inFlight} in flight`
+    : "in flight —";
+
+  els.hpCompute.innerHTML = `
+    <div class="hp-compute-grid">
+      <article class="hp-pill ${c.status === "healthy" ? "on" : "warn"}">
+        <em>Status</em><strong>${escapeHtml(c.status || "—")}</strong>
+        <span>${escapeHtml(c.version || "version —")}</span>
+      </article>
+      <article class="hp-pill on">
+        <em>Machines</em><strong>${escapeHtml(nodeLine)}</strong>
+        <span>${c.gpus != null ? `${c.gpus} GPUs` : "GPUs —"}</span>
+      </article>
+      <article class="hp-pill on">
+        <em>VRAM</em><strong>${escapeHtml(vramLine)}</strong>
+        <div class="bar tight"><i style="width:${Math.max(0, c.vramPct ?? 0)}%"></i></div>
+      </article>
+      <article class="hp-pill ${c.inFlight > 0 ? "busy" : "on"}">
+        <em>Queue</em><strong>${escapeHtml(flightLine)}</strong>
+        <span>load ${c.load ?? "—"}</span>
+      </article>
+    </div>
+  `;
+
+  els.hpLanes.innerHTML = (hp.lanes || [])
+    .map((lane) => {
+      const verbs = (lane.verbs || []).slice(0, 8);
+      return `
+      <article class="hp-lane ${lane.on ? "on" : "off"}">
+        <header>
+          <span class="ico-wrap sm">${icon(CAP_ICONS[lane.id] || "spark")}</span>
+          <div>
+            <h3>${escapeHtml(lane.label)}</h3>
+            <p>${escapeHtml(lane.blurb || "")}</p>
+          </div>
+          <span class="hp-switch ${lane.on ? "on" : "off"}">${lane.on ? "ON" : "OFF"}</span>
+        </header>
+        <div class="hp-lane-meta">${lane.count || 0} public powers</div>
+        <div class="chips dense">
+          ${verbs.map((v) => `<span class="chip cap">${escapeHtml(v)}</span>`).join("")}
+          ${(lane.verbs || []).length > 8 ? `<span class="chip">+${lane.verbs.length - 8}</span>` : ""}
+        </div>
+      </article>`;
+    })
+    .join("");
+
+  els.hpBrains.innerHTML = (hp.brains || [])
+    .map((b) => {
+      const types = (b.types || []).slice(0, 5);
+      const caps = (b.caps || []).slice(0, 6);
+      return `
+      <article class="hp-brain">
+        <header>
+          <h3>${escapeHtml(b.name)}</h3>
+          <span class="hp-tag ${b.fromApi ? "api" : "guess"}">${b.fromApi ? "API" : "guessed"}</span>
+        </header>
+        <p>${escapeHtml(b.blurb || "")}</p>
+        <div class="chips dense">
+          ${types.map((t) => `<span class="chip type">${escapeHtml(t)}</span>`).join("")}
+          ${caps.map((c) => `<span class="chip cap">${escapeHtml(c)}</span>`).join("")}
+        </div>
+      </article>`;
+    })
+    .join("") || `<p class="empty">No public /v1/models cards yet.</p>`;
+
+  const tools = hp.tools || {};
+  els.hpTools.innerHTML = `
+    <div class="hp-tools-top">
+      <span class="hp-stat"><em>Widgets live</em><strong>${escapeHtml(String(tools.widgets ?? "—"))}</strong></span>
+      <span class="hp-stat wide"><em>MCP contract</em><strong>${escapeHtml(short(tools.mcp, 22, 0))}</strong></span>
+    </div>
+    <div class="hp-tool-rail">
+      ${(tools.items || [])
+        .map(
+          (w) => `
+        <article class="hp-tool">
+          <h3>${escapeHtml(w.name)}</h3>
+          <span>${escapeHtml(w.audience || "")}</span>
+          <p>${escapeHtml(w.glance || "")}</p>
+        </article>`,
+        )
+        .join("")}
+    </div>
+  `;
+
+  els.hpBlocked.innerHTML = (hp.notShared || []).length
+    ? (hp.notShared || [])
+        .map(
+          (b) => `
+      <article class="hp-block">
+        <strong>${escapeHtml(b.label)}</strong>
+        <span>${escapeHtml(b.reason)}</span>
+      </article>`,
+        )
+        .join("")
+    : `<p class="empty soft">Nothing extra marked unavailable — public lanes above are the live map.</p>`;
+}
+
+function isFiniteNumber(value) {
+  return typeof value === "number" && Number.isFinite(value);
 }
 
 function sortFeed(events = []) {
@@ -812,6 +974,7 @@ function applyPayload(payload, { mergeClient = false } = {}) {
   renderMetrics(latest);
   renderStory(briefing, payload.temperature);
   renderCoverage(briefing?.coverage || null);
+  renderHorsepower(briefing?.horsepower || null);
   renderAgentDesk(payload.agentDesk || briefing?.agentDesk || null);
   renderPumpTape(feedEvents, memory.agentSamples || []);
   renderPieces(briefing?.pieces || []);
