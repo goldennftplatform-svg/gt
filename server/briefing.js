@@ -300,6 +300,8 @@ function userTakeForEvent(event) {
       return "Geoff’s internal tool/model catalog was updated.";
     case "treasury":
       return "On-chain treasury pricing moved; usually not user-facing.";
+    case "pricing":
+      return "Public Token Plan rates on docs.geoff.ai changed — check what seats/tokens cost now.";
     case "baseline":
       return "First reading captured — this is the starting snapshot.";
     case "agent":
@@ -330,6 +332,7 @@ export function compileBriefing({ latest, temperature, events = [], agentDesk = 
       events: [],
       agentDesk: null,
       coverage: null,
+      tokenPlan: null,
       glossary: glossary(),
     };
   }
@@ -346,12 +349,14 @@ export function compileBriefing({ latest, temperature, events = [], agentDesk = 
   const story = healthStory(summary);
   const coverage = buildCoverage(latest, summary);
   const horsepower = buildHorsepower(summary, models, capabilityGroups, widgets, coverage);
+  const tokenPlan = buildTokenPlan(latest);
 
   return {
     story,
     temperature: explainTemperature(temperature),
     coverage,
     horsepower,
+    tokenPlan,
     pieces: [
       pieceApp(summary),
       pieceNetwork(summary),
@@ -368,6 +373,29 @@ export function compileBriefing({ latest, temperature, events = [], agentDesk = 
       ...modelRole(id),
     })),
     glossary: glossary(),
+  };
+}
+
+function buildTokenPlan(latest) {
+  const src = latest?.sources?.["geoff.docs.pricing"];
+  if (!src?.plans?.length) return null;
+  return {
+    kicker: src.scraped
+      ? "Token plan · sniffed from docs.geoff.ai"
+      : "Token plan · public docs tables (fallback)",
+    headline: "What Geoff costs",
+    sentence:
+      src.model ||
+      "Unified monthly token balance shared across text, speech, video, image, music, code, and tools.",
+    scraped: Boolean(src.scraped),
+    reason: src.reason || null,
+    fingerprint: src.fingerprint || null,
+    plans: src.plans,
+    estimates: src.estimates || null,
+    sourceUrls: src.sourceUrls || {
+      overview: "https://docs.geoff.ai/token-plan/overview",
+      pricing: "https://docs.geoff.ai/token-plan/pricing",
+    },
   };
 }
 
@@ -545,6 +573,11 @@ function glossary() {
     {
       term: "Agent desk",
       meaning: "Inferred busyness from public in-flight / task / load counters + same-sniff clusters. Not private agent chat.",
+    },
+    {
+      term: "Token plan",
+      meaning:
+        "Public monthly seats on docs.geoff.ai: Basic $19 / Pro $199 / Max $499 / Turbo $999 — shared token pool + rate limits.",
     },
   ];
 }

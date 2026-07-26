@@ -55,7 +55,7 @@
           <p class="hero-card-kicker">Today’s quote desk</p>
           <p class="hero-card-title">4 carriers on the board</p>
           <ul>
-            <li><strong>Geoff</strong> — live network receipts</li>
+            <li><strong>Geoff</strong> — live network + Token Plan pricing</li>
             <li><strong>Grok</strong> — docs scrape / auth wall</li>
             <li><strong>OpenAI</strong> — status + docs fog</li>
             <li><strong>Copilot</strong> — seat menu, plan gates</li>
@@ -120,6 +120,20 @@
       <section class="panel">
         <div class="panel-head">
           <div>
+            <h3>Geoff Token Plan quotes</h3>
+            <p>Public monthly seats from docs.geoff.ai — sniffed with the rest of the desk</p>
+          </div>
+          <p id="priceMeta" class="meta">Checking…</p>
+        </div>
+        <p id="priceBlurb" class="price-blurb"></p>
+        <div id="priceQuotes" class="price-quotes"></div>
+        <div id="priceLimits" class="price-limits"></div>
+        <p id="priceSource" class="price-source"></p>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
             <h3>Coverage comparison chart</h3>
             <p>Like a rate table — for AI capabilities</p>
           </div>
@@ -165,7 +179,10 @@
           <h3>Ready to dig deeper?</h3>
           <p>Official docs are the fine print. Always read before you buy tokens or seats.</p>
         </div>
-        <a class="btn btn-primary" href="https://docs.github.com/en/copilot/reference/ai-models/supported-models" target="_blank" rel="noopener noreferrer">Start with Copilot models</a>
+        <div class="cta-actions">
+          <a class="btn btn-primary" href="https://docs.geoff.ai/token-plan/pricing" target="_blank" rel="noopener noreferrer">Geoff Token Plan</a>
+          <a class="btn" href="https://docs.github.com/en/copilot/reference/ai-models/supported-models" target="_blank" rel="noopener noreferrer">Copilot models</a>
+        </div>
       </section>
 
       <p class="footnote" id="footnote"></p>

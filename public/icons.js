@@ -22,6 +22,7 @@ export const icons = {
   pulse: `<path d="M3 12h3l2-5 3 10 2-5h6"/>`,
   layers: `<path d="M12 3 3 8l9 5 9-5-9-5z"/><path d="M3 12l9 5 9-5M3 16l9 5 9-5"/>`,
   plug: `<path d="M9 7V3M15 7V3M8 7h8v4a4 4 0 0 1-4 4h0a4 4 0 0 1-4-4V7z"/><path d="M12 15v6"/>`,
+  tag: `<path d="M20.5 13.5 12 22l-9-9V4h9l8.5 9.5z"/><circle cx="7.5" cy="7.5" r="1.3"/>`,
 };
 
 export function icon(name, className = "ico") {

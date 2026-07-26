@@ -200,13 +200,14 @@ function transparencyScorecard(scraped, live) {
       score: 92,
       grade: "A",
       posture: "Show your work",
-      why: "Public health, network summary, /v1/models, widgets, capability list, deploy fingerprints — live, no login.",
-      hides: ["Exact token meter UX still evolving", "Some app catalogs need auth"],
+      why: "Public health, network summary, /v1/models, widgets, capability list, Token Plan pricing docs, deploy fingerprints — live, no login.",
+      hides: ["Some app catalogs need auth", "Per-request token meter still thin"],
       reveals: [
         `${scraped.geoff?.vitals?.nodes ?? "?"} nodes / ${scraped.geoff?.vitals?.gpus ?? "?"} GPUs`,
         `${scraped.geoff?.apiModels?.length ?? 0} public API model cards`,
         `${scraped.geoff?.widgetCount ?? 0} widgets`,
         `${scraped.geoff?.vitals?.capabilities ?? "?"} capabilities`,
+        "Token Plan seats on docs.geoff.ai ($19–$999/mo)",
       ],
     },
     {

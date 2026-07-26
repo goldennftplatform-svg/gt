@@ -347,6 +347,38 @@ export function translate(previous, current) {
     }
   }
 
+  const prevPriceFp = prev["geoff.docs.pricing"]?.fingerprint;
+  const currPriceFp = curr["geoff.docs.pricing"]?.fingerprint;
+  if (prevPriceFp && currPriceFp && prevPriceFp !== currPriceFp) {
+    const prevPlans = prev["geoff.docs.pricing"]?.plans || [];
+    const currPlans = curr["geoff.docs.pricing"]?.plans || [];
+    const bits = currPlans
+      .map((p) => {
+        const before = prevPlans.find((x) => x.id === p.id);
+        if (!before) return `${p.name} ${p.price} / ${p.tokens}`;
+        if (before.price !== p.price || before.tokens !== p.tokens) {
+          return `${p.name}: ${before.price}/${before.tokens} → ${p.price}/${p.tokens}`;
+        }
+        return null;
+      })
+      .filter(Boolean);
+    events.push(
+      event({
+        kind: "pricing",
+        rank: "spike",
+        title: "Token plan / pricing updated",
+        summary: bits.length
+          ? `Public docs rates moved: ${bits.join(" · ")}. Source: docs.geoff.ai/token-plan.`
+          : "Public Token Plan tables changed on docs.geoff.ai.",
+        details: {
+          from: prevPriceFp,
+          to: currPriceFp,
+          plans: currPlans,
+        },
+      }),
+    );
+  }
+
   const prevHealth = prev["stacknet.health"]?.statusText;
   const currHealth = curr["stacknet.health"]?.statusText;
   if (prevHealth && currHealth && prevHealth !== currHealth) {

@@ -102,6 +102,8 @@ body { overflow-x: hidden; }
   font-weight: 650;
 }
 
+.brand-short { display: none; }
+
 .tag {
   margin: 0.2rem 0 0;
   color: var(--muted);
@@ -763,6 +765,140 @@ a.btn {
 
 /* ---- On-demand horsepower rack ---- */
 .hp-panel { overflow: hidden; }
+
+.price-panel { overflow: hidden; }
+
+.price-sentence {
+  margin: -0.15rem 0 0.85rem;
+  color: var(--ink);
+  font-size: 0.92rem;
+  line-height: 1.45;
+  max-width: 46rem;
+}
+
+.price-plans {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.55rem;
+  margin-bottom: 0.85rem;
+}
+
+.price-tier {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 0.75rem 0.8rem;
+  background: rgba(255, 255, 255, 0.02);
+  display: grid;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.price-tier.tier-turbo {
+  border-color: rgba(74, 222, 128, 0.35);
+  box-shadow: 0 0 24px rgba(34, 197, 94, 0.08);
+}
+
+.price-tier header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.4rem;
+}
+
+.price-tier h3 {
+  margin: 0;
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.price-tier header strong {
+  color: var(--green-bright);
+  font-size: 0.95rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.price-tokens {
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.price-tokens span {
+  color: var(--ink);
+  font-weight: 650;
+}
+
+.price-tier ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.2rem;
+}
+
+.price-tier li {
+  color: var(--muted);
+  font-size: 0.72rem;
+  line-height: 1.35;
+}
+
+.price-tier li::before {
+  content: "· ";
+  color: var(--green);
+}
+
+.price-limits-head {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.4rem;
+}
+
+.price-limits-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.4rem;
+}
+
+.price-limit {
+  display: grid;
+  gap: 0.12rem;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.22);
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+
+.price-limit strong {
+  color: var(--ink);
+  font-size: 0.78rem;
+}
+
+.price-source {
+  margin: 0.75rem 0 0;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
+}
+
+.price-source a {
+  color: var(--green-bright);
+  text-decoration: none;
+}
+
+.price-source a:hover { text-decoration: underline; }
 
 .hp-sentence {
   margin: -0.15rem 0 0.85rem;
@@ -1533,6 +1669,8 @@ a.btn {
   .cap-groups { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .board { grid-template-columns: 1fr; }
   .widget-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .price-plans,
+  .price-limits-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 760px) {
@@ -1543,11 +1681,15 @@ a.btn {
       "gauge gauge";
   }
   .brand-lockup { grid-area: brand; }
+  .brand-full { display: none; }
+  .brand-short { display: inline; }
   .top-actions { grid-area: actions; }
   .gauge-inline { grid-area: gauge; }
   .spark { display: none; }
   .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .pieces, .cap-groups, .widget-grid, .glossary { grid-template-columns: 1fr; }
+  .price-plans,
+  .price-limits-grid { grid-template-columns: 1fr 1fr; }
   .event { grid-template-columns: auto 1fr; gap: 0.4rem 0.65rem; }
   .event time { grid-column: 2; padding-top: 0; }
   .event div { grid-column: 2; }

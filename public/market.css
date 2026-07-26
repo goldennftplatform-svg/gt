@@ -135,6 +135,14 @@ html, body {
 .btn-primary:hover { filter: brightness(1.05); }
 .btn-primary:disabled { opacity: 0.6; cursor: wait; filter: none; }
 
+.btn:not(.btn-primary) {
+  background: var(--white);
+  color: var(--blue);
+  border-color: rgba(0, 119, 200, 0.28);
+}
+
+.btn:not(.btn-primary):hover { background: var(--blue-soft); }
+
 .wrap {
   width: min(1120px, calc(100% - 1.5rem));
   margin: 0 auto;
@@ -604,6 +612,142 @@ html, body {
   color: var(--muted);
 }
 
+.cta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  align-items: center;
+}
+
+.price-blurb {
+  margin: 0 0 0.85rem;
+  color: var(--ink);
+  font-size: 0.95rem;
+  line-height: 1.45;
+  max-width: 46rem;
+}
+
+.price-quotes {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.65rem;
+  margin-bottom: 0.85rem;
+}
+
+.quote-tier {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 0.85rem 0.9rem;
+  background: linear-gradient(180deg, #f7fbff, #ffffff);
+  display: grid;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+.quote-tier.tier-turbo {
+  border-color: rgba(0, 119, 200, 0.35);
+  box-shadow: 0 10px 22px rgba(0, 119, 200, 0.1);
+}
+
+.quote-name {
+  margin: 0;
+  font-weight: 800;
+  font-family: var(--display);
+  font-size: 1.05rem;
+  color: var(--ink);
+}
+
+.quote-price {
+  margin: 0;
+  color: var(--blue);
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.quote-tokens {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.quote-tier ul {
+  margin: 0.35rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.2rem;
+}
+
+.quote-tier li {
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+
+.quote-tier li::before {
+  content: "✓ ";
+  color: var(--blue);
+  font-weight: 800;
+}
+
+.limits-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.86rem;
+}
+
+.limits-table th,
+.limits-table td {
+  text-align: left;
+  padding: 0.55rem 0.65rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.limits-table th {
+  color: var(--blue);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.price-source {
+  margin: 0.75rem 0 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.price-source a {
+  color: var(--blue);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.price-source a:hover { text-decoration: underline; }
+
+.vendor-plans {
+  display: grid;
+  gap: 0.28rem;
+  margin-top: 0.7rem;
+  padding: 0.55rem 0.65rem;
+  border: 1px dashed rgba(0, 119, 200, 0.28);
+  border-radius: 12px;
+  background: var(--blue-soft);
+}
+
+.vendor-plans span {
+  font-size: 0.8rem;
+  color: var(--ink);
+}
+
+.vendor-plans strong {
+  color: var(--blue);
+  margin-right: 0.25rem;
+}
+
 .manifesto-panel { padding: 0; overflow: hidden; }
 
 .manifesto {
@@ -863,6 +1007,8 @@ html, body {
   .manifesto,
   .strip { grid-template-columns: 1fr; }
 
+  .price-quotes { grid-template-columns: 1fr 1fr; }
+
   .incident-row { grid-template-columns: 1fr; gap: 0.2rem; }
 
   .strip > div {
@@ -884,4 +1030,8 @@ html, body {
 
   .hero h2 { max-width: none; }
   .cta-banner { flex-direction: column; align-items: start; }
+}
+
+@media (max-width: 560px) {
+  .price-quotes { grid-template-columns: 1fr; }
 }

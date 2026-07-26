@@ -5,3 +5,6 @@ data/
 _sample_*.json
 *.log
 .DS_Store
+
+.vercel
+.env*

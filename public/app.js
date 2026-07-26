@@ -196,6 +196,12 @@ const els = {
   hpBrains: document.getElementById("hpBrains"),
   hpTools: document.getElementById("hpTools"),
   hpBlocked: document.getElementById("hpBlocked"),
+  priceHeadline: document.getElementById("priceHeadline"),
+  priceMeta: document.getElementById("priceMeta"),
+  priceSentence: document.getElementById("priceSentence"),
+  pricePlans: document.getElementById("pricePlans"),
+  priceLimits: document.getElementById("priceLimits"),
+  priceSource: document.getElementById("priceSource"),
   pieces: document.getElementById("pieces"),
   capGroups: document.getElementById("capGroups"),
   capMeta: document.getElementById("capMeta"),
@@ -229,6 +235,7 @@ const EVENT_ICONS = {
   baseline: "activity",
   agent: "bolt",
   agentCluster: "spark",
+  pricing: "tag",
 };
 
 let mode = "local";
@@ -754,6 +761,72 @@ function renderHorsepower(hp) {
     : `<p class="empty soft">Nothing extra marked unavailable — public lanes above are the live map.</p>`;
 }
 
+function renderTokenPlan(plan) {
+  if (!els.pricePlans) return;
+  if (!plan?.plans?.length) {
+    if (els.priceHeadline) els.priceHeadline.textContent = "Token plan";
+    if (els.priceMeta) els.priceMeta.textContent = "Waiting for docs.geoff.ai…";
+    if (els.priceSentence) {
+      els.priceSentence.textContent = "Public monthly seats + shared token pool.";
+    }
+    els.pricePlans.innerHTML = "";
+    if (els.priceLimits) els.priceLimits.innerHTML = "";
+    if (els.priceSource) els.priceSource.innerHTML = "";
+    return;
+  }
+
+  if (els.priceHeadline) els.priceHeadline.textContent = plan.headline || "Token plan";
+  if (els.priceMeta) els.priceMeta.textContent = plan.kicker || "docs.geoff.ai";
+  if (els.priceSentence) els.priceSentence.textContent = plan.sentence || "";
+
+  els.pricePlans.innerHTML = plan.plans
+    .map((p) => {
+      const tips = (p.highlights || []).slice(0, 3);
+      return `
+      <article class="price-tier tier-${escapeHtml(p.id)}">
+        <header>
+          <h3>${escapeHtml(p.name)}</h3>
+          <strong>${escapeHtml(p.price)}</strong>
+        </header>
+        <p class="price-tokens"><em>Tokens</em> <span>${escapeHtml(p.tokens)}</span></p>
+        <ul>
+          ${tips.map((t) => `<li>${escapeHtml(t)}</li>`).join("")}
+        </ul>
+      </article>`;
+    })
+    .join("");
+
+  if (els.priceLimits) {
+    els.priceLimits.innerHTML = `
+      <div class="price-limits-head">Rate limits · per API key</div>
+      <div class="price-limits-grid">
+        ${plan.plans
+          .map(
+            (p) => `
+          <div class="price-limit">
+            <strong>${escapeHtml(p.name)}</strong>
+            <span>${escapeHtml(p.rpm || "—")} RPM</span>
+            <span>${escapeHtml(p.inputTpm || "—")} in TPM</span>
+            <span>${escapeHtml(p.outputTpm || "—")} out TPM</span>
+          </div>`,
+          )
+          .join("")}
+      </div>`;
+  }
+
+  if (els.priceSource) {
+    const pricing = plan.sourceUrls?.pricing || "https://docs.geoff.ai/token-plan/pricing";
+    const overview = plan.sourceUrls?.overview || "https://docs.geoff.ai/token-plan/overview";
+    const note = plan.scraped
+      ? "Sniffed live from public docs"
+      : plan.reason || "Cached public docs tables";
+    els.priceSource.innerHTML = `${escapeHtml(note)} ·
+      <a href="${escapeHtml(pricing)}" target="_blank" rel="noopener noreferrer">Pricing</a>
+      ·
+      <a href="${escapeHtml(overview)}" target="_blank" rel="noopener noreferrer">Overview</a>`;
+  }
+}
+
 function isFiniteNumber(value) {
   return typeof value === "number" && Number.isFinite(value);
 }
@@ -975,6 +1048,7 @@ function applyPayload(payload, { mergeClient = false } = {}) {
   renderStory(briefing, payload.temperature);
   renderCoverage(briefing?.coverage || null);
   renderHorsepower(briefing?.horsepower || null);
+  renderTokenPlan(briefing?.tokenPlan || null);
   renderAgentDesk(payload.agentDesk || briefing?.agentDesk || null);
   renderPumpTape(feedEvents, memory.agentSamples || []);
   renderPieces(briefing?.pieces || []);

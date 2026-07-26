@@ -1,4 +1,10 @@
 import { config } from "./config.js";
+import {
+  TOKEN_PLAN_URLS,
+  FALLBACK_TOKEN_PLAN,
+  parseTokenPlanHtml,
+  fingerprintTokenPlan,
+} from "./token-plan.js";
 
 const DEFAULT_TIMEOUT_MS = 18_000;
 
@@ -275,12 +281,67 @@ async function sniffStacknetWidgets() {
   };
 }
 
+async function sniffGeoffTokenPlan() {
+  const started = Date.now();
+  try {
+    const [overview, pricing] = await Promise.all([
+      fetchJson(TOKEN_PLAN_URLS.overview),
+      fetchJson(TOKEN_PLAN_URLS.pricing),
+    ]);
+    const html = `${overview.text || ""}\n${pricing.text || ""}`;
+    const parsed = parseTokenPlanHtml(html);
+    const scrapedOk =
+      (overview.ok || pricing.ok) &&
+      parsed.plans.length >= 3 &&
+      parsed.plans.every((p) => p.price && p.tokens);
+    const plan = scrapedOk
+      ? parsed
+      : {
+          ...FALLBACK_TOKEN_PLAN,
+          plans: FALLBACK_TOKEN_PLAN.plans.map((p) => ({ ...p })),
+        };
+    const fingerprint = simpleHash(fingerprintTokenPlan(plan));
+
+    return {
+      source: "geoff.docs.pricing",
+      ok: Boolean(overview.ok || pricing.ok || scrapedOk),
+      status: overview.status || pricing.status || 0,
+      ms: Date.now() - started,
+      scraped: scrapedOk,
+      fingerprint,
+      model: plan.model,
+      plans: plan.plans,
+      estimates: plan.estimates,
+      sourceUrls: TOKEN_PLAN_URLS,
+      reason: scrapedOk
+        ? null
+        : "Docs HTML parse incomplete — showing last known public Token Plan tables",
+    };
+  } catch (error) {
+    return {
+      source: "geoff.docs.pricing",
+      ok: true,
+      skipped: false,
+      status: 0,
+      ms: Date.now() - started,
+      scraped: false,
+      fingerprint: simpleHash(fingerprintTokenPlan(FALLBACK_TOKEN_PLAN)),
+      model: FALLBACK_TOKEN_PLAN.model,
+      plans: FALLBACK_TOKEN_PLAN.plans.map((p) => ({ ...p })),
+      estimates: FALLBACK_TOKEN_PLAN.estimates,
+      sourceUrls: TOKEN_PLAN_URLS,
+      reason: `Docs sniff failed (${error.message}); using cached public Token Plan tables`,
+    };
+  }
+}
+
 export async function runSniff() {
   const startedAt = new Date().toISOString();
   const settled = await Promise.allSettled([
     sniffGeoffVersion(),
     sniffGeoffDeploy(),
     sniffGeoffCatalog(),
+    sniffGeoffTokenPlan(),
     sniffStacknetHealth(),
     sniffStacknetRoot(),
     sniffStacknetNetwork(),
@@ -339,6 +400,9 @@ export async function runSniff() {
       catalogModels: bySource["geoff.catalog"]?.models?.length ?? null,
       catalogSkipped: Boolean(bySource["geoff.catalog"]?.skipped),
       catalogSkipReason: bySource["geoff.catalog"]?.reason ?? null,
+      tokenPlanCount: bySource["geoff.docs.pricing"]?.plans?.length ?? null,
+      tokenPlanScraped: Boolean(bySource["geoff.docs.pricing"]?.scraped),
+      tokenPlanFingerprint: bySource["geoff.docs.pricing"]?.fingerprint ?? null,
       healthySources: sources.filter((s) => s.ok).length,
       skippedSources: sources.filter((s) => s.skipped).length,
       failedSources: sources.filter((s) => !s.ok && !s.skipped).length,

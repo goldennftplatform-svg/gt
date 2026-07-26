@@ -8,6 +8,11 @@ const els = {
   liveGrid: document.getElementById("liveGrid"),
   incidents: document.getElementById("incidents"),
   inventories: document.getElementById("inventories"),
+  priceMeta: document.getElementById("priceMeta"),
+  priceBlurb: document.getElementById("priceBlurb"),
+  priceQuotes: document.getElementById("priceQuotes"),
+  priceLimits: document.getElementById("priceLimits"),
+  priceSource: document.getElementById("priceSource"),
   dimTable: document.querySelector("#dimTable tbody"),
   vendors: document.getElementById("vendors"),
   menus: document.getElementById("menus"),
@@ -201,10 +206,98 @@ function renderDimensions(dimensions = []) {
     .join("");
 }
 
-function renderVendors(vendors = []) {
+function renderTokenPlan(plan) {
+  if (!els.priceQuotes) return;
+  if (!plan?.plans?.length) {
+    if (els.priceMeta) els.priceMeta.textContent = "No public seats found";
+    if (els.priceBlurb) els.priceBlurb.textContent = "";
+    els.priceQuotes.innerHTML = `<p class="empty">Token Plan tables unavailable.</p>`;
+    if (els.priceLimits) els.priceLimits.innerHTML = "";
+    if (els.priceSource) els.priceSource.innerHTML = "";
+    return;
+  }
+
+  if (els.priceMeta) {
+    els.priceMeta.textContent = plan.scraped
+      ? "Sniffed from docs.geoff.ai"
+      : "Published docs tables";
+  }
+  if (els.priceBlurb) {
+    els.priceBlurb.textContent =
+      plan.model ||
+      "Unified monthly token balance across text, media, code, and tools.";
+  }
+
+  els.priceQuotes.innerHTML = plan.plans
+    .map((p) => {
+      const tips = (p.highlights || []).slice(0, 4);
+      return `
+      <article class="quote-tier tier-${escapeHtml(p.id)}">
+        <p class="quote-name">${escapeHtml(p.name)}</p>
+        <p class="quote-price">${escapeHtml(p.price)}</p>
+        <p class="quote-tokens">${escapeHtml(p.tokens)} tokens / mo</p>
+        <ul>
+          ${tips.map((t) => `<li>${escapeHtml(t)}</li>`).join("")}
+        </ul>
+      </article>`;
+    })
+    .join("");
+
+  if (els.priceLimits) {
+    els.priceLimits.innerHTML = `
+      <table class="limits-table">
+        <thead>
+          <tr>
+            <th>Plan</th>
+            <th>RPM</th>
+            <th>Input TPM</th>
+            <th>Output TPM</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${plan.plans
+            .map(
+              (p) => `
+            <tr>
+              <td><strong>${escapeHtml(p.name)}</strong></td>
+              <td>${escapeHtml(p.rpm || "—")}</td>
+              <td>${escapeHtml(p.inputTpm || "—")}</td>
+              <td>${escapeHtml(p.outputTpm || "—")}</td>
+            </tr>`,
+            )
+            .join("")}
+        </tbody>
+      </table>`;
+  }
+
+  if (els.priceSource) {
+    const pricing = plan.sourceUrls?.pricing || "https://docs.geoff.ai/token-plan/pricing";
+    const overview =
+      plan.sourceUrls?.overview || "https://docs.geoff.ai/token-plan/overview";
+    const note = plan.scraped
+      ? "Live scrape of public Token Plan docs"
+      : plan.reason || "Cached public Token Plan tables";
+    els.priceSource.innerHTML = `${escapeHtml(note)} ·
+      <a href="${escapeHtml(pricing)}" target="_blank" rel="noopener noreferrer">Pricing</a> ·
+      <a href="${escapeHtml(overview)}" target="_blank" rel="noopener noreferrer">Overview</a>`;
+  }
+}
+
+function renderVendors(vendors = [], tokenPlan = null) {
   els.vendors.innerHTML = vendors
     .map((v) => {
       const hp = v.horsepower || {};
+      const geoffPlans =
+        v.id === "geoff" && tokenPlan?.plans?.length
+          ? `<div class="vendor-plans">
+              ${tokenPlan.plans
+                .map(
+                  (p) =>
+                    `<span><strong>${escapeHtml(p.name)}</strong> ${escapeHtml(p.price)} · ${escapeHtml(p.tokens)}</span>`,
+                )
+                .join("")}
+            </div>`
+          : "";
       return `
         <article class="vendor">
           <div class="vendor-top">
@@ -219,8 +312,13 @@ function renderVendors(vendors = []) {
             <div class="hp-item"><span class="k">Flagship</span><span class="v">${escapeHtml(hp.flagship)}</span></div>
             <div class="hp-item"><span class="k">Context</span><span class="v">${escapeHtml(hp.context)}</span></div>
             <div class="hp-item"><span class="k">API style</span><span class="v">${escapeHtml(hp.apiStyle)}</span></div>
-            <div class="hp-item"><span class="k">Pricing</span><span class="v">${escapeHtml(hp.pricingModel)}</span></div>
+            <div class="hp-item"><span class="k">Pricing</span><span class="v">${escapeHtml(
+              v.id === "geoff" && tokenPlan?.plans?.length
+                ? `Token Plan ${tokenPlan.plans[0].price} → ${tokenPlan.plans.at(-1).price}`
+                : hp.pricingModel,
+            )}</span></div>
           </div>
+          ${geoffPlans}
           <ul class="delivers">
             ${(v.delivers || []).map((d) => `<li>${escapeHtml(d)}</li>`).join("")}
           </ul>
@@ -276,13 +374,15 @@ function renderMenus(vendors = []) {
 
 function applyPayload(data) {
   const catalog = data.catalog || {};
+  const tokenPlan = data.tokenPlan || null;
   renderHints(data.compareHints || []);
   renderManifesto(data.manifesto);
   renderScorecard(data.scorecard || []);
   renderLive(data.live || {}, data.takenAt);
   renderInventories(data.inventories || []);
+  renderTokenPlan(tokenPlan);
   renderDimensions(catalog.dimensions || []);
-  renderVendors(catalog.vendors || []);
+  renderVendors(catalog.vendors || [], tokenPlan);
   renderMenus(catalog.vendors || []);
   els.footnote.textContent = catalog.updatedNote
     ? `${catalog.updatedNote} CoverAI scrapes public pages only. Not an insurer. Not affiliated with Progressive. Not medical advice. Just receipts.`
