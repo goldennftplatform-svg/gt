@@ -319,6 +319,8 @@ a.btn {
   border-color: rgba(74, 222, 128, 0.45);
 }
 
+.btn-label-short { display: none; }
+
 .pill {
   display: inline-flex;
   align-items: center;
@@ -1675,15 +1677,40 @@ a.btn {
 
 @media (max-width: 760px) {
   .topbar {
-    grid-template-columns: 1fr auto;
+    grid-template-columns: minmax(0, 1fr) auto;
     grid-template-areas:
       "brand actions"
       "gauge gauge";
+    gap: 0.55rem 0.65rem;
+    padding-inline: 0.85rem;
   }
-  .brand-lockup { grid-area: brand; }
+  .brand-lockup {
+    grid-area: brand;
+    min-width: 0;
+    overflow: hidden;
+  }
   .brand-full { display: none; }
   .brand-short { display: inline; }
-  .top-actions { grid-area: actions; }
+  .top-actions {
+    grid-area: actions;
+    gap: 0.4rem;
+    justify-self: end;
+    flex-shrink: 0;
+  }
+  .top-actions .pill { display: none; }
+  .btn-label-full { display: none; }
+  .btn-label-short { display: inline; }
+  .top-actions .btn {
+    padding: 0.5rem 0.7rem;
+    font-size: 0.72rem;
+  }
+  #pollBtn {
+    padding: 0.5rem;
+    width: 2.35rem;
+    height: 2.35rem;
+    justify-content: center;
+  }
+  #pollBtn svg { width: 15px; height: 15px; }
   .gauge-inline { grid-area: gauge; }
   .spark { display: none; }
   .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
