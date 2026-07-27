@@ -1,4 +1,5 @@
 import { icon } from "./icons.js";
+import { CLIENT_TOKEN_PLAN } from "./token-plan-fallback.js";
 
 const STORAGE_KEY = "geoff-thermometer-v5";
 const RANK_WEIGHT = { crazy: 5, spike: 4, move: 3, note: 2, whisper: 1 };
@@ -1147,7 +1148,7 @@ function applyPayload(payload, { mergeClient = false } = {}) {
   renderStory(briefing, payload.temperature);
   renderCoverage(briefing?.coverage || null);
   renderHorsepower(briefing?.horsepower || null);
-  renderTokenPlan(briefing?.tokenPlan || null);
+  renderTokenPlan(briefing?.tokenPlan || CLIENT_TOKEN_PLAN);
   renderAgentDesk(payload.agentDesk || briefing?.agentDesk || null);
   renderPumpTape(feedEvents, memory.agentSamples || []);
   renderPieces(briefing?.pieces || []);
@@ -1253,6 +1254,8 @@ function startMatrix() {
 els.pollBtn.addEventListener("click", pollNow);
 hydrateIcons();
 startMatrix();
+// Paint the value sheet immediately — don't wait on a cold sniff.
+renderTokenPlan(CLIENT_TOKEN_PLAN);
 
 async function boot() {
   try {
