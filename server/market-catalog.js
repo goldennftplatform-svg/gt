@@ -10,13 +10,14 @@ export const marketCatalog = {
     {
       id: "geoff",
       name: "Geoff / Stacknet",
-      company: "Geoff (Artfact / Magma stack)",
+      company: "hwonder · geoff.ai",
       color: "#34d399",
       tagline: "Community compute + multimodal agents",
       delivers: [
         "All-in-one app for chat, image, music, video, voice, code, agents",
         "Shared Stacknet GPU farm (nodes + VRAM pool)",
         "Public /v1/models + widgets + MCP tool surface",
+        "Built by hwonder — public Token Plan on docs.geoff.ai",
       ],
       horsepower: {
         flagship: "magma",
@@ -63,6 +64,7 @@ export const marketCatalog = {
       ],
       research: [
         { label: "geoff.ai", href: "https://geoff.ai" },
+        { label: "hwonder", href: "https://www.hwonder.com/" },
         { label: "Token Plan pricing", href: "https://docs.geoff.ai/token-plan/pricing" },
         { label: "Token Plan overview", href: "https://docs.geoff.ai/token-plan/overview" },
         { label: "Stacknet health", href: "https://stacknet.magma-rpc.com/health" },

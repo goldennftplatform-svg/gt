@@ -13,23 +13,24 @@ export const TOKEN_PLAN_URLS = {
 const PLAN_ORDER = ["basic", "pro", "max", "turbo"];
 
 /** Feature matrix from docs.geoff.ai/token-plan/overview */
+/** Exact feature rows from docs.geoff.ai/token-plan/overview Plans table. */
 export const FEATURE_MATRIX = [
-  { id: "chat", label: "Chat · web, iOS, Android, desktop", levels: ["yes", "yes", "yes", "yes"] },
-  { id: "media", label: "Music, video & image creation", levels: ["yes", "yes", "yes", "yes"] },
-  { id: "code", label: "Code gen + data viz", levels: ["yes", "yes", "yes", "yes"] },
-  { id: "content", label: "Write, edit & create content", levels: ["yes", "yes", "yes", "yes"] },
-  { id: "analyze", label: "Analyze text & images", levels: ["yes", "yes", "yes", "yes"] },
-  { id: "search", label: "Web search", levels: ["yes", "yes", "yes", "yes"] },
-  { id: "files", label: "Files + code execution", levels: ["yes", "yes", "yes", "yes"] },
-  { id: "think", label: "Extended thinking", levels: ["yes", "yes", "yes", "yes"] },
+  { id: "chat", label: "Chat on web, iOS, Android, desktop", levels: ["yes", "yes", "yes", "yes"] },
+  { id: "media", label: "Create music, videos, and images", levels: ["yes", "yes", "yes", "yes"] },
+  { id: "code", label: "Generate code and visualize data", levels: ["yes", "yes", "yes", "yes"] },
+  { id: "content", label: "Write, edit, and create content", levels: ["yes", "yes", "yes", "yes"] },
+  { id: "analyze", label: "Analyze text and images", levels: ["yes", "yes", "yes", "yes"] },
+  { id: "search", label: "Search the web", levels: ["yes", "yes", "yes", "yes"] },
+  { id: "files", label: "Create files and execute code", levels: ["yes", "yes", "yes", "yes"] },
+  { id: "think", label: "Extended thinking for complex work", levels: ["yes", "yes", "yes", "yes"] },
   { id: "e2e", label: "End-to-end encryption", levels: ["yes", "yes", "yes", "yes"] },
   { id: "memory", label: "Memory across conversations", levels: ["no", "yes", "yes", "yes"] },
   { id: "create+", label: "Extended creation abilities", levels: ["no", "yes", "yes", "yes"] },
   { id: "train", label: "Train your own models", levels: ["no", "no", "yes", "yes"] },
-  { id: "mom", label: "Mixture of Models (MoM)", levels: ["no", "no", "yes", "yes"] },
-  { id: "agent", label: "Max deep research & agent mode", levels: ["no", "no", "yes", "yes"] },
-  { id: "context", label: "Maximum memory & context", levels: ["no", "no", "yes", "yes"] },
-  { id: "multi", label: "Multi-agent mode", levels: ["no", "no", "no", "yes"] },
+  { id: "mom", label: "Mixture of Models (MOM)", levels: ["no", "no", "yes", "yes"] },
+  { id: "agent", label: "Maximum deep research and agent mode", levels: ["no", "no", "yes", "yes"] },
+  { id: "context", label: "Maximum memory and context", levels: ["no", "no", "yes", "yes"] },
+  { id: "multi", label: "Multi agent mode", levels: ["no", "no", "no", "yes"] },
   { id: "unfiltered", label: "Unfiltered model access", levels: ["no", "no", "no", "yes"] },
 ];
 
