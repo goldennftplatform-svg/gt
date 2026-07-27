@@ -773,59 +773,97 @@ a.btn {
 .price-sentence {
   margin: -0.15rem 0 0.85rem;
   color: var(--ink);
-  font-size: 0.92rem;
-  line-height: 1.45;
-  max-width: 46rem;
+  font-size: 1.05rem;
+  font-weight: 650;
+  letter-spacing: -0.025em;
+  line-height: 1.35;
+  max-width: 40rem;
+}
+
+.price-wins {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 0.95rem;
+}
+
+.price-win {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 0.7rem 0.75rem;
+  background: linear-gradient(180deg, rgba(52, 211, 153, 0.08), rgba(255, 255, 255, 0.02));
+  display: grid;
+  gap: 0.28rem;
+  min-width: 0;
+}
+
+.price-win strong {
+  font-size: 0.82rem;
+  letter-spacing: -0.02em;
+  color: var(--green-bright);
+}
+
+.price-win span {
+  color: var(--muted);
+  font-size: 0.72rem;
+  line-height: 1.35;
 }
 
 .price-plans {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0.55rem;
-  margin-bottom: 0.85rem;
+  margin-bottom: 0.95rem;
 }
 
 .price-tier {
   border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 0.75rem 0.8rem;
+  border-radius: 16px;
+  padding: 0.9rem 0.85rem 0.85rem;
   background: rgba(255, 255, 255, 0.02);
   display: grid;
-  gap: 0.4rem;
+  gap: 0.28rem;
   min-width: 0;
+  align-content: start;
 }
 
-.price-tier.tier-turbo {
-  border-color: rgba(74, 222, 128, 0.35);
-  box-shadow: 0 0 24px rgba(34, 197, 94, 0.08);
+.price-tier.highlighted {
+  border-color: rgba(74, 222, 128, 0.45);
+  background: linear-gradient(180deg, rgba(52, 211, 153, 0.12), rgba(255, 255, 255, 0.02));
+  box-shadow: 0 0 28px rgba(34, 197, 94, 0.12);
 }
 
-.price-tier header {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 0.4rem;
+.price-badge {
+  margin: 0;
+  width: fit-content;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--green);
+  border: 1px solid rgba(74, 222, 128, 0.28);
+  border-radius: 999px;
+  padding: 0.18rem 0.45rem;
 }
 
 .price-tier h3 {
-  margin: 0;
-  font-size: 0.92rem;
+  margin: 0.15rem 0 0;
+  font-size: 1.05rem;
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
 }
 
-.price-tier header strong {
+.price-amount {
+  margin: 0;
   color: var(--green-bright);
-  font-size: 0.95rem;
+  font-size: 1.45rem;
+  font-weight: 750;
+  letter-spacing: -0.04em;
   font-variant-numeric: tabular-nums;
-  white-space: nowrap;
 }
 
 .price-tokens {
   margin: 0;
-  display: flex;
-  justify-content: space-between;
-  gap: 0.4rem;
   font-family: var(--font-mono);
   font-size: 0.68rem;
   letter-spacing: 0.04em;
@@ -835,27 +873,188 @@ a.btn {
 
 .price-tokens span {
   color: var(--ink);
-  font-weight: 650;
+  font-weight: 700;
 }
 
-.price-tier ul {
-  margin: 0;
-  padding: 0;
-  list-style: none;
+.price-pitch {
+  margin: 0.2rem 0 0;
+  color: var(--ink);
+  font-size: 0.78rem;
+  line-height: 1.35;
+  min-height: 2.4em;
+}
+
+.price-yield-mini {
+  display: grid;
+  gap: 0.18rem;
+  margin-top: 0.35rem;
+  padding-top: 0.45rem;
+  border-top: 1px solid var(--line);
+}
+
+.price-yield-mini span {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.4rem;
+  font-size: 0.7rem;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.price-yield-mini em {
+  font-style: normal;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.price-yield {
+  margin-bottom: 0.95rem;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 0.85rem;
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.price-yield-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.35rem 1rem;
+  margin-bottom: 0.65rem;
+}
+
+.price-yield-head strong {
+  font-size: 0.88rem;
+  letter-spacing: -0.02em;
+}
+
+.price-yield-head span {
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.price-yield-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.price-yield-grid article {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 0.65rem 0.7rem;
+  background: rgba(255, 255, 255, 0.02);
   display: grid;
   gap: 0.2rem;
 }
 
-.price-tier li {
-  color: var(--muted);
-  font-size: 0.72rem;
-  line-height: 1.35;
-}
-
-.price-tier li::before {
-  content: "· ";
+.price-yield-grid em {
+  font-style: normal;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   color: var(--green);
 }
+
+.price-yield-grid strong {
+  font-size: 0.82rem;
+  letter-spacing: -0.02em;
+}
+
+.price-yield-grid p {
+  margin: 0.2rem 0 0;
+  display: grid;
+  gap: 0.12rem;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.price-yield-note {
+  margin: 0.65rem 0 0;
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-family: var(--font-mono);
+}
+
+.price-sheet-wrap {
+  overflow-x: auto;
+  margin-bottom: 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.apple-sheet {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 640px;
+  font-size: 0.78rem;
+}
+
+.apple-sheet th,
+.apple-sheet td {
+  padding: 0.62rem 0.7rem;
+  border-bottom: 1px solid var(--line);
+  text-align: center;
+  vertical-align: middle;
+}
+
+.apple-sheet thead th {
+  position: sticky;
+  top: 0;
+  background: rgba(8, 12, 8, 0.96);
+  z-index: 1;
+}
+
+.apple-sheet th:first-child,
+.apple-sheet td:first-child {
+  text-align: left;
+  color: var(--muted);
+  font-weight: 600;
+  width: 34%;
+}
+
+.apple-sheet .sh-name {
+  display: block;
+  font-size: 0.92rem;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.apple-sheet .sh-price {
+  display: block;
+  margin-top: 0.12rem;
+  color: var(--green-bright);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+}
+
+.apple-sheet .hi {
+  background: rgba(52, 211, 153, 0.06);
+}
+
+.apple-sheet .sheet-metric td strong {
+  color: var(--green-bright);
+  font-size: 0.95rem;
+  letter-spacing: -0.02em;
+}
+
+.mark {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.2rem;
+  font-weight: 700;
+}
+
+.mark.yes { color: var(--green-bright); font-size: 1rem; }
+.mark.no { color: #4b5563; }
 
 .price-limits-head {
   font-family: var(--font-mono);
@@ -881,6 +1080,10 @@ a.btn {
   background: rgba(0, 0, 0, 0.22);
   font-size: 0.7rem;
   color: var(--muted);
+}
+
+.price-limit.hi {
+  border-color: rgba(74, 222, 128, 0.35);
 }
 
 .price-limit strong {
@@ -1671,8 +1874,10 @@ a.btn {
   .cap-groups { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .board { grid-template-columns: 1fr; }
   .widget-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .price-wins,
   .price-plans,
   .price-limits-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .price-yield-grid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 760px) {
@@ -1715,8 +1920,11 @@ a.btn {
   .spark { display: none; }
   .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .pieces, .cap-groups, .widget-grid, .glossary { grid-template-columns: 1fr; }
+  .price-wins,
   .price-plans,
   .price-limits-grid { grid-template-columns: 1fr 1fr; }
+  .price-yield-grid { grid-template-columns: 1fr; }
+  .price-amount { font-size: 1.25rem; }
   .event { grid-template-columns: auto 1fr; gap: 0.4rem 0.65rem; }
   .event time { grid-column: 2; padding-top: 0; }
   .event div { grid-column: 2; }

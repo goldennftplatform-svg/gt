@@ -1,6 +1,6 @@
 /**
  * Geoff Token Plan — public rates from docs.geoff.ai.
- * Scraped live when possible; fallback matches published tables (Jul 2026).
+ * Scraped live when possible; fallback matches published tables.
  */
 
 export const TOKEN_PLAN_URLS = {
@@ -10,61 +10,115 @@ export const TOKEN_PLAN_URLS = {
   billing: "https://geoff.ai/settings/billing",
 };
 
-/** Fallback if docs HTML cannot be parsed. Source: docs.geoff.ai/token-plan/* */
+const PLAN_ORDER = ["basic", "pro", "max", "turbo"];
+
+/** Feature matrix from docs.geoff.ai/token-plan/overview */
+export const FEATURE_MATRIX = [
+  { id: "chat", label: "Chat · web, iOS, Android, desktop", levels: ["yes", "yes", "yes", "yes"] },
+  { id: "media", label: "Music, video & image creation", levels: ["yes", "yes", "yes", "yes"] },
+  { id: "code", label: "Code gen + data viz", levels: ["yes", "yes", "yes", "yes"] },
+  { id: "content", label: "Write, edit & create content", levels: ["yes", "yes", "yes", "yes"] },
+  { id: "analyze", label: "Analyze text & images", levels: ["yes", "yes", "yes", "yes"] },
+  { id: "search", label: "Web search", levels: ["yes", "yes", "yes", "yes"] },
+  { id: "files", label: "Files + code execution", levels: ["yes", "yes", "yes", "yes"] },
+  { id: "think", label: "Extended thinking", levels: ["yes", "yes", "yes", "yes"] },
+  { id: "e2e", label: "End-to-end encryption", levels: ["yes", "yes", "yes", "yes"] },
+  { id: "memory", label: "Memory across conversations", levels: ["no", "yes", "yes", "yes"] },
+  { id: "create+", label: "Extended creation abilities", levels: ["no", "yes", "yes", "yes"] },
+  { id: "train", label: "Train your own models", levels: ["no", "no", "yes", "yes"] },
+  { id: "mom", label: "Mixture of Models (MoM)", levels: ["no", "no", "yes", "yes"] },
+  { id: "agent", label: "Max deep research & agent mode", levels: ["no", "no", "yes", "yes"] },
+  { id: "context", label: "Maximum memory & context", levels: ["no", "no", "yes", "yes"] },
+  { id: "multi", label: "Multi-agent mode", levels: ["no", "no", "no", "yes"] },
+  { id: "unfiltered", label: "Unfiltered model access", levels: ["no", "no", "no", "yes"] },
+];
+
+/** Fallback if docs HTML cannot be parsed. */
 export const FALLBACK_TOKEN_PLAN = {
-  model: "Unified monthly token balance across text, media, code, and tools",
+  model:
+    "One monthly token pool. Shared across text, speech, video, image, music, code, and files — no per-modality nickel-and-dime.",
   plans: [
     {
       id: "basic",
       name: "Basic",
       price: "$19/mo",
+      priceNum: 19,
       tokens: "150M",
       rpm: "60",
       inputTpm: "100K",
       outputTpm: "50K",
-      highlights: ["Chat + create media", "Code & files", "Web search", "E2E encryption"],
+      badge: "Start",
+      pitch: "Full multimodal stack at coffee-money.",
+      why: "Chat + music + video + image + code — unlocked at $19.",
     },
     {
       id: "pro",
       name: "Pro",
       price: "$199/mo",
+      priceNum: 199,
       tokens: "2B",
       rpm: "125",
       inputTpm: "500K",
       outputTpm: "200K",
-      highlights: ["Everything in Basic", "Memory across chats", "Extended creation"],
+      badge: "Daily",
+      pitch: "~13× the images. Memory that sticks.",
+      why: "The daily driver when Basic runs dry.",
     },
     {
       id: "max",
       name: "Max",
       price: "$499/mo",
+      priceNum: 499,
       tokens: "7B",
       rpm: "200",
       inputTpm: "2M",
       outputTpm: "800K",
-      highlights: ["Train your own models", "Mixture of Models (MOM)", "Max agent / research"],
+      badge: "Power",
+      highlighted: true,
+      pitch: "MoM + train-your-own. The Geoff edge.",
+      why: "Where Geoff stops being “another chat app.”",
     },
     {
       id: "turbo",
       name: "Turbo",
       price: "$999/mo",
+      priceNum: 999,
       tokens: "20B",
       rpm: "450",
       inputTpm: "5M",
       outputTpm: "2M",
-      highlights: ["Multi-agent mode", "Unfiltered model access"],
+      badge: "All gas",
+      pitch: "Multi-agent + unfiltered. Ceiling removed.",
+      why: "For shops that print, don’t dabble.",
     },
   ],
   estimates: {
-    note: "Approx. if you spend the whole monthly balance on one capability",
+    note: "If you burn the whole monthly pool on one lane (docs estimate · ~150K tokens/image)",
     perImageTokens: "~150K",
-    images: { Basic: "~1,000", Pro: "~13,300", Max: "~46,000", Turbo: "~133,000" },
-    videos5s: { Basic: "~30", Pro: "~400", Max: "~1,400", Turbo: "~4,000" },
-    songs: { Basic: "~50", Pro: "~660", Max: "~2,300", Turbo: "~6,600" },
+    nsfwNote: "Unfiltered / NSFW requests use 10× tokens",
+    images: { basic: "~1,000", pro: "~13,300", max: "~46,000", turbo: "~133,000" },
+    videos5s: { basic: "~30", pro: "~400", max: "~1,400", turbo: "~4,000" },
+    songs: { basic: "~50", pro: "~660", max: "~2,300", turbo: "~6,600" },
   },
+  wins: [
+    {
+      k: "One pool",
+      v: "Text → video → music → code share one balance. Corps sell five meters.",
+    },
+    {
+      k: "$19 multimodal",
+      v: "Basic already includes music, video, images, code — not an enterprise upsell.",
+    },
+    {
+      k: "Published sheet",
+      v: "Seats, RPM/TPM, and yield estimates on docs.geoff.ai. Receipts, not vibes.",
+    },
+    {
+      k: "MoM unlock",
+      v: "Max/Turbo open Mixture of Models + train-your-own — the Geoff differentiator.",
+    },
+  ],
 };
-
-const PLAN_ORDER = ["basic", "pro", "max", "turbo"];
 
 function decodeEntities(s) {
   return String(s || "")
@@ -85,8 +139,15 @@ function normalizePlanName(name) {
   return n.replace(/[^a-z0-9]+/g, "") || null;
 }
 
+function parseLevel(cell) {
+  const t = decodeEntities(cell).toLowerCase();
+  if (!t || t === "—" || t === "-" || t === "no" || t === "n") return "no";
+  if (t === "yes" || t === "✓" || t === "✔") return "yes";
+  return t;
+}
+
 /**
- * Parse plan price/token rows and rate-limit rows from Mintlify SSR HTML.
+ * Parse plan price/token rows, rate limits, yields, and feature matrix from Mintlify SSR HTML.
  */
 export function parseTokenPlanHtml(html) {
   const text = String(html || "");
@@ -99,7 +160,6 @@ export function parseTokenPlanHtml(html) {
     if (!id) continue;
     const tokens = decodeEntities(m[2]);
     const price = decodeEntities(m[3]);
-    // Prefer rows that look like token allotments (150M / 2B), not RPM digits
     if (!/[MBK]/i.test(tokens) && /^\d+$/.test(tokens)) continue;
     const prev = byId.get(id) || { id, name: m[1] };
     byId.set(id, { ...prev, name: m[1], tokens, price });
@@ -113,10 +173,33 @@ export function parseTokenPlanHtml(html) {
     const rpm = decodeEntities(m[2]);
     const inputTpm = decodeEntities(m[3]);
     const outputTpm = decodeEntities(m[4]);
-    // Rate-limit rows: RPM is a plain integer; TPM has K/M or large numbers
     if (!/^\d+$/.test(rpm.replace(/,/g, ""))) continue;
     const prev = byId.get(id) || { id, name: m[1] };
     byId.set(id, { ...prev, name: m[1], rpm, inputTpm, outputTpm });
+  }
+
+  // Yield tables: Plan | Tokens | Images/Videos/Songs
+  const yieldRow =
+    /<strong>\s*(Basic|Pro|Max|Turbo)\s*<\/strong>\s*<\/td>\s*<td[^>]*>\s*([^<]+?)\s*<\/td>\s*<td[^>]*>\s*(~?[\d,]+)\s*<\/td>/gi;
+  const yieldHits = { images: {}, videos5s: {}, songs: {} };
+  const yieldBuckets = [];
+  for (const m of text.matchAll(yieldRow)) {
+    const id = normalizePlanName(m[1]);
+    const mid = decodeEntities(m[2]);
+    const val = decodeEntities(m[3]);
+    if (!id || !/~/.test(val)) continue;
+    // Skip if mid looks like RPM (plain int without M/B)
+    if (/^\d+$/.test(mid.replace(/,/g, ""))) continue;
+    yieldBuckets.push({ id, val });
+  }
+  // Docs order: images table, then videos, then songs — 4 plans each
+  const ids = PLAN_ORDER;
+  if (yieldBuckets.length >= 12) {
+    ids.forEach((id, i) => {
+      yieldHits.images[id] = yieldBuckets[i]?.val;
+      yieldHits.videos5s[id] = yieldBuckets[i + 4]?.val;
+      yieldHits.songs[id] = yieldBuckets[i + 8]?.val;
+    });
   }
 
   const plans = PLAN_ORDER.map((id) => {
@@ -124,6 +207,7 @@ export function parseTokenPlanHtml(html) {
     const fallback = FALLBACK_TOKEN_PLAN.plans.find((p) => p.id === id);
     if (!scraped && !fallback) return null;
     return {
+      ...fallback,
       id,
       name: scraped?.name || fallback.name,
       price: scraped?.price || fallback.price,
@@ -131,14 +215,64 @@ export function parseTokenPlanHtml(html) {
       rpm: scraped?.rpm || fallback.rpm,
       inputTpm: scraped?.inputTpm || fallback.inputTpm,
       outputTpm: scraped?.outputTpm || fallback.outputTpm,
-      highlights: fallback?.highlights || [],
+      images: yieldHits.images[id] || FALLBACK_TOKEN_PLAN.estimates.images[id],
+      videos5s: yieldHits.videos5s[id] || FALLBACK_TOKEN_PLAN.estimates.videos5s[id],
+      songs: yieldHits.songs[id] || FALLBACK_TOKEN_PLAN.estimates.songs[id],
     };
   }).filter(Boolean);
+
+  const estimates = {
+    ...FALLBACK_TOKEN_PLAN.estimates,
+    images: { ...FALLBACK_TOKEN_PLAN.estimates.images, ...yieldHits.images },
+    videos5s: { ...FALLBACK_TOKEN_PLAN.estimates.videos5s, ...yieldHits.videos5s },
+    songs: { ...FALLBACK_TOKEN_PLAN.estimates.songs, ...yieldHits.songs },
+  };
 
   return {
     plans,
     model: FALLBACK_TOKEN_PLAN.model,
-    estimates: FALLBACK_TOKEN_PLAN.estimates,
+    estimates,
+    matrix: FEATURE_MATRIX,
+    wins: FALLBACK_TOKEN_PLAN.wins,
+  };
+}
+
+/** Build the glanceable Apple-style comparison sheet payload. */
+export function buildPlanSheet(plan) {
+  const plans = (plan?.plans || FALLBACK_TOKEN_PLAN.plans).map((p) => {
+    const fb = FALLBACK_TOKEN_PLAN.plans.find((x) => x.id === p.id) || {};
+    return {
+      ...fb,
+      ...p,
+      images: p.images || plan?.estimates?.images?.[p.id] || fb.images,
+      videos5s: p.videos5s || plan?.estimates?.videos5s?.[p.id] || fb.videos5s,
+      songs: p.songs || plan?.estimates?.songs?.[p.id] || fb.songs,
+    };
+  });
+
+  const matrix = plan?.matrix || FEATURE_MATRIX;
+  const wins = plan?.wins || FALLBACK_TOKEN_PLAN.wins;
+  const estimates = plan?.estimates || FALLBACK_TOKEN_PLAN.estimates;
+
+  // Compact “everyone gets” vs “unlocks at” for the sheet header story
+  const everyone = matrix.filter((r) => r.levels.every((l) => l === "yes")).map((r) => r.label);
+  const unlocks = [
+    { at: "Pro+", label: "Memory + extended creation" },
+    { at: "Max+", label: "MoM · train-your-own · max agents" },
+    { at: "Turbo", label: "Multi-agent · unfiltered" },
+  ];
+
+  return {
+    model: plan?.model || FALLBACK_TOKEN_PLAN.model,
+    plans,
+    matrix,
+    wins,
+    estimates,
+    everyone: everyone.slice(0, 6),
+    unlocks,
+    headline: "Geoff Token Plan",
+    subhead: "Apple-simple sheet. One pool. Every modality. Public numbers.",
+    kicker: "Value sheet · docs.geoff.ai",
   };
 }
 

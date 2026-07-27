@@ -1,29 +1,44 @@
 import { marketCatalog } from "./market-catalog.js";
 import { scrapeMarketIntel } from "./market-scrape.js";
 import { runSniff } from "./sniffer.js";
-import { FALLBACK_TOKEN_PLAN, TOKEN_PLAN_URLS } from "./token-plan.js";
+import {
+  buildPlanSheet,
+  FALLBACK_TOKEN_PLAN,
+  FEATURE_MATRIX,
+  TOKEN_PLAN_URLS,
+} from "./token-plan.js";
 
 function pickTokenPlan(geoffSnap) {
   const src = geoffSnap?.sources?.["geoff.docs.pricing"];
-  if (src?.plans?.length) {
-    return {
-      scraped: Boolean(src.scraped),
-      model: src.model || FALLBACK_TOKEN_PLAN.model,
-      plans: src.plans,
-      estimates: src.estimates || FALLBACK_TOKEN_PLAN.estimates,
-      sourceUrls: src.sourceUrls || TOKEN_PLAN_URLS,
-      reason: src.reason || null,
-      fingerprint: src.fingerprint || null,
-    };
-  }
+  const base = src?.plans?.length
+    ? {
+        scraped: Boolean(src.scraped),
+        model: src.model || FALLBACK_TOKEN_PLAN.model,
+        plans: src.plans,
+        estimates: src.estimates || FALLBACK_TOKEN_PLAN.estimates,
+        matrix: src.matrix || FEATURE_MATRIX,
+        wins: src.wins || FALLBACK_TOKEN_PLAN.wins,
+        sourceUrls: src.sourceUrls || TOKEN_PLAN_URLS,
+        reason: src.reason || null,
+        fingerprint: src.fingerprint || null,
+      }
+    : {
+        scraped: false,
+        model: FALLBACK_TOKEN_PLAN.model,
+        plans: FALLBACK_TOKEN_PLAN.plans.map((p) => ({ ...p })),
+        estimates: FALLBACK_TOKEN_PLAN.estimates,
+        matrix: FEATURE_MATRIX,
+        wins: FALLBACK_TOKEN_PLAN.wins,
+        sourceUrls: TOKEN_PLAN_URLS,
+        reason: "Using published Token Plan tables from docs.geoff.ai",
+        fingerprint: null,
+      };
   return {
-    scraped: false,
-    model: FALLBACK_TOKEN_PLAN.model,
-    plans: FALLBACK_TOKEN_PLAN.plans.map((p) => ({ ...p })),
-    estimates: FALLBACK_TOKEN_PLAN.estimates,
-    sourceUrls: TOKEN_PLAN_URLS,
-    reason: "Using published Token Plan tables from docs.geoff.ai",
-    fingerprint: null,
+    ...buildPlanSheet(base),
+    scraped: base.scraped,
+    reason: base.reason,
+    fingerprint: base.fingerprint,
+    sourceUrls: base.sourceUrls,
   };
 }
 

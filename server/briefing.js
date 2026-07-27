@@ -1,4 +1,5 @@
 import { inferRank, normalizeEvents, prettyCapability, vibeForRank } from "./translator.js";
+import { buildPlanSheet, TOKEN_PLAN_URLS } from "./token-plan.js";
 
 const CAPABILITY_GROUPS = [
   {
@@ -379,23 +380,16 @@ export function compileBriefing({ latest, temperature, events = [], agentDesk = 
 function buildTokenPlan(latest) {
   const src = latest?.sources?.["geoff.docs.pricing"];
   if (!src?.plans?.length) return null;
+  const sheet = buildPlanSheet(src);
   return {
+    ...sheet,
     kicker: src.scraped
-      ? "Token plan · sniffed from docs.geoff.ai"
-      : "Token plan · public docs tables (fallback)",
-    headline: "What Geoff costs",
-    sentence:
-      src.model ||
-      "Unified monthly token balance shared across text, speech, video, image, music, code, and tools.",
+      ? `${sheet.kicker} · sniffed live`
+      : `${sheet.kicker} · published tables`,
     scraped: Boolean(src.scraped),
     reason: src.reason || null,
     fingerprint: src.fingerprint || null,
-    plans: src.plans,
-    estimates: src.estimates || null,
-    sourceUrls: src.sourceUrls || {
-      overview: "https://docs.geoff.ai/token-plan/overview",
-      pricing: "https://docs.geoff.ai/token-plan/pricing",
-    },
+    sourceUrls: src.sourceUrls || TOKEN_PLAN_URLS,
   };
 }
 

@@ -199,7 +199,10 @@ const els = {
   priceHeadline: document.getElementById("priceHeadline"),
   priceMeta: document.getElementById("priceMeta"),
   priceSentence: document.getElementById("priceSentence"),
+  priceWins: document.getElementById("priceWins"),
   pricePlans: document.getElementById("pricePlans"),
+  priceYield: document.getElementById("priceYield"),
+  priceSheet: document.getElementById("priceSheet"),
   priceLimits: document.getElementById("priceLimits"),
   priceSource: document.getElementById("priceSource"),
   pieces: document.getElementById("pieces"),
@@ -761,53 +764,147 @@ function renderHorsepower(hp) {
     : `<p class="empty soft">Nothing extra marked unavailable — public lanes above are the live map.</p>`;
 }
 
+function cellMark(level) {
+  return level === "yes"
+    ? `<span class="mark yes" aria-label="Yes">✓</span>`
+    : `<span class="mark no" aria-label="No">—</span>`;
+}
+
 function renderTokenPlan(plan) {
   if (!els.pricePlans) return;
   if (!plan?.plans?.length) {
-    if (els.priceHeadline) els.priceHeadline.textContent = "Token plan";
+    if (els.priceHeadline) els.priceHeadline.textContent = "Geoff Token Plan";
     if (els.priceMeta) els.priceMeta.textContent = "Waiting for docs.geoff.ai…";
     if (els.priceSentence) {
-      els.priceSentence.textContent = "Public monthly seats + shared token pool.";
+      els.priceSentence.textContent = "One pool. Every modality. Public numbers.";
     }
     els.pricePlans.innerHTML = "";
+    if (els.priceWins) els.priceWins.innerHTML = "";
+    if (els.priceYield) els.priceYield.innerHTML = "";
+    if (els.priceSheet) els.priceSheet.innerHTML = "";
     if (els.priceLimits) els.priceLimits.innerHTML = "";
     if (els.priceSource) els.priceSource.innerHTML = "";
     return;
   }
 
-  if (els.priceHeadline) els.priceHeadline.textContent = plan.headline || "Token plan";
-  if (els.priceMeta) els.priceMeta.textContent = plan.kicker || "docs.geoff.ai";
-  if (els.priceSentence) els.priceSentence.textContent = plan.sentence || "";
+  if (els.priceHeadline) els.priceHeadline.textContent = plan.headline || "Geoff Token Plan";
+  if (els.priceMeta) els.priceMeta.textContent = plan.kicker || "Value sheet · docs.geoff.ai";
+  if (els.priceSentence) {
+    els.priceSentence.textContent =
+      plan.subhead || plan.model || "One pool. Every modality. Public numbers.";
+  }
+
+  if (els.priceWins) {
+    els.priceWins.innerHTML = (plan.wins || [])
+      .map(
+        (w) => `
+      <article class="price-win">
+        <strong>${escapeHtml(w.k)}</strong>
+        <span>${escapeHtml(w.v)}</span>
+      </article>`,
+      )
+      .join("");
+  }
 
   els.pricePlans.innerHTML = plan.plans
     .map((p) => {
-      const tips = (p.highlights || []).slice(0, 3);
+      const hi = p.highlighted ? " highlighted" : "";
       return `
-      <article class="price-tier tier-${escapeHtml(p.id)}">
-        <header>
-          <h3>${escapeHtml(p.name)}</h3>
-          <strong>${escapeHtml(p.price)}</strong>
-        </header>
-        <p class="price-tokens"><em>Tokens</em> <span>${escapeHtml(p.tokens)}</span></p>
-        <ul>
-          ${tips.map((t) => `<li>${escapeHtml(t)}</li>`).join("")}
-        </ul>
+      <article class="price-tier tier-${escapeHtml(p.id)}${hi}">
+        <p class="price-badge">${escapeHtml(p.badge || p.name)}</p>
+        <h3>${escapeHtml(p.name)}</h3>
+        <p class="price-amount">${escapeHtml(p.price)}</p>
+        <p class="price-tokens"><span>${escapeHtml(p.tokens)}</span> tokens / mo</p>
+        <p class="price-pitch">${escapeHtml(p.pitch || p.why || "")}</p>
+        <div class="price-yield-mini">
+          <span><em>Images</em>${escapeHtml(p.images || "—")}</span>
+          <span><em>5s video</em>${escapeHtml(p.videos5s || "—")}</span>
+          <span><em>Songs</em>${escapeHtml(p.songs || "—")}</span>
+        </div>
       </article>`;
     })
     .join("");
 
+  if (els.priceYield) {
+    const est = plan.estimates || {};
+    els.priceYield.innerHTML = `
+      <div class="price-yield-head">
+        <strong>Burn the whole pool on one lane</strong>
+        <span>${escapeHtml(est.note || "Docs estimates · not a guarantee")}</span>
+      </div>
+      <div class="price-yield-grid">
+        <article>
+          <em>Images</em>
+          <strong>~150K tok each</strong>
+          <p>${plan.plans.map((p) => `<span>${escapeHtml(p.name)} ${escapeHtml(p.images || "—")}</span>`).join("")}</p>
+        </article>
+        <article>
+          <em>5s videos</em>
+          <strong>clip estimates</strong>
+          <p>${plan.plans.map((p) => `<span>${escapeHtml(p.name)} ${escapeHtml(p.videos5s || "—")}</span>`).join("")}</p>
+        </article>
+        <article>
+          <em>Songs</em>
+          <strong>track estimates</strong>
+          <p>${plan.plans.map((p) => `<span>${escapeHtml(p.name)} ${escapeHtml(p.songs || "—")}</span>`).join("")}</p>
+        </article>
+      </div>
+      ${est.nsfwNote ? `<p class="price-yield-note">${escapeHtml(est.nsfwNote)}</p>` : ""}`;
+  }
+
+  if (els.priceSheet && plan.matrix?.length) {
+    const heads = plan.plans
+      .map(
+        (p) => `
+      <th class="${p.highlighted ? "hi" : ""}">
+        <span class="sh-name">${escapeHtml(p.name)}</span>
+        <span class="sh-price">${escapeHtml(p.price)}</span>
+      </th>`,
+      )
+      .join("");
+    const tokenRow = `
+      <tr class="sheet-metric">
+        <th scope="row">Monthly tokens</th>
+        ${plan.plans.map((p) => `<td class="${p.highlighted ? "hi" : ""}"><strong>${escapeHtml(p.tokens)}</strong></td>`).join("")}
+      </tr>`;
+    const featureRows = plan.matrix
+      .map((row) => {
+        const cells = (row.levels || [])
+          .map((lv, i) => {
+            const hi = plan.plans[i]?.highlighted ? "hi" : "";
+            return `<td class="${hi}">${cellMark(lv)}</td>`;
+          })
+          .join("");
+        return `<tr><th scope="row">${escapeHtml(row.label)}</th>${cells}</tr>`;
+      })
+      .join("");
+    els.priceSheet.innerHTML = `
+      <table class="apple-sheet">
+        <thead>
+          <tr>
+            <th scope="col">Compare</th>
+            ${heads}
+          </tr>
+        </thead>
+        <tbody>
+          ${tokenRow}
+          ${featureRows}
+        </tbody>
+      </table>`;
+  }
+
   if (els.priceLimits) {
     els.priceLimits.innerHTML = `
-      <div class="price-limits-head">Rate limits · per API key</div>
+      <div class="price-limits-head">API rate limits · per key</div>
       <div class="price-limits-grid">
         ${plan.plans
           .map(
             (p) => `
-          <div class="price-limit">
+          <div class="price-limit${p.highlighted ? " hi" : ""}">
             <strong>${escapeHtml(p.name)}</strong>
             <span>${escapeHtml(p.rpm || "—")} RPM</span>
-            <span>${escapeHtml(p.inputTpm || "—")} in TPM</span>
-            <span>${escapeHtml(p.outputTpm || "—")} out TPM</span>
+            <span>${escapeHtml(p.inputTpm || "—")} in</span>
+            <span>${escapeHtml(p.outputTpm || "—")} out</span>
           </div>`,
           )
           .join("")}
@@ -821,9 +918,11 @@ function renderTokenPlan(plan) {
       ? "Sniffed live from public docs"
       : plan.reason || "Cached public docs tables";
     els.priceSource.innerHTML = `${escapeHtml(note)} ·
+      <a href="${escapeHtml(overview)}" target="_blank" rel="noopener noreferrer">Overview sheet</a>
+      ·
       <a href="${escapeHtml(pricing)}" target="_blank" rel="noopener noreferrer">Pricing</a>
       ·
-      <a href="${escapeHtml(overview)}" target="_blank" rel="noopener noreferrer">Overview</a>`;
+      <a href="https://geoff.ai/settings/billing" target="_blank" rel="noopener noreferrer">Billing</a>`;
   }
 }
 

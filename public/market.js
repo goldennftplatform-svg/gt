@@ -10,7 +10,9 @@ const els = {
   inventories: document.getElementById("inventories"),
   priceMeta: document.getElementById("priceMeta"),
   priceBlurb: document.getElementById("priceBlurb"),
+  priceWins: document.getElementById("priceWins"),
   priceQuotes: document.getElementById("priceQuotes"),
+  priceSheet: document.getElementById("priceSheet"),
   priceLimits: document.getElementById("priceLimits"),
   priceSource: document.getElementById("priceSource"),
   dimTable: document.querySelector("#dimTable tbody"),
@@ -206,12 +208,20 @@ function renderDimensions(dimensions = []) {
     .join("");
 }
 
+function mark(level) {
+  return level === "yes"
+    ? `<span class="mark yes">✓</span>`
+    : `<span class="mark no">—</span>`;
+}
+
 function renderTokenPlan(plan) {
   if (!els.priceQuotes) return;
   if (!plan?.plans?.length) {
     if (els.priceMeta) els.priceMeta.textContent = "No public seats found";
     if (els.priceBlurb) els.priceBlurb.textContent = "";
     els.priceQuotes.innerHTML = `<p class="empty">Token Plan tables unavailable.</p>`;
+    if (els.priceWins) els.priceWins.innerHTML = "";
+    if (els.priceSheet) els.priceSheet.innerHTML = "";
     if (els.priceLimits) els.priceLimits.innerHTML = "";
     if (els.priceSource) els.priceSource.innerHTML = "";
     return;
@@ -224,24 +234,66 @@ function renderTokenPlan(plan) {
   }
   if (els.priceBlurb) {
     els.priceBlurb.textContent =
+      plan.subhead ||
       plan.model ||
-      "Unified monthly token balance across text, media, code, and tools.";
+      "One pool. Every modality. Public numbers.";
+  }
+
+  if (els.priceWins) {
+    els.priceWins.innerHTML = (plan.wins || [])
+      .map(
+        (w) => `
+      <article class="cover-win">
+        <strong>${escapeHtml(w.k)}</strong>
+        <span>${escapeHtml(w.v)}</span>
+      </article>`,
+      )
+      .join("");
   }
 
   els.priceQuotes.innerHTML = plan.plans
     .map((p) => {
-      const tips = (p.highlights || []).slice(0, 4);
+      const hi = p.highlighted ? " hi" : "";
       return `
-      <article class="quote-tier tier-${escapeHtml(p.id)}">
+      <article class="quote-tier tier-${escapeHtml(p.id)}${hi}">
+        <p class="quote-badge">${escapeHtml(p.badge || p.name)}</p>
         <p class="quote-name">${escapeHtml(p.name)}</p>
         <p class="quote-price">${escapeHtml(p.price)}</p>
         <p class="quote-tokens">${escapeHtml(p.tokens)} tokens / mo</p>
-        <ul>
-          ${tips.map((t) => `<li>${escapeHtml(t)}</li>`).join("")}
+        <p class="quote-pitch">${escapeHtml(p.pitch || p.why || "")}</p>
+        <ul class="quote-yield">
+          <li>Images ${escapeHtml(p.images || "—")}</li>
+          <li>5s video ${escapeHtml(p.videos5s || "—")}</li>
+          <li>Songs ${escapeHtml(p.songs || "—")}</li>
         </ul>
       </article>`;
     })
     .join("");
+
+  if (els.priceSheet && plan.matrix?.length) {
+    const heads = plan.plans
+      .map(
+        (p) =>
+          `<th class="${p.highlighted ? "hi" : ""}"><span>${escapeHtml(p.name)}</span><em>${escapeHtml(p.price)}</em></th>`,
+      )
+      .join("");
+    const rows = [
+      `<tr class="metric"><th>Monthly tokens</th>${plan.plans
+        .map((p) => `<td class="${p.highlighted ? "hi" : ""}"><strong>${escapeHtml(p.tokens)}</strong></td>`)
+        .join("")}</tr>`,
+      ...plan.matrix.map(
+        (row) =>
+          `<tr><th>${escapeHtml(row.label)}</th>${(row.levels || [])
+            .map((lv, i) => `<td class="${plan.plans[i]?.highlighted ? "hi" : ""}">${mark(lv)}</td>`)
+            .join("")}</tr>`,
+      ),
+    ].join("");
+    els.priceSheet.innerHTML = `
+      <table class="apple-sheet cover">
+        <thead><tr><th>Compare</th>${heads}</tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+  }
 
   if (els.priceLimits) {
     els.priceLimits.innerHTML = `
@@ -278,8 +330,8 @@ function renderTokenPlan(plan) {
       ? "Live scrape of public Token Plan docs"
       : plan.reason || "Cached public Token Plan tables";
     els.priceSource.innerHTML = `${escapeHtml(note)} ·
-      <a href="${escapeHtml(pricing)}" target="_blank" rel="noopener noreferrer">Pricing</a> ·
-      <a href="${escapeHtml(overview)}" target="_blank" rel="noopener noreferrer">Overview</a>`;
+      <a href="${escapeHtml(overview)}" target="_blank" rel="noopener noreferrer">Overview sheet</a> ·
+      <a href="${escapeHtml(pricing)}" target="_blank" rel="noopener noreferrer">Pricing</a>`;
   }
 }
 

@@ -2,6 +2,7 @@ import { config } from "./config.js";
 import {
   TOKEN_PLAN_URLS,
   FALLBACK_TOKEN_PLAN,
+  FEATURE_MATRIX,
   parseTokenPlanHtml,
   fingerprintTokenPlan,
 } from "./token-plan.js";
@@ -299,6 +300,8 @@ async function sniffGeoffTokenPlan() {
       : {
           ...FALLBACK_TOKEN_PLAN,
           plans: FALLBACK_TOKEN_PLAN.plans.map((p) => ({ ...p })),
+          matrix: FEATURE_MATRIX,
+          wins: FALLBACK_TOKEN_PLAN.wins,
         };
     const fingerprint = simpleHash(fingerprintTokenPlan(plan));
 
@@ -312,6 +315,8 @@ async function sniffGeoffTokenPlan() {
       model: plan.model,
       plans: plan.plans,
       estimates: plan.estimates,
+      matrix: plan.matrix || FEATURE_MATRIX,
+      wins: plan.wins || FALLBACK_TOKEN_PLAN.wins,
       sourceUrls: TOKEN_PLAN_URLS,
       reason: scrapedOk
         ? null
@@ -329,6 +334,8 @@ async function sniffGeoffTokenPlan() {
       model: FALLBACK_TOKEN_PLAN.model,
       plans: FALLBACK_TOKEN_PLAN.plans.map((p) => ({ ...p })),
       estimates: FALLBACK_TOKEN_PLAN.estimates,
+      matrix: FEATURE_MATRIX,
+      wins: FALLBACK_TOKEN_PLAN.wins,
       sourceUrls: TOKEN_PLAN_URLS,
       reason: `Docs sniff failed (${error.message}); using cached public Token Plan tables`,
     };
