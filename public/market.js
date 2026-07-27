@@ -263,7 +263,7 @@ function renderTokenPlan(plan) {
         <p class="quote-pitch">${escapeHtml(p.pitch || p.why || "")}</p>
         <ul class="quote-yield">
           <li>Images ${escapeHtml(p.images || "—")}</li>
-          <li>5s video ${escapeHtml(p.videos5s || "—")}</li>
+          <li>Videos (5 sec) ${escapeHtml(p.videos5s || "—")}</li>
           <li>Songs ${escapeHtml(p.songs || "—")}</li>
         </ul>
       </article>`;

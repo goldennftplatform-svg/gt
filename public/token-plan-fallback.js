@@ -84,8 +84,11 @@ export const CLIENT_TOKEN_PLAN = {
     },
   ],
   estimates: {
-    note: "If you burn the whole monthly pool on one lane (docs estimate · ~150K tokens/image)",
-    nsfwNote: "Unfiltered / NSFW requests use 10× tokens",
+    note: "Docs: approximate output if you spend the entire monthly balance on one capability",
+    perImageTokens: "~150K tokens per image",
+    perVideo5sTokens: "~5M tokens per 5-sec video",
+    perSongTokens: "~3M tokens per song",
+    nsfwNote: "Unfiltered requests such as NSFW use 10× tokens",
   },
   matrix: [
     { label: "Chat · web, iOS, Android, desktop", levels: ["yes", "yes", "yes", "yes"] },

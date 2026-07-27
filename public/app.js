@@ -819,7 +819,7 @@ function renderTokenPlan(plan) {
         <p class="price-pitch">${escapeHtml(p.pitch || p.why || "")}</p>
         <div class="price-yield-mini">
           <span><em>Images</em>${escapeHtml(p.images || "—")}</span>
-          <span><em>5s video</em>${escapeHtml(p.videos5s || "—")}</span>
+          <span><em>Videos (5 sec)</em>${escapeHtml(p.videos5s || "—")}</span>
           <span><em>Songs</em>${escapeHtml(p.songs || "—")}</span>
         </div>
       </article>`;
@@ -831,22 +831,22 @@ function renderTokenPlan(plan) {
     els.priceYield.innerHTML = `
       <div class="price-yield-head">
         <strong>Burn the whole pool on one lane</strong>
-        <span>${escapeHtml(est.note || "Docs estimates · not a guarantee")}</span>
+        <span>${escapeHtml(est.note || "Docs estimates · Videos (5s) = 5-second clips")}</span>
       </div>
       <div class="price-yield-grid">
         <article>
           <em>Images</em>
-          <strong>~150K tok each</strong>
+          <strong>~150K tokens each</strong>
           <p>${plan.plans.map((p) => `<span>${escapeHtml(p.name)} ${escapeHtml(p.images || "—")}</span>`).join("")}</p>
         </article>
         <article>
-          <em>5s videos</em>
-          <strong>clip estimates</strong>
+          <em>Videos (5 sec)</em>
+          <strong>~5M tokens per 5-sec clip</strong>
           <p>${plan.plans.map((p) => `<span>${escapeHtml(p.name)} ${escapeHtml(p.videos5s || "—")}</span>`).join("")}</p>
         </article>
         <article>
           <em>Songs</em>
-          <strong>track estimates</strong>
+          <strong>~3M tokens per song</strong>
           <p>${plan.plans.map((p) => `<span>${escapeHtml(p.name)} ${escapeHtml(p.songs || "—")}</span>`).join("")}</p>
         </article>
       </div>

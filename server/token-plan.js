@@ -93,10 +93,13 @@ export const FALLBACK_TOKEN_PLAN = {
     },
   ],
   estimates: {
-    note: "If you burn the whole monthly pool on one lane (docs estimate · ~150K tokens/image)",
-    perImageTokens: "~150K",
-    nsfwNote: "Unfiltered / NSFW requests use 10× tokens",
+    note: "Docs: approximate output if you spend the entire monthly balance on one capability",
+    perImageTokens: "~150K tokens per image",
+    perVideo5sTokens: "~5M tokens per 5-sec video",
+    perSongTokens: "~3M tokens per song",
+    nsfwNote: "Unfiltered requests such as NSFW use 10× tokens",
     images: { basic: "~1,000", pro: "~13,300", max: "~46,000", turbo: "~133,000" },
+    // Column header in docs: "Videos (5s)" — five-second clips, not “55 videos”
     videos5s: { basic: "~30", pro: "~400", max: "~1,400", turbo: "~4,000" },
     songs: { basic: "~50", pro: "~660", max: "~2,300", turbo: "~6,600" },
   },
