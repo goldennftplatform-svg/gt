@@ -161,17 +161,30 @@ async function sniffGeoffCatalog() {
 
 async function sniffStacknetHealth() {
   const res = await fetchJson(`${config.stacknetBaseUrl}/health`);
+  // Application health string (e.g. "healthy") — never confuse with HTTP status codes.
+  const rawStatus = res.json?.status;
+  const statusText =
+    res.ok && typeof rawStatus === "string" && !/^\d{3}$/.test(rawStatus)
+      ? rawStatus
+      : null;
   return {
     source: "stacknet.health",
-    ok: res.ok,
+    ok: res.ok && Boolean(statusText),
     status: res.status,
     ms: res.ms,
-    statusText: res.json?.status ?? null,
+    statusText,
+    reachable: res.ok,
+    httpError: res.ok ? null : res.status || "fetch_failed",
     version: res.json?.version ?? null,
     nodeId: res.json?.node_id ?? null,
     inFlight: res.json?.in_flight ?? null,
     maxInFlight: res.json?.max_in_flight ?? null,
     remoteMcp: res.json?.remote_mcp ?? null,
+    error: res.ok
+      ? statusText
+        ? null
+        : "Health JSON missing a string status field"
+      : `HTTP ${res.status || 0} from /health`,
   };
 }
 
@@ -386,7 +399,10 @@ export async function runSniff() {
       chunkHash: bySource["geoff.deploy"]?.chunks?.hash ?? null,
       chunkCount: bySource["geoff.deploy"]?.chunks?.count ?? null,
       stacknetVersion: bySource["stacknet.health"]?.version ?? bySource["stacknet.root"]?.version ?? null,
-      stacknetStatus: bySource["stacknet.health"]?.statusText ?? null,
+      stacknetStatus: bySource["stacknet.health"]?.statusText
+        ?? (bySource["stacknet.health"]?.reachable === false
+          ? `unreachable (${bySource["stacknet.health"]?.httpError || "error"})`
+          : null),
       mcpContract: bySource["stacknet.health"]?.remoteMcp?.contract_id ?? null,
       inFlight: bySource["stacknet.health"]?.inFlight ?? null,
       maxInFlight: bySource["stacknet.health"]?.maxInFlight ?? null,

@@ -126,6 +126,12 @@ function isFlapEvent(e) {
   if (
     !["models", "apiModels", "widgets", "capabilities", "catalog"].includes(e.kind)
   ) {
+    // Drop poisoned health events that treated HTTP codes as Stacknet status.
+    if (e.kind === "health") {
+      const blob = `${e.title || ""} ${e.summary || ""}`;
+      if (/healthy\s*→\s*\d{3}|\d{3}\s*→\s*healthy/i.test(blob)) return true;
+      if (/Status went .*\d{3}/i.test(blob) && /degraded|recovered/i.test(blob)) return true;
+    }
     return false;
   }
   const added = e.details?.added?.length || e.details?.raw?.added?.length || 0;

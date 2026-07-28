@@ -379,9 +379,40 @@ export function translate(previous, current) {
     );
   }
 
-  const prevHealth = prev["stacknet.health"]?.statusText;
-  const currHealth = curr["stacknet.health"]?.statusText;
-  if (prevHealth && currHealth && prevHealth !== currHealth) {
+  // Health string changes (healthy/unhealthy) — ignore bare HTTP codes like "502".
+  const prevHealthRaw = prev["stacknet.health"]?.statusText;
+  const currHealthRaw = curr["stacknet.health"]?.statusText;
+  const isAppHealth = (s) => typeof s === "string" && s.length > 0 && !/^\d{3}$/.test(s);
+  const prevHealth = isAppHealth(prevHealthRaw) ? prevHealthRaw : null;
+  const currHealth = isAppHealth(currHealthRaw) ? currHealthRaw : null;
+
+  const prevReach = prev["stacknet.health"]?.reachable ?? prev["stacknet.health"]?.ok;
+  const currReach = curr["stacknet.health"]?.reachable ?? curr["stacknet.health"]?.ok;
+  const currHttp =
+    curr["stacknet.health"]?.httpError ??
+    (!curr["stacknet.health"]?.ok ? curr["stacknet.health"]?.status : null);
+
+  if (prevReach === true && currReach === false) {
+    events.push(
+      event({
+        kind: "health",
+        rank: "spike",
+        title: "Health endpoint unreachable",
+        summary: `Public /health probe failed${currHttp ? ` (HTTP ${currHttp})` : ""}. Transport blip — not the same as Stacknet reporting unhealthy.`,
+        details: { from: "reachable", to: "unreachable", httpError: currHttp },
+      }),
+    );
+  } else if (prevReach === false && currReach === true) {
+    events.push(
+      event({
+        kind: "health",
+        rank: "note",
+        title: "Health endpoint recovered",
+        summary: `Public /health is answering again${currHealth ? ` · status ${currHealth}` : ""}.`,
+        details: { from: "unreachable", to: "reachable", status: currHealth },
+      }),
+    );
+  } else if (prevHealth && currHealth && prevHealth !== currHealth) {
     const bad = currHealth !== "healthy";
     events.push(
       event({

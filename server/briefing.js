@@ -296,7 +296,9 @@ function userTakeForEvent(event) {
     case "network":
       return "Compute capacity changed — more/fewer machines or GPUs.";
     case "health":
-      return "Network health status changed — check if generation still works.";
+      return /unreachable|HTTP|probe failed/i.test(event.summary || event.title || "")
+        ? "Public /health probe hiccuped (transport). Not the same as Stacknet saying unhealthy."
+        : "Network health status changed — check if generation still works.";
     case "catalog":
       return "Geoff’s internal tool/model catalog was updated.";
     case "treasury":
