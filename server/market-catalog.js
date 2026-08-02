@@ -5,19 +5,19 @@
 
 export const marketCatalog = {
   updatedNote:
-    "These “quotes” are compiled from public vendor docs. Live status is sniffed separately. Always verify pricing on official pages before you buy tokens or seats.",
+    "Quotes mix uneven units on purpose: Geoff = shared Token Plan pool; Grok/OpenAI = $ / 1M meters; Copilot = seats. Live status is sniffed separately. Verify on official pages before you buy.",
   vendors: [
     {
       id: "geoff",
       name: "Geoff / Stacknet",
       company: "hwonder · geoff.ai",
       color: "#34d399",
-      tagline: "Community compute + multimodal agents",
+      tagline: "Universal Token Plan capacity · multimodal story utility",
       delivers: [
-        "All-in-one app for chat, image, music, video, voice, code, agents",
-        "Shared Stacknet GPU farm (nodes + VRAM pool)",
-        "Public /v1/models + widgets + MCP tool surface",
-        "Built by hwonder — public Token Plan on docs.geoff.ai",
+        "Shared monthly token pool across chat, image, music, video, voice, code, agents",
+        "Creative shadow booster for storytelling — not a sealed chatbot seat",
+        "Public Stacknet vitals + /v1/models + widgets + MCP",
+        "Built by hwonder — Token Plan tables on docs.geoff.ai",
       ],
       horsepower: {
         flagship: "magma",
@@ -230,6 +230,17 @@ export const marketCatalog = {
   ],
   dimensions: [
     {
+      id: "unit",
+      label: "Unit of power (non-apples)",
+      blurb: "What you’re actually buying — shared pool, per-call meter, or a seat.",
+      scores: {
+        geoff: "Universal Token Plan pool",
+        grok: "$ / 1M token meter",
+        openai: "$ / 1M token meter",
+        copilot: "Monthly product seat",
+      },
+    },
+    {
       id: "api",
       label: "API access coverage",
       blurb: "Can you call models programmatically (Chat Completions-style)?",
@@ -249,12 +260,23 @@ export const marketCatalog = {
     {
       id: "multimodal",
       label: "Multimodal riders",
-      blurb: "Add-ons beyond text: image, music, video, voice, realtime.",
+      blurb: "Same wallet across modalities — or siloed SKUs?",
       scores: {
-        geoff: "Very wide (incl. music)",
+        geoff: "One pool · text→music→video",
         grok: "Text + image/video/voice",
         openai: "Text + image/audio/realtime",
         copilot: "Code-first (+ chat)",
+      },
+    },
+    {
+      id: "story",
+      label: "Story / creative lane",
+      blurb: "Quiet utility for narrative work — guide, widen, keep the author in the chair.",
+      scores: {
+        geoff: "Shadow booster · multimodal",
+        grok: "Strong chat + media",
+        openai: "Strong chat + media",
+        copilot: "Code story, not film",
       },
     },
     {
@@ -271,7 +293,7 @@ export const marketCatalog = {
     {
       id: "price",
       label: "Premium style",
-      blurb: "How the bill shows up: tokens, seats, or network credits.",
+      blurb: "How the bill shows up — compare shape, not fake dollar twins.",
       scores: {
         geoff: "Token Plan $19–$999/mo",
         grok: "$ / 1M tokens",

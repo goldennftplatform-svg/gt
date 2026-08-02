@@ -1,6 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { config } from "./config.js";
+import { mergeDailyActivity, pruneDailyActivity, upsertDailyActivity } from "./daily-activity.js";
 import { normalizeEvents } from "./translator.js";
 
 async function ensureDataDir() {
@@ -28,6 +29,7 @@ const paths = {
   snapshots: () => path.join(config.dataDir, "snapshots.json"),
   latest: () => path.join(config.dataDir, "latest.json"),
   state: () => path.join(config.dataDir, "state.json"),
+  dailyActivity: () => path.join(config.dataDir, "daily-activity.json"),
 };
 
 export async function loadState() {
@@ -80,6 +82,35 @@ export async function appendEvents(newEvents) {
     config.maxEvents,
   );
   await writeJson(paths.events(), next);
+  await appendDailyActivity(newEvents);
+  return next;
+}
+
+export async function loadDailyActivity() {
+  const raw = await readJson(paths.dailyActivity(), []);
+  return pruneDailyActivity(raw, config.heatmapDays);
+}
+
+export async function appendDailyActivity(newEvents = []) {
+  if (!newEvents.length) return loadDailyActivity();
+  const current = await loadDailyActivity();
+  const next = upsertDailyActivity(current, newEvents, {
+    heatmapDays: config.heatmapDays,
+  });
+  await writeJson(paths.dailyActivity(), next);
+  return next;
+}
+
+export async function saveDailyActivity(rows = []) {
+  const next = pruneDailyActivity(rows, config.heatmapDays);
+  await writeJson(paths.dailyActivity(), next);
+  return next;
+}
+
+export async function mergeAndSaveDailyActivity(rows = []) {
+  const current = await loadDailyActivity();
+  const next = mergeDailyActivity(current, rows, config.heatmapDays);
+  await writeJson(paths.dailyActivity(), next);
   return next;
 }
 

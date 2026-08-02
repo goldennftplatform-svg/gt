@@ -1,5 +1,12 @@
 import { icon } from "./icons.js";
 import { CLIENT_TOKEN_PLAN } from "./token-plan-fallback.js";
+import {
+  DEFAULT_HEATMAP_DAYS,
+  buildHeatmapGrid,
+  mergeDailyActivity,
+  pruneDailyActivity,
+  upsertDailyActivity,
+} from "./daily-activity.js";
 
 const STORAGE_KEY = "geoff-thermometer-v5";
 const RANK_WEIGHT = { crazy: 5, spike: 4, move: 3, note: 2, whisper: 1 };
@@ -7,6 +14,8 @@ const VIBE = { crazy: "Crazy", spike: "Spike", move: "Move", note: "Note", whisp
 const TRACK_HOURS = 72;
 const TRACK_MS = TRACK_HOURS * 60 * 60 * 1000;
 const MAX_MEMORY_EVENTS = 2000;
+const HEATMAP_DAYS = DEFAULT_HEATMAP_DAYS;
+const MAX_DAILY_INGEST_IDS = 800;
 
 /** Website deploys = Note. Spike/Crazy are rare. Never trust "Big deal". */
 function inferRank(e = {}) {
@@ -170,6 +179,9 @@ const els = {
   pumpMeta: document.getElementById("pumpMeta"),
   pumpStats: document.getElementById("pumpStats"),
   pumpChart: document.getElementById("pumpChart"),
+  heatMeta: document.getElementById("heatMeta"),
+  heatGrid: document.getElementById("heatGrid"),
+  heatMonths: document.getElementById("heatMonths"),
   stackVersion: document.getElementById("stackVersion"),
   stackHealth: document.getElementById("stackHealth"),
   stackNodes: document.getElementById("stackNodes"),
@@ -251,9 +263,23 @@ const EVENT_ICONS = {
 let mode = "local";
 let memory = loadMemory();
 let pollTimer = null;
+// Persist upgrade seed (72h events → day cubes) so a refresh keeps the map.
+try {
+  if (memory.dailyActivity?.length) saveMemory();
+} catch {
+  /* ignore */
+}
 
 function emptyMemory() {
-  return { latest: null, events: [], temps: [], agentSamples: [], pollCount: 0 };
+  return {
+    latest: null,
+    events: [],
+    temps: [],
+    agentSamples: [],
+    dailyActivity: [],
+    dailyIngestedIds: [],
+    pollCount: 0,
+  };
 }
 
 function loadMemory() {
@@ -273,16 +299,108 @@ function loadMemory() {
   try {
     const raw = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
     if (!raw) return emptyMemory();
-    return {
+    const mem = {
       ...emptyMemory(),
       ...raw,
       events: normalizeFeedEvents(raw.events || []),
       temps: normalizeTempSeries(raw.temps),
       agentSamples: Array.isArray(raw.agentSamples) ? raw.agentSamples : [],
+      dailyActivity: pruneDailyActivity(raw.dailyActivity || [], HEATMAP_DAYS),
+      dailyIngestedIds: Array.isArray(raw.dailyIngestedIds)
+        ? raw.dailyIngestedIds.slice(0, MAX_DAILY_INGEST_IDS)
+        : [],
     };
+    // First visit after upgrade: seed cubes from whatever 72h events we still hold.
+    if (!mem.dailyActivity.length && mem.events.length) {
+      const seen = new Set(mem.dailyIngestedIds);
+      mem.dailyActivity = upsertDailyActivity([], mem.events, {
+        heatmapDays: HEATMAP_DAYS,
+        seenIds: seen,
+      });
+      mem.dailyIngestedIds = Array.from(seen).slice(0, MAX_DAILY_INGEST_IDS);
+    }
+    return mem;
   } catch {
     return emptyMemory();
   }
+}
+
+function ingestDailyFromEvents(events = []) {
+  if (!events.length) return;
+  const seen = new Set(memory.dailyIngestedIds || []);
+  memory.dailyActivity = upsertDailyActivity(memory.dailyActivity || [], events, {
+    heatmapDays: HEATMAP_DAYS,
+    seenIds: seen,
+  });
+  memory.dailyIngestedIds = Array.from(seen).slice(-MAX_DAILY_INGEST_IDS);
+}
+
+function fmtDayLabel(dayKey) {
+  if (!dayKey) return "—";
+  const [y, m, d] = dayKey.split("-").map(Number);
+  const dt = new Date(y, m - 1, d);
+  return dt.toLocaleDateString(undefined, {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+  });
+}
+
+function renderHeatmap(rows = []) {
+  if (!els.heatGrid) return;
+  const grid = buildHeatmapGrid(rows, HEATMAP_DAYS);
+  const activeDays = (rows || []).filter((r) => r.count > 0).length;
+  const totalMoves = (rows || []).reduce((a, r) => a + (r.count || 0), 0);
+  const heatSum = (rows || []).reduce((a, r) => a + (r.heat || 0), 0);
+
+  if (els.heatMeta) {
+    els.heatMeta.textContent = totalMoves
+      ? `${activeDays} active days · ${totalMoves} moves · heat ${heatSum} · last ${HEATMAP_DAYS}d`
+      : `No cubes yet · history grows past 72h as sniffs land (kept ${HEATMAP_DAYS} days)`;
+  }
+
+  // Month labels aligned to week columns
+  if (els.heatMonths) {
+    const labels = [];
+    let lastMonth = "";
+    grid.weeks.forEach((week, wi) => {
+      const first = week.find((c) => c);
+      if (!first) {
+        labels.push(`<span style="grid-column:${wi + 1}"></span>`);
+        return;
+      }
+      const [y, m] = first.day.split("-");
+      const month = new Date(Number(y), Number(m) - 1, 1).toLocaleString(undefined, {
+        month: "short",
+      });
+      if (month !== lastMonth) {
+        labels.push(`<span style="grid-column:${wi + 1}">${escapeHtml(month)}</span>`);
+        lastMonth = month;
+      } else {
+        labels.push(`<span style="grid-column:${wi + 1}"></span>`);
+      }
+    });
+    els.heatMonths.style.gridTemplateColumns = `repeat(${grid.weeks.length}, var(--heat-cell))`;
+    els.heatMonths.innerHTML = labels.join("");
+  }
+
+  els.heatGrid.style.gridTemplateColumns = `repeat(${grid.weeks.length}, var(--heat-cell))`;
+  els.heatGrid.innerHTML = grid.weeks
+    .map((week) => {
+      const cells = week
+        .map((cell) => {
+          if (!cell) return `<span class="heat-cell pad" aria-hidden="true"></span>`;
+          const title = cell.count
+            ? `${fmtDayLabel(cell.day)} · ${cell.count} moves · heat ${cell.heat}${
+                cell.crazy ? ` · ${cell.crazy} crazy` : ""
+              }${cell.spike ? ` · ${cell.spike} spike` : ""}`
+            : `${fmtDayLabel(cell.day)} · no ranked moves`;
+          return `<button type="button" class="heat-cell lvl${cell.level}" title="${escapeHtml(title)}" aria-label="${escapeHtml(title)}"></button>`;
+        })
+        .join("");
+      return `<div class="heat-week">${cells}</div>`;
+    })
+    .join("");
 }
 
 function normalizeTempSeries(temps) {
@@ -428,6 +546,7 @@ function recordTracking(latest, temperature) {
   ]).slice(-500);
 
   memory.events = pruneWindow(memory.events || []).slice(0, MAX_MEMORY_EVENTS);
+  memory.dailyActivity = pruneDailyActivity(memory.dailyActivity || [], HEATMAP_DAYS);
   saveMemory();
   renderSpark(memory.temps);
 }
@@ -1134,6 +1253,14 @@ function applyPayload(payload, { mergeClient = false } = {}) {
         return true;
       })
       .slice(0, MAX_MEMORY_EVENTS);
+    ingestDailyFromEvents(incoming);
+    if (payload.dailyActivity?.length) {
+      memory.dailyActivity = mergeDailyActivity(
+        memory.dailyActivity,
+        payload.dailyActivity,
+        HEATMAP_DAYS,
+      );
+    }
     memory.latest = payload.latest || memory.latest;
     memory.pollCount = (memory.pollCount || 0) + (payload.newEvents ? 1 : 0);
     saveMemory();
@@ -1141,6 +1268,12 @@ function applyPayload(payload, { mergeClient = false } = {}) {
     memory.latest = payload.latest;
     memory.events = pruneWindow(payload.events || []).slice(0, MAX_MEMORY_EVENTS);
     memory.pollCount = payload.state?.pollCount || memory.pollCount;
+    // Local server owns the long rollup; merge so a browser that sniffed earlier keeps cubes.
+    memory.dailyActivity = mergeDailyActivity(
+      memory.dailyActivity,
+      payload.dailyActivity || [],
+      HEATMAP_DAYS,
+    );
     saveMemory();
   }
 
@@ -1157,6 +1290,7 @@ function applyPayload(payload, { mergeClient = false } = {}) {
   renderTokenPlan(briefing?.tokenPlan || CLIENT_TOKEN_PLAN);
   renderAgentDesk(payload.agentDesk || briefing?.agentDesk || null);
   renderPumpTape(feedEvents, memory.agentSamples || []);
+  renderHeatmap(memory.dailyActivity || []);
   renderPieces(briefing?.pieces || []);
   renderCapGroups(briefing?.capabilityGroups || []);
   renderFeed(feedEvents, { pollCount });
@@ -1262,6 +1396,7 @@ hydrateIcons();
 startMatrix();
 // Paint the value sheet immediately — don't wait on a cold sniff.
 renderTokenPlan(CLIENT_TOKEN_PLAN);
+renderHeatmap(memory.dailyActivity || []);
 
 async function boot() {
   try {

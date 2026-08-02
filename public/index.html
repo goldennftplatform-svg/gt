@@ -220,6 +220,37 @@
         </div>
       </section>
 
+      <section class="panel heat-panel" aria-label="Two month activity heatmap">
+        <div class="panel-head">
+          <div class="panel-title">
+            <span class="ico-wrap sm" data-icon="activity"></span>
+            <h2>2-month change map</h2>
+          </div>
+          <p id="heatMeta">Collecting daily cubes…</p>
+        </div>
+        <p class="feed-hint">GitHub-style baby cubes · one cell per day · darker = more ranked public diffs</p>
+        <div class="heat-shell">
+          <div id="heatMonths" class="heat-months" aria-hidden="true"></div>
+          <div class="heat-body">
+            <div class="heat-doy" aria-hidden="true">
+              <span></span>
+              <span>Mon</span>
+              <span></span>
+              <span>Wed</span>
+              <span></span>
+              <span>Fri</span>
+              <span></span>
+            </div>
+            <div id="heatGrid" class="heat-grid" role="img" aria-label="Sixty day activity heatmap"></div>
+          </div>
+          <div class="heat-scale">
+            <span>Less</span>
+            <i class="lvl0"></i><i class="lvl1"></i><i class="lvl2"></i><i class="lvl3"></i><i class="lvl4"></i>
+            <span>More</span>
+          </div>
+        </div>
+      </section>
+
       <div class="board">
         <section class="panel feed-panel">
           <div class="panel-head">

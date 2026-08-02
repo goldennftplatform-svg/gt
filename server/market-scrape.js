@@ -199,15 +199,15 @@ function transparencyScorecard(scraped, live) {
       name: "Geoff / Stacknet",
       score: 92,
       grade: "A",
-      posture: "Show your work",
-      why: "Public health, network summary, /v1/models, widgets, capability list, Token Plan pricing docs, deploy fingerprints — live, no login.",
+      posture: "Show your work · utility pool",
+      why: "Public health, network summary, /v1/models, widgets, capability list, and a published Token Plan — one shared multimodal capacity pool, not a seat twin. Live, no login.",
       hides: ["Some app catalogs need auth", "Per-request token meter still thin"],
       reveals: [
         `${scraped.geoff?.vitals?.nodes ?? "?"} nodes / ${scraped.geoff?.vitals?.gpus ?? "?"} GPUs`,
         `${scraped.geoff?.apiModels?.length ?? 0} public API model cards`,
         `${scraped.geoff?.widgetCount ?? 0} widgets`,
         `${scraped.geoff?.vitals?.capabilities ?? "?"} capabilities`,
-        "Token Plan seats on docs.geoff.ai ($19–$999/mo)",
+        "Universal Token Plan pool on docs.geoff.ai ($19–$999/mo)",
       ],
     },
     {
@@ -267,20 +267,46 @@ function transparencyScorecard(scraped, live) {
 
 function buildManifesto() {
   return {
-    title: "Transparency is the coverage they don’t want to sell you",
+    title: "Universal utility capacity isn’t a seat quote",
     kicker: "Do your own research desk",
     paragraphs: [
-      "Big AI shops love the appliance model: sealed box, monthly obedience, surprise deprecations, and a smile on the status page while the meter runs.",
-      "Geoff’s pitch is uglier and better — modular strap-ons. Public network vitals. Model cards you can hit without a salesperson. Widgets and capabilities in the open. You can audit the stack like a mechanic, not a lemming in an upgrade queue.",
-      "This page exists to put receipts next to marketing. If a carrier hides capacity, prices, or routing, that’s not “enterprise elegance.” That’s premium opacity.",
+      "Most AI “coverage” quotes pretend every carrier sells the same fruit. They don’t. Grok and OpenAI bill like utilities per million tokens — one modality, one meter. Copilot sells a cockpit seat. Geoff publishes a monthly Token Plan: one shared pool across text, image, music, video, code, and agents.",
+      "That’s why this page keeps saying non-apples. You’re comparing published receipts — not claiming $19 Geoff equals $19 of someone else’s chat-only burn.",
+      "Geoff’s quieter pitch sits beside the spreadsheet: a creative shadow booster for storytellers. Not the protagonist. The presence over your shoulder that can widen a scene without forcing you into five product SKUs mid-draft.",
+      "If a carrier hides capacity, prices, or routing, that’s not enterprise elegance. That’s premium opacity. We scrape what’s public so you can see the difference.",
     ],
     bullets: [
+      "Name the billing unit before you rank the price.",
       "Ask what is public without logging in.",
-      "Ask what breaks when the brand page says green.",
-      "Ask whether you can swap modules — or only renew the seat.",
+      "Ask whether capacity is shared across modalities — or siloed.",
       "Prefer stacks you can inspect over cults you must trust.",
     ],
   };
+}
+
+function buildFrameCards() {
+  return [
+    {
+      k: "Geoff",
+      title: "Universal token pool",
+      body: "One monthly balance. Burn it on chat, stills, songs, 5-sec clips, code, agents. Capacity is the product.",
+    },
+    {
+      k: "Grok / OpenAI",
+      title: "Per-call token meters",
+      body: "Classic API utility: $ / 1M in/out. Sharp for text lanes. Different math than a multimodal pool.",
+    },
+    {
+      k: "Copilot",
+      title: "Seat + plan gates",
+      body: "You buy the cockpit. Horsepower and model menu shift with the seat tier — green status ≠ open menu.",
+    },
+    {
+      k: "Story lane",
+      title: "Creative shadow booster",
+      body: "Geoff’s soft edge: stay with the narrative, then step into image/music/video without changing vendors mid-scene.",
+    },
+  ];
 }
 
 export async function scrapeMarketIntel(geoffSnapshot) {
@@ -416,6 +442,7 @@ export async function scrapeMarketIntel(geoffSnapshot) {
     live,
     scorecard,
     manifesto: buildManifesto(),
+    frameCards: buildFrameCards(),
     inventories: [
       {
         id: "geoff",

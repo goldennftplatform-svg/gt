@@ -144,12 +144,14 @@ export async function buildMarketPayload() {
     scraped: intel.scraped,
     scorecard: intel.scorecard,
     manifesto: intel.manifesto,
+    frameCards: intel.frameCards,
     inventories,
     compareHints: [
-      "Rule 1: if they won’t show capacity without a login, price in the opacity tax.",
-      "Geoff now publishes Token Plan seats on docs.geoff.ai — CoverAI sniffs those tables live.",
-      "Geoff column = live Stacknet sniff + docs pricing. Grok/OpenAI/Copilot menus = public docs + status boards.",
-      "Seat products can look “all green” while the real horsepower stays behind plan gates.",
+      "Headline: Geoff is universal utility token capacity — not a seat twin of Copilot, not a 1:1 Grok/OpenAI meter.",
+      "Non-apples: shared multimodal pool vs $ / 1M call meters vs monthly cockpit seats. Rank units before prices.",
+      "Geoff column = live Stacknet sniff + Token Plan tables. Grok/OpenAI/Copilot = public docs + status boards.",
+      "Soft edge: storytelling companion energy — creative shadow booster, not the protagonist of the page.",
+      "Seat products can look “all green” while horsepower stays behind plan gates.",
     ],
   };
 }

@@ -260,6 +260,105 @@ html, body {
   line-height: 1.35;
 }
 
+.story-whisper {
+  margin: 0 0 0.9rem;
+  padding: 1.05rem 1.25rem 1.1rem 1.35rem;
+  border-radius: 18px;
+  border: 1px solid rgba(0, 119, 200, 0.16);
+  background:
+    linear-gradient(135deg, rgba(0, 119, 200, 0.06), rgba(255, 255, 255, 0.92) 42%, rgba(232, 244, 252, 0.55)),
+    #ffffff;
+  box-shadow: 0 10px 28px rgba(15, 45, 80, 0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+.story-whisper::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.85rem;
+  bottom: 0.85rem;
+  width: 3px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(0, 119, 200, 0.55), rgba(0, 119, 200, 0.12));
+}
+
+.whisper-kicker {
+  margin: 0 0 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--blue);
+}
+
+.story-whisper h3 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(1.05rem, 2.2vw, 1.28rem);
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  max-width: 36rem;
+}
+
+.story-whisper > p:last-child {
+  margin: 0.45rem 0 0;
+  max-width: 46rem;
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.frame-cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.frame-card {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 0.9rem 0.9rem 0.95rem;
+  background: linear-gradient(180deg, #f7fbff, #ffffff);
+  display: grid;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+.frame-card-story {
+  border-color: rgba(0, 119, 200, 0.28);
+  background:
+    linear-gradient(160deg, rgba(0, 119, 200, 0.08), transparent 55%),
+    linear-gradient(180deg, #f7fbff, #ffffff);
+}
+
+.frame-k {
+  margin: 0;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--blue);
+}
+
+.frame-card h4 {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.frame-card p:last-child {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.84rem;
+  line-height: 1.4;
+}
+
 .strip {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1102,7 +1201,8 @@ html, body {
   .strip { grid-template-columns: 1fr; }
 
   .price-quotes,
-  .cover-wins { grid-template-columns: 1fr 1fr; }
+  .cover-wins,
+  .frame-cards { grid-template-columns: 1fr 1fr; }
 
   .incident-row { grid-template-columns: 1fr; gap: 0.2rem; }
 
@@ -1129,5 +1229,6 @@ html, body {
 
 @media (max-width: 560px) {
   .price-quotes,
-  .cover-wins { grid-template-columns: 1fr; }
+  .cover-wins,
+  .frame-cards { grid-template-columns: 1fr; }
 }

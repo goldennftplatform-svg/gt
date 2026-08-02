@@ -4,6 +4,7 @@ import { runSniff } from "./sniffer.js";
 import { computeTemperature, inferAgentDesk, translate } from "./translator.js";
 import {
   appendEvents,
+  loadDailyActivity,
   loadEvents,
   loadLatestSnapshot,
   loadState,
@@ -19,6 +20,7 @@ export function publicConfig() {
     catalogAuthConfigured: Boolean(config.geoffCookie || config.geoffPreviewCode),
     mode: process.env.VERCEL ? "vercel" : "local",
     trackWindowHours: config.trackWindowHours,
+    heatmapDays: config.heatmapDays,
   };
 }
 
@@ -37,14 +39,16 @@ function withBriefing(payload) {
 }
 
 export async function getStoredPayload() {
-  const [latest, events, state] = await Promise.all([
+  const [latest, events, state, dailyActivity] = await Promise.all([
     loadLatestSnapshot(),
     loadEvents(),
     loadState(),
+    loadDailyActivity(),
   ]);
   return withBriefing({
     latest,
     events,
+    dailyActivity,
     state,
     temperature: computeTemperature(events, latest),
     config: publicConfig(),
@@ -88,10 +92,13 @@ export async function pollAndTranslate({
 
   if (persist) await saveState(state);
 
+  const dailyActivity = persist ? await loadDailyActivity() : [];
+
   return withBriefing({
     latest: snapshot,
     events,
     newEvents,
+    dailyActivity,
     state,
     temperature,
     config: publicConfig(),

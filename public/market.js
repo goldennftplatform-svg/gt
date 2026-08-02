@@ -3,6 +3,7 @@ const els = {
   heroNote: document.getElementById("heroNote"),
   hints: document.getElementById("hints"),
   manifesto: document.getElementById("manifesto"),
+  frameCards: document.getElementById("frameCards"),
   scorecard: document.getElementById("scorecard"),
   liveMeta: document.getElementById("liveMeta"),
   liveGrid: document.getElementById("liveGrid"),
@@ -76,6 +77,25 @@ function renderManifesto(manifesto) {
       </ul>
     </aside>
   `;
+}
+
+function renderFrameCards(cards = []) {
+  if (!els.frameCards) return;
+  if (!cards.length) {
+    els.frameCards.innerHTML = `<p class="empty">Framing notes loading…</p>`;
+    return;
+  }
+  els.frameCards.innerHTML = cards
+    .map(
+      (c) => `
+      <article class="frame-card${c.k === "Story lane" ? " frame-card-story" : ""}">
+        <p class="frame-k">${escapeHtml(c.k)}</p>
+        <h4>${escapeHtml(c.title)}</h4>
+        <p>${escapeHtml(c.body)}</p>
+      </article>
+    `,
+    )
+    .join("");
 }
 
 function renderScorecard(rows = []) {
@@ -429,6 +449,7 @@ function applyPayload(data) {
   const tokenPlan = data.tokenPlan || null;
   renderHints(data.compareHints || []);
   renderManifesto(data.manifesto);
+  renderFrameCards(data.frameCards || []);
   renderScorecard(data.scorecard || []);
   renderLive(data.live || {}, data.takenAt);
   renderInventories(data.inventories || []);
