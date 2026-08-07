@@ -221,7 +221,18 @@ async function sniffStacknetNetwork() {
           solPriceUsd: res.json.treasury.solPriceUsd ?? null,
           cluster: res.json.treasury.cluster ?? null,
           pendingObligations: res.json.treasury.pendingObligations ?? null,
+          totalUsd: res.json.treasury.totalUsd ?? null,
+          receivableUsd: res.json.treasury.receivableUsd ?? null,
+          totalLamports: res.json.treasury.totalLamports ?? null,
+          staleSeconds: res.json.treasury.staleSeconds ?? null,
+          treasuryAddress: res.json.treasury.treasuryAddress ?? null,
+          warnings: Array.isArray(res.json.treasury.warnings)
+            ? res.json.treasury.warnings
+            : [],
         }
+      : null,
+    metaproofs: res.json?.metaproofs
+      ? { total: res.json.metaproofs.total ?? null }
       : null,
     timestamp: res.json?.timestamp ?? null,
   };
@@ -295,6 +306,102 @@ async function sniffStacknetWidgets() {
   };
 }
 
+/** Public docs pages we fingerprint so silent surface moves show up in the feed. */
+const DOCS_SURFACE_PAGES = [
+  { id: "models", path: "/introduction/models", label: "Models" },
+  { id: "usage", path: "/token-plan/usage", label: "Usage & Limits" },
+  { id: "mcp-tools", path: "/mcp/tools", label: "MCP Tools" },
+  { id: "mcp-overview", path: "/mcp/overview", label: "MCP Overview" },
+  { id: "hq", path: "/features/hq", label: "HQ" },
+  { id: "claw", path: "/features/agent-mode", label: "Agent Mode (Claw)" },
+  { id: "security", path: "/docs/security", label: "Security" },
+  { id: "billing-docs", path: "/docs/billing", label: "Billing docs" },
+];
+
+function extractDocsFingerprint(html = "") {
+  const title = (html.match(/<title>([^<]+)<\/title>/i) || [])[1] || "";
+  const text = html
+    .replace(/<script[\s\S]*?<\/script>/gi, " ")
+    .replace(/<style[\s\S]*?<\/style>/gi, " ")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 4000);
+  const modelHits = [
+    ...new Set(
+      [...text.matchAll(/\b(magma|duce|pyro(?::max)?|preview|stack-embed|mom-preview)\b/gi)].map((m) =>
+        m[0].toLowerCase(),
+      ),
+    ),
+  ].sort();
+  const toolHint = /57 tools|MCP tools|tool groups/i.test(text)
+    ? (text.match(/\b(\d+)\s+tools?\b/i) || [])[1] || "tools"
+    : null;
+  return {
+    title: title.replace(/&amp;/g, "&").slice(0, 120),
+    chars: text.length,
+    modelHits,
+    toolHint,
+    hash: simpleHash(`${title}|${text}`),
+  };
+}
+
+async function sniffGeoffDocsSurface() {
+  const started = Date.now();
+  const settled = await Promise.allSettled(
+    DOCS_SURFACE_PAGES.map((page) =>
+      fetchJson(`https://docs.geoff.ai${page.path}`, {
+        headers: { Accept: "text/html,application/xhtml+xml" },
+      }).then((res) => ({ page, res })),
+    ),
+  );
+
+  const pages = [];
+  for (const row of settled) {
+    if (row.status !== "fulfilled") continue;
+    const { page, res } = row.value;
+    if (!res.ok || !res.text) {
+      pages.push({
+        id: page.id,
+        path: page.path,
+        label: page.label,
+        ok: false,
+        status: res.status,
+      });
+      continue;
+    }
+    const fp = extractDocsFingerprint(res.text);
+    pages.push({
+      id: page.id,
+      path: page.path,
+      label: page.label,
+      ok: true,
+      status: res.status,
+      ...fp,
+    });
+  }
+
+  const okPages = pages.filter((p) => p.ok);
+  const fingerprint = simpleHash(
+    okPages.map((p) => `${p.id}:${p.hash}`).sort().join("|"),
+  );
+
+  return {
+    source: "geoff.docs.surface",
+    ok: okPages.length > 0,
+    status: okPages.length ? 200 : 0,
+    ms: Date.now() - started,
+    scraped: okPages.length,
+    total: DOCS_SURFACE_PAGES.length,
+    fingerprint,
+    pages,
+    reason:
+      okPages.length === DOCS_SURFACE_PAGES.length
+        ? null
+        : `Scraped ${okPages.length}/${DOCS_SURFACE_PAGES.length} docs pages`,
+  };
+}
+
 async function sniffGeoffTokenPlan() {
   const started = Date.now();
   try {
@@ -362,6 +469,7 @@ export async function runSniff() {
     sniffGeoffDeploy(),
     sniffGeoffCatalog(),
     sniffGeoffTokenPlan(),
+    sniffGeoffDocsSurface(),
     sniffStacknetHealth(),
     sniffStacknetRoot(),
     sniffStacknetNetwork(),
@@ -404,6 +512,7 @@ export async function runSniff() {
           ? `unreachable (${bySource["stacknet.health"]?.httpError || "error"})`
           : null),
       mcpContract: bySource["stacknet.health"]?.remoteMcp?.contract_id ?? null,
+      mcpOnHealth: Boolean(bySource["stacknet.health"]?.remoteMcp?.contract_id),
       inFlight: bySource["stacknet.health"]?.inFlight ?? null,
       maxInFlight: bySource["stacknet.health"]?.maxInFlight ?? null,
       taskCount: bySource["stacknet.node"]?.taskCount ?? null,
@@ -420,12 +529,22 @@ export async function runSniff() {
       widgets: bySource["stacknet.widgets"]?.count ?? null,
       capabilities: network.capabilities?.length ?? null,
       solPriceUsd: network.treasury?.solPriceUsd ?? null,
+      treasuryAddress: network.treasury?.treasuryAddress ?? null,
+      treasuryCluster: network.treasury?.cluster ?? null,
+      treasuryStaleSeconds: network.treasury?.staleSeconds ?? null,
+      treasuryTotalUsd: network.treasury?.totalUsd ?? null,
+      treasuryReceivableUsd: network.treasury?.receivableUsd ?? null,
+      treasuryPending: network.treasury?.pendingObligations ?? null,
+      treasuryWarnings: network.treasury?.warnings?.length ?? 0,
+      metaproofsTotal: network.metaproofs?.total ?? null,
       catalogModels: bySource["geoff.catalog"]?.models?.length ?? null,
       catalogSkipped: Boolean(bySource["geoff.catalog"]?.skipped),
       catalogSkipReason: bySource["geoff.catalog"]?.reason ?? null,
       tokenPlanCount: bySource["geoff.docs.pricing"]?.plans?.length ?? null,
       tokenPlanScraped: Boolean(bySource["geoff.docs.pricing"]?.scraped),
       tokenPlanFingerprint: bySource["geoff.docs.pricing"]?.fingerprint ?? null,
+      docsSurfaceScraped: bySource["geoff.docs.surface"]?.scraped ?? null,
+      docsSurfaceFingerprint: bySource["geoff.docs.surface"]?.fingerprint ?? null,
       healthySources: sources.filter((s) => s.ok).length,
       skippedSources: sources.filter((s) => s.skipped).length,
       failedSources: sources.filter((s) => !s.ok && !s.skipped).length,

@@ -37,11 +37,12 @@ const CAPABILITY_GROUPS = [
 const MODEL_ROLE = {
   magma: { role: "Creative powerhouse", use: "Music, media, agents, and multimodal making." },
   preview: { role: "Everyday multimodal", use: "Chat, code, images, and tool use." },
-  pyro: { role: "Fast creative lane", use: "Quicker generation when you want speed." },
-  "pyro:max": { role: "Max pyro lane", use: "Heavier pyro-class generation." },
+  pyro: { role: "Companion reasoning brain", use: "Multimodal chat with deep reasoning." },
+  "pyro:max": { role: "Max reasoning lane", use: "1M-context pyro-class multimodal chat." },
   "stack-chat": { role: "Chat specialist", use: "Conversation-focused replies." },
   "stack-embed": { role: "Search memory", use: "Turns text into embeddings for retrieval." },
   "mom-preview": { role: "Mom preview", use: "Preview-tier experimental model." },
+  duce: { role: "Retired naming", use: "Older docs/catalog name — live Stacknet menu uses pyro." },
 };
 
 function modelRole(id = "") {
@@ -204,8 +205,8 @@ function pieceTools(summary, capabilityGroups = [], widgets = []) {
     facts: [
       onGroups.length ? `Active lanes: ${onGroups.join(", ")}` : "No capability lanes detected",
       summary.mcpContract
-        ? "Agent plug-in contract (MCP) is published"
-        : "No MCP contract reported",
+        ? "Agent plug-in contract (MCP) published on /health"
+        : "MCP contract not on /health — see public docs.geoff.ai/mcp (fingerprinted)",
     ],
   };
 }
@@ -303,6 +304,10 @@ function userTakeForEvent(event) {
       return "Geoff’s internal tool/model catalog was updated.";
     case "treasury":
       return "On-chain treasury pricing moved; usually not user-facing.";
+    case "metaproofs":
+      return "Network metaproofs counter moved — public summary field only.";
+    case "docs":
+      return "Public docs pages we fingerprint moved (MCP / HQ / Claw / models / usage).";
     case "pricing":
       return "Public Token Plan rates on docs.geoff.ai changed — check what seats/tokens cost now.";
     case "baseline":
@@ -470,6 +475,11 @@ function buildHorsepower(summary, models = [], lanes = [], widgets = [], coverag
     tools: {
       widgets: summary.widgets ?? widgets.length,
       mcp: summary.mcpContract || null,
+      mcpOnHealth: Boolean(summary.mcpOnHealth),
+      solPriceUsd: summary.solPriceUsd ?? null,
+      treasuryAddress: summary.treasuryAddress || null,
+      metaproofsTotal: summary.metaproofsTotal ?? null,
+      docsSurfaceScraped: summary.docsSurfaceScraped ?? null,
       items: widgets.slice(0, 12).map((w) => ({
         id: w.id,
         name: w.name || w.id,

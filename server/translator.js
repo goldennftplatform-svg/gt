@@ -98,7 +98,8 @@ export function inferRank(e = {}) {
   // Explicit rare full-stack marker wins
   if (/full-stack ship/i.test(blob)) return "crazy";
 
-  if (e.kind === "baseline" || e.kind === "treasury") return "whisper";
+  if (e.kind === "baseline" || e.kind === "treasury" || e.kind === "metaproofs") return "whisper";
+  if (e.kind === "docs") return "note";
   if (e.kind === "agent") return "note";
   if (e.kind === "agentCluster") {
     if (/crazy|full-stack/i.test(blob)) return "crazy";
@@ -375,6 +376,45 @@ export function translate(previous, current) {
           to: currPriceFp,
           plans: currPlans,
         },
+      }),
+    );
+  }
+
+  const prevDocsFp = prev["geoff.docs.surface"]?.fingerprint;
+  const currDocsFp = curr["geoff.docs.surface"]?.fingerprint;
+  if (prevDocsFp && currDocsFp && prevDocsFp !== currDocsFp) {
+    const prevPages = prev["geoff.docs.surface"]?.pages || [];
+    const currPages = curr["geoff.docs.surface"]?.pages || [];
+    const moved = currPages
+      .filter((p) => p.ok && p.hash)
+      .filter((p) => {
+        const before = prevPages.find((x) => x.id === p.id);
+        return before?.hash && before.hash !== p.hash;
+      })
+      .map((p) => p.label || p.id);
+    events.push(
+      event({
+        kind: "docs",
+        rank: "note",
+        title: "Public docs surface moved",
+        summary: moved.length
+          ? `Fingerprinted docs pages changed: ${moved.join(" · ")}. MCP / HQ / Claw / models / usage watched.`
+          : "Public docs fingerprint changed on docs.geoff.ai.",
+        details: { from: prevDocsFp, to: currDocsFp, pages: moved },
+      }),
+    );
+  }
+
+  const prevMeta = prev["stacknet.network"]?.metaproofs?.total;
+  const currMeta = curr["stacknet.network"]?.metaproofs?.total;
+  if (isNumber(prevMeta) && isNumber(currMeta) && prevMeta !== currMeta) {
+    events.push(
+      event({
+        kind: "metaproofs",
+        rank: "whisper",
+        title: "Metaproofs counter moved",
+        summary: `Network metaproofs.total ${prevMeta} → ${currMeta}.`,
+        details: { from: prevMeta, to: currMeta },
       }),
     );
   }

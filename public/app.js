@@ -21,7 +21,8 @@ const MAX_DAILY_INGEST_IDS = 800;
 function inferRank(e = {}) {
   const blob = `${e.title || ""} ${e.summary || ""}`;
   if (/full-stack ship/i.test(blob)) return "crazy";
-  if (e.kind === "baseline" || e.kind === "treasury") return "whisper";
+  if (e.kind === "baseline" || e.kind === "treasury" || e.kind === "metaproofs") return "whisper";
+  if (e.kind === "docs") return "note";
   if (e.kind === "agent") return "note";
   if (e.kind === "agentCluster") {
     if (/crazy|full-stack/i.test(blob)) return "crazy";
@@ -194,6 +195,8 @@ const els = {
   apiModelCount: document.getElementById("apiModelCount"),
   widgetCount: document.getElementById("widgetCount"),
   mcpContract: document.getElementById("mcpContract"),
+  treasurySol: document.getElementById("treasurySol"),
+  treasuryMeta: document.getElementById("treasuryMeta"),
   story: document.getElementById("story"),
   storyHeadline: document.getElementById("storyHeadline"),
   storySentence: document.getElementById("storySentence"),
@@ -262,6 +265,8 @@ const EVENT_ICONS = {
   agent: "bolt",
   agentCluster: "spark",
   pricing: "tag",
+  docs: "book",
+  metaproofs: "layers",
 };
 
 let mode = "local";
@@ -495,7 +500,11 @@ function renderMetrics(latest) {
     s.nodes != null && s.gpus != null ? `${s.nodes} / ${s.gpus}` : "—";
   const loadBits = [];
   if (s.averageLoad != null) loadBits.push(`load ${s.averageLoad}`);
-  if (s.inFlight != null) loadBits.push(`in-flight ${s.inFlight}`);
+  if (s.inFlight != null) {
+    loadBits.push(
+      s.maxInFlight != null ? `in-flight ${s.inFlight}/${s.maxInFlight}` : `in-flight ${s.inFlight}`,
+    );
+  }
   if (s.taskCount != null) loadBits.push(`tasks ${s.taskCount}`);
   els.stackLoad.textContent = loadBits.length ? loadBits.join(" · ") : "load —";
   if (s.availableVramGb != null && s.vramGb != null) {
@@ -514,9 +523,38 @@ function renderMetrics(latest) {
     els.geoffDeploy.textContent = "—";
   }
   els.modelCount.textContent = s.models != null ? String(s.models) : "—";
-  els.apiModelCount.textContent = s.apiModels != null ? `api ${s.apiModels}` : "api —";
+  els.apiModelCount.textContent =
+    s.apiModels != null
+      ? `api ${s.apiModels}${s.models != null ? ` · net ${s.models}` : ""}`
+      : "api —";
+  if (els.apiModelCount) {
+    els.apiModelCount.title =
+      "api = public /v1/models cards · net = /network/summary routing lanes (not the same list)";
+  }
   els.widgetCount.textContent = s.widgets != null ? String(s.widgets) : "—";
-  els.mcpContract.textContent = short(s.mcpContract, 18, 0);
+  if (s.mcpContract) {
+    els.mcpContract.textContent = short(s.mcpContract, 18, 0);
+    els.mcpContract.title = "MCP contract id from Stacknet /health";
+  } else {
+    els.mcpContract.textContent = "not on /health";
+    els.mcpContract.title =
+      "remote_mcp not published on /health anymore — docs.geoff.ai/mcp is fingerprinted instead";
+  }
+  if (els.treasurySol) {
+    els.treasurySol.textContent =
+      s.solPriceUsd != null ? `$${Number(s.solPriceUsd).toFixed(2)} SOL` : "—";
+  }
+  if (els.treasuryMeta) {
+    const bits = [];
+    if (s.treasuryCluster) bits.push(s.treasuryCluster);
+    if (s.metaproofsTotal != null) bits.push(`proofs ${s.metaproofsTotal}`);
+    if (s.treasuryStaleSeconds != null) bits.push(`stale ${s.treasuryStaleSeconds}s`);
+    if (s.treasuryAddress) bits.push(short(s.treasuryAddress, 6, 4));
+    els.treasuryMeta.textContent = bits.length ? bits.join(" · ") : "—";
+    els.treasuryMeta.title = s.treasuryAddress
+      ? `Treasury ${s.treasuryAddress}`
+      : "Public treasury + metaproofs from /network/summary";
+  }
 }
 
 function renderSpark(temps = []) {
