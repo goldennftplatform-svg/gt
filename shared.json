@@ -1,14 +1,14 @@
 {
-  "updatedAt": "2026-08-07T06:16:21.283Z",
+  "updatedAt": "2026-08-07T06:16:22.421Z",
   "latest": {
-    "id": "snap_msijxh5t",
-    "takenAt": "2026-08-07T06:16:21.048Z",
+    "id": "snap_msijxi1e",
+    "takenAt": "2026-08-07T06:16:21.703Z",
     "sources": {
       "geoff.version": {
         "source": "geoff.version",
         "ok": true,
         "status": 200,
-        "ms": 223,
+        "ms": 183,
         "buildId": "dbfafd7e6520b4f90a390b3f3cebdd9418f5afbe",
         "raw": {
           "buildId": "dbfafd7e6520b4f90a390b3f3cebdd9418f5afbe"
@@ -18,7 +18,7 @@
         "source": "geoff.deploy",
         "ok": true,
         "status": 200,
-        "ms": 225,
+        "ms": 182,
         "deployId": "dpl_5mx7hBqDKDLucCNZyBrppwWGCLVN",
         "chunks": {
           "count": 53,
@@ -49,7 +49,7 @@
         "source": "geoff.docs.pricing",
         "ok": true,
         "status": 200,
-        "ms": 167,
+        "ms": 127,
         "scraped": true,
         "fingerprint": "32510b23",
         "model": "One monthly token pool. Shared across text, speech, video, image, music, code, and files — no per-modality nickel-and-dime.",
@@ -347,7 +347,7 @@
         "source": "stacknet.health",
         "ok": true,
         "status": 200,
-        "ms": 121,
+        "ms": 103,
         "statusText": "healthy",
         "reachable": true,
         "httpError": null,
@@ -362,14 +362,14 @@
         "source": "stacknet.root",
         "ok": true,
         "status": 200,
-        "ms": 154,
+        "ms": 688,
         "version": "3.8.340"
       },
       "stacknet.network": {
         "source": "stacknet.network",
         "ok": true,
         "status": 200,
-        "ms": 155,
+        "ms": 691,
         "totalNodes": 8,
         "availableNodes": 8,
         "totalGpus": 7,
@@ -427,7 +427,7 @@
           "cluster": "mainnet",
           "pendingObligations": 0
         },
-        "timestamp": 1786083381217
+        "timestamp": 1786083382398
       },
       "stacknet.node": {
         "source": "stacknet.node",
@@ -443,7 +443,7 @@
         "source": "stacknet.models",
         "ok": true,
         "status": 200,
-        "ms": 102,
+        "ms": 131,
         "count": 5,
         "ids": [
           "magma",
@@ -561,7 +561,7 @@
         "source": "stacknet.widgets",
         "ok": true,
         "status": 200,
-        "ms": 140,
+        "ms": 680,
         "count": 19,
         "ids": [
           "system-asset-report",
@@ -953,14 +953,14 @@
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 223
+          "ms": 183
         },
         {
           "source": "geoff.deploy",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 225
+          "ms": 182
         },
         {
           "source": "geoff.catalog",
@@ -974,28 +974,28 @@
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 167
+          "ms": 127
         },
         {
           "source": "stacknet.health",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 121
+          "ms": 103
         },
         {
           "source": "stacknet.root",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 154
+          "ms": 688
         },
         {
           "source": "stacknet.network",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 155
+          "ms": 691
         },
         {
           "source": "stacknet.node",
@@ -1009,22 +1009,22 @@
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 102
+          "ms": 131
         },
         {
           "source": "stacknet.widgets",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 140
+          "ms": 680
         }
       ]
     }
   },
   "events": [
     {
-      "id": "evt_msijxh5v_rv01f",
-      "at": "2026-08-07T06:16:21.283Z",
+      "id": "evt_msijxi1g_ou2tr",
+      "at": "2026-08-07T06:16:22.420Z",
       "kind": "agent",
       "rank": "note",
       "title": "Queue went quiet",
@@ -1081,7 +1081,7 @@
   ],
   "state": {
     "startedAt": "2026-08-07T06:15:12.347Z",
-    "lastPollAt": "2026-08-07T06:16:21.048Z",
+    "lastPollAt": "2026-08-07T06:16:21.703Z",
     "lastError": null,
     "pollCount": 2,
     "temperature": 0
