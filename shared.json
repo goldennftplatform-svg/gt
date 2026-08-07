@@ -1,14 +1,14 @@
 {
-  "updatedAt": "2026-08-07T19:42:09.144Z",
+  "updatedAt": "2026-08-07T20:08:56.272Z",
   "latest": {
-    "id": "snap_msjcpqld",
-    "takenAt": "2026-08-07T19:42:08.968Z",
+    "id": "snap_msjdo6no",
+    "takenAt": "2026-08-07T20:08:56.106Z",
     "sources": {
       "geoff.version": {
         "source": "geoff.version",
         "ok": true,
         "status": 200,
-        "ms": 148,
+        "ms": 113,
         "buildId": "dbfafd7e6520b4f90a390b3f3cebdd9418f5afbe",
         "raw": {
           "buildId": "dbfafd7e6520b4f90a390b3f3cebdd9418f5afbe"
@@ -18,7 +18,7 @@
         "source": "geoff.deploy",
         "ok": true,
         "status": 200,
-        "ms": 152,
+        "ms": 136,
         "deployId": "dpl_5mx7hBqDKDLucCNZyBrppwWGCLVN",
         "chunks": {
           "count": 53,
@@ -49,7 +49,7 @@
         "source": "geoff.docs.pricing",
         "ok": true,
         "status": 200,
-        "ms": 86,
+        "ms": 61,
         "scraped": true,
         "fingerprint": "32510b23",
         "model": "One monthly token pool. Shared across text, speech, video, image, music, code, and files — no per-modality nickel-and-dime.",
@@ -347,13 +347,13 @@
         "source": "stacknet.health",
         "ok": true,
         "status": 200,
-        "ms": 77,
+        "ms": 62,
         "statusText": "healthy",
         "reachable": true,
         "httpError": null,
         "version": "v3.8.340",
         "nodeId": "nk_key_FOpmPDVgCusTGcuL",
-        "inFlight": 8,
+        "inFlight": 6,
         "maxInFlight": 512,
         "remoteMcp": null,
         "error": null
@@ -362,14 +362,14 @@
         "source": "stacknet.root",
         "ok": true,
         "status": 200,
-        "ms": 107,
+        "ms": 64,
         "version": "3.8.340"
       },
       "stacknet.network": {
         "source": "stacknet.network",
         "ok": true,
         "status": 200,
-        "ms": 110,
+        "ms": 123,
         "totalNodes": 8,
         "availableNodes": 8,
         "totalGpus": 7,
@@ -423,17 +423,17 @@
           "video_generation"
         ],
         "treasury": {
-          "solPriceUsd": 73.75,
+          "solPriceUsd": 73.95,
           "cluster": "mainnet",
           "pendingObligations": 0
         },
-        "timestamp": 1786131729064
+        "timestamp": 1786133336216
       },
       "stacknet.node": {
         "source": "stacknet.node",
         "ok": true,
         "status": 200,
-        "ms": 76,
+        "ms": 88,
         "nodeId": "nk_key_FOpmPDVgCusTGcuL",
         "version": "0.1.0",
         "coprocessorCount": 1,
@@ -443,7 +443,7 @@
         "source": "stacknet.models",
         "ok": true,
         "status": 200,
-        "ms": 75,
+        "ms": 40,
         "count": 5,
         "ids": [
           "magma",
@@ -480,7 +480,7 @@
               "think",
               "video"
             ],
-            "created": 1786131729
+            "created": 1786133336
           },
           {
             "id": "preview",
@@ -500,7 +500,7 @@
               "image",
               "think"
             ],
-            "created": 1786131729
+            "created": 1786133336
           },
           {
             "id": "pyro",
@@ -521,7 +521,7 @@
               "image",
               "think"
             ],
-            "created": 1786131729
+            "created": 1786133336
           },
           {
             "id": "pyro:max",
@@ -542,7 +542,7 @@
               "image",
               "think"
             ],
-            "created": 1786131729
+            "created": 1786133336
           },
           {
             "id": "stack-embed",
@@ -553,7 +553,7 @@
               "chat"
             ],
             "contentTypes": [],
-            "created": 1786131729
+            "created": 1786133336
           }
         ]
       },
@@ -561,7 +561,7 @@
         "source": "stacknet.widgets",
         "ok": true,
         "status": 200,
-        "ms": 133,
+        "ms": 126,
         "count": 19,
         "ids": [
           "system-asset-report",
@@ -921,7 +921,7 @@
       "stacknetVersion": "v3.8.340",
       "stacknetStatus": "healthy",
       "mcpContract": null,
-      "inFlight": 8,
+      "inFlight": 6,
       "maxInFlight": 512,
       "taskCount": 0,
       "nodeId": "nk_key_FOpmPDVgCusTGcuL",
@@ -936,7 +936,7 @@
       "apiModels": 5,
       "widgets": 19,
       "capabilities": 12,
-      "solPriceUsd": 73.75,
+      "solPriceUsd": 73.95,
       "catalogModels": 0,
       "catalogSkipped": true,
       "catalogSkipReason": "Set GEOFF_COOKIE or GEOFF_PREVIEW_CODE to sniff authenticated catalogs",
@@ -953,14 +953,14 @@
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 148
+          "ms": 113
         },
         {
           "source": "geoff.deploy",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 152
+          "ms": 136
         },
         {
           "source": "geoff.catalog",
@@ -974,54 +974,980 @@
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 86
+          "ms": 61
         },
         {
           "source": "stacknet.health",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 77
+          "ms": 62
         },
         {
           "source": "stacknet.root",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 107
+          "ms": 64
         },
         {
           "source": "stacknet.network",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 110
+          "ms": 123
         },
         {
           "source": "stacknet.node",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 76
+          "ms": 88
         },
         {
           "source": "stacknet.models",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 75
+          "ms": 40
         },
         {
           "source": "stacknet.widgets",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 133
+          "ms": 126
         }
       ]
     }
   },
   "events": [
+    {
+      "id": "evt_msjdnfvn_djg7h",
+      "at": "2026-08-07T20:08:21.539Z",
+      "kind": "agent",
+      "rank": "note",
+      "heat": 0,
+      "title": "Queue metrics shifted",
+      "summary": "Measured from public Stacknet counters: in-flight 4 → 5 (max 512) · avg load 0 → 0.19142857142857145. No private agent transcript — just queue/load telemetry.",
+      "details": {
+        "inferred": true,
+        "dataset": "queue",
+        "inFlight": 5,
+        "maxInFlight": 512,
+        "taskCount": 0,
+        "averageLoad": 0.19142857142857145,
+        "signals": [
+          "in-flight 4 → 5 (max 512)",
+          "avg load 0 → 0.19142857142857145"
+        ]
+      },
+      "severity": "low",
+      "vibe": "Note"
+    },
+    {
+      "id": "evt_msjdmzxx_3v1d4",
+      "at": "2026-08-07T20:08:00.885Z",
+      "kind": "agent",
+      "rank": "note",
+      "heat": 0,
+      "title": "Queue metrics shifted",
+      "summary": "Measured from public Stacknet counters: in-flight 6 → 4 (max 512). No private agent transcript — just queue/load telemetry.",
+      "details": {
+        "inferred": true,
+        "dataset": "queue",
+        "inFlight": 4,
+        "maxInFlight": 512,
+        "taskCount": 0,
+        "averageLoad": 0,
+        "signals": [
+          "in-flight 6 → 4 (max 512)"
+        ]
+      },
+      "severity": "low",
+      "vibe": "Note"
+    },
+    {
+      "id": "evt_msjdm5g7_mmdxj",
+      "at": "2026-08-07T20:07:21.367Z",
+      "kind": "agent",
+      "rank": "note",
+      "heat": 0,
+      "title": "Queue metrics shifted",
+      "summary": "Measured from public Stacknet counters: in-flight 8 → 6 (max 512) · avg load 0.14285714285714285 → 0. No private agent transcript — just queue/load telemetry.",
+      "details": {
+        "inferred": true,
+        "dataset": "queue",
+        "inFlight": 6,
+        "maxInFlight": 512,
+        "taskCount": 0,
+        "averageLoad": 0,
+        "signals": [
+          "in-flight 8 → 6 (max 512)",
+          "avg load 0.14285714285714285 → 0"
+        ]
+      },
+      "severity": "low",
+      "vibe": "Note"
+    },
+    {
+      "id": "evt_msjdlpa8_r907h",
+      "at": "2026-08-07T20:07:00.416Z",
+      "kind": "agent",
+      "rank": "note",
+      "heat": 0,
+      "title": "Queue looks busy",
+      "summary": "Measured from public Stacknet counters: in-flight 6 → 8 (max 512). No private agent transcript — just queue/load telemetry.",
+      "details": {
+        "inferred": true,
+        "dataset": "queue",
+        "inFlight": 8,
+        "maxInFlight": 512,
+        "taskCount": 0,
+        "averageLoad": 0.14285714285714285,
+        "signals": [
+          "in-flight 6 → 8 (max 512)"
+        ]
+      },
+      "severity": "low",
+      "vibe": "Note"
+    },
+    {
+      "id": "evt_msjdkfhb_zvkh8",
+      "at": "2026-08-07T20:06:01.055Z",
+      "kind": "agent",
+      "rank": "note",
+      "heat": 0,
+      "title": "Queue metrics shifted",
+      "summary": "Measured from public Stacknet counters: in-flight 6 → 5 (max 512) · avg load 0 → 0.14285714285714285. No private agent transcript — just queue/load telemetry.",
+      "details": {
+        "inferred": true,
+        "dataset": "queue",
+        "inFlight": 5,
+        "maxInFlight": 512,
+        "taskCount": 0,
+        "averageLoad": 0.14285714285714285,
+        "signals": [
+          "in-flight 6 → 5 (max 512)",
+          "avg load 0 → 0.14285714285714285"
+        ]
+      },
+      "severity": "low",
+      "vibe": "Note"
+    },
+    {
+      "id": "evt_msjdjkyr_nbh24",
+      "at": "2026-08-07T20:05:21.507Z",
+      "kind": "agent",
+      "rank": "note",
+      "heat": 0,
+      "title": "Queue metrics shifted",
+      "summary": "Measured from public Stacknet counters: in-flight 8 → 6 (max 512). No private agent transcript — just queue/load telemetry.",
+      "details": {
+        "inferred": true,
+        "dataset": "queue",
+        "inFlight": 6,
+        "maxInFlight": 512,
+        "taskCount": 0,
+        "averageLoad": 0,
+        "signals": [
+          "in-flight 8 → 6 (max 512)"
+        ]
+      },
+      "severity": "low",
+      "vibe": "Note"
+    },
+    {
+      "id": "evt_msjdj4xp_tgt17",
+      "at": "2026-08-07T20:05:00.733Z",
+      "kind": "agent",
+      "rank": "note",
+      "heat": 0,
+      "title": "Queue looks busy",
+      "summary": "Measured from public Stacknet counters: in-flight 7 → 8 (max 512) · avg load 0.14285714285714285 → 0. No private agent transcript — just queue/load telemetry.",
+      "details": {
+        "inferred": true,
+        "dataset": "queue",
+        "inFlight": 8,
+        "maxInFlight": 512,
+        "taskCount": 0,
+        "averageLoad": 0,
+        "signals": [
+          "in-flight 7 → 8 (max 512)",
+          "avg load 0.14285714285714285 → 0"
+        ]
+      },
+      "severity": "low",
+      "vibe": "Note"
+    },
+    {
+      "id": "evt_msjdiajw_cwx72",
+      "at": "2026-08-07T20:04:21.356Z",
+      "kind": "agent",
+      "rank": "note",
+      "heat": 0,
+      "title": "Queue metrics shifted",
+      "summary": "Measured from public Stacknet counters: in-flight 3 → 7 (max 512). No private agent transcript — just queue/load telemetry.",
+      "details": {
+        "inferred": true,
+        "dataset": "queue",
+        "inFlight": 7,
+        "maxInFlight": 512,
+        "taskCount": 0,
+        "averageLoad": 0.14285714285714285,
+        "signals": [
+          "in-flight 3 → 7 (max 512)"
+        ]
+      },
+      "severity": "low",
+      "vibe": "Note"
+    },
+    {
+      "id": "evt_msjdhug9_gxtx2",
+      "at": "2026-08-07T20:04:00.489Z",
+      "kind": "agent",
+      "rank": "note",
+      "heat": 0,
+      "title": "Queue metrics shifted",
+      "summary": "Measured from public Stacknet counters: in-flight 7 → 3 (max 512). No private agent transcript — just queue/load telemetry.",
+      "details": {
+        "inferred": true,
+        "dataset": "queue",
+        "inFlight": 3,
+        "maxInFlight": 512,
+        "taskCount": 0,
+        "averageLoad": 0.14285714285714285,
+        "signals": [
+          "in-flight 7 → 3 (max 512)"
+        ]
+      },
+      "severity": "low",
+      "vibe": "Note"
+    },
+    {
+      "id": "evt_msjdh02d_ghbfi",
+      "at": "2026-08-07T20:03:21.109Z",
+      "kind": "agent",
+      "rank": "note",
+      "heat": 0,
+      "title": "Queue metrics shifted",
+      "summary": "Measured from public Stacknet counters: in-flight 4 → 7 (max 512) · avg load 0 → 0.14285714285714285. No private agent transcript — just queue/load telemetry.",
+      "details": {
+        "inferred": true,
+        "dataset": "queue",
+        "inFlight": 7,
+        "maxInFlight": 512,
+        "taskCount": 0,
+        "averageLoad": 0.14285714285714285,
+        "signals": [
+          "in-flight 4 → 7 (max 512)",
+          "avg load 0 → 0.14285714285714285"
+        ]
+      },
+      "severity": "low",
+      "vibe": "Note"
+    },
+    {
+      "id": "evt_msjdfprc_7ax4q",
+      "at": "2026-08-07T20:02:21.096Z",
+      "kind": "agent",
+      "rank": "note",
+      "heat": 0,
+      "title": "Queue metrics shifted",
+      "summary": "Measured from public Stacknet counters: in-flight 7 → 4 (max 512) · avg load 0.14285714285714285 → 0. No private agent transcript — just queue/load telemetry.",
+      "details": {
+        "inferred": true,
+        "dataset": "queue",
+        "inFlight": 4,
+        "maxInFlight": 512,
+        "taskCount": 0,
+        "averageLoad": 0,
+        "signals": [
+          "in-flight 7 → 4 (max 512)",
+          "avg load 0.14285714285714285 → 0"
+        ]
+      },
+      "severity": "low",
+      "vibe": "Note"
+    },
+    {
+      "id": "evt_msjdf9u1_h4ztg",
+      "at": "2026-08-07T20:02:00.457Z",
+      "kind": "agent",
+      "rank": "note",
+      "heat": 0,
+      "title": "Queue metrics shifted",
+      "summary": "Measured from public Stacknet counters: in-flight 10 → 7 (max 512). No private agent transcript — just queue/load telemetry.",
+      "details": {
+        "inferred": true,
+        "dataset": "queue",
+        "inFlight": 7,
+        "maxInFlight": 512,
+        "taskCount": 0,
+        "averageLoad": 0.14285714285714285,
+        "signals": [
+          "in-flight 10 → 7 (max 512)"
+        ]
+      },
+      "severity": "low",
+      "vibe": "Note"
+    },
+    {
+      "id": "evt_msjdefks_9piid",
+      "at": "2026-08-07T20:01:21.244Z",
+      "kind": "agent",
+      "rank": "note",
+      "heat": 0,
+      "title": "Queue looks busy",
+      "summary": "Measured from public Stacknet counters: in-flight 4 → 10 (max 512) · avg load 0 → 0.14285714285714285. No private agent transcript — just queue/load telemetry.",
+      "details": {
+        "inferred": true,
+        "dataset": "queue",
+        "inFlight": 10,
+        "maxInFlight": 512,
+        "taskCount": 0,
+        "averageLoad": 0.14285714285714285,
+        "signals": [
+          "in-flight 4 → 10 (max 512)",
+          "avg load 0 → 0.14285714285714285"
+        ]
+      },
+      "severity": "low",
+      "vibe": "Note"
+    },
+    {
+      "id": "evt_msjddzs1_wajpv",
+      "at": "2026-08-07T20:01:00.769Z",
+      "kind": "agent",
+      "rank": "note",
+      "heat": 0,
+      "title": "Queue metrics shifted",
+      "summary": "Measured from public Stacknet counters: in-flight 7 → 4 (max 512) · avg load 0.14285714285714285 → 0. No private agent transcript — just queue/load telemetry.",
+      "details": {
+        "inferred": true,
+        "dataset": "queue",
+        "inFlight": 4,
+        "maxInFlight": 512,
+        "taskCount": 0,
+        "averageLoad": 0,
+        "signals": [
+          "in-flight 7 → 4 (max 512)",
+          "avg load 0.14285714285714285 → 0"
+        ]
+      },
+      "severity": "low",
+      "vibe": "Note"
+    },
+    {
+      "id": "evt_msjdd5xk_re5pi",
+      "at": "2026-08-07T20:00:22.088Z",
+      "kind": "agent",
+      "rank": "note",
+      "heat": 0,
+      "title": "Queue metrics shifted",
+      "summary": "Measured from public Stacknet counters: in-flight 5 → 7 (max 512) · avg load 0 → 0.14285714285714285. No private agent transcript — just queue/load telemetry.",
+      "details": {
+        "inferred": true,
+        "dataset": "queue",
+        "inFlight": 7,
+        "maxInFlight": 512,
+        "taskCount": 0,
+        "averageLoad": 0.14285714285714285,
+        "signals": [
+          "in-flight 5 → 7 (max 512)",
+          "avg load 0 → 0.14285714285714285"
+        ]
+      },
+      "severity": "low",
+      "vibe": "Note"
+    },
+    {
+      "id": "evt_msjdcq3o_x32cp",
+      "at": "2026-08-07T20:00:01.572Z",
+      "kind": "agent",
+      "rank": "note",
+      "heat": 0,
+      "title": "Queue metrics shifted",
+      "summary": "Measured from public Stacknet counters: in-flight 5/512 · avg load 0.21714285714285714 → 0. No private agent transcript — just queue/load telemetry.",
+      "details": {
+        "inferred": true,
+        "dataset": "queue",
+        "inFlight": 5,
+        "maxInFlight": 512,
+        "taskCount": 0,
+        "averageLoad": 0,
+        "signals": [
+          "in-flight 5/512",
+          "avg load 0.21714285714285714 → 0"
+        ]
+      },
+      "severity": "low",
+      "vibe": "Note"
+    },
+    {
+      "id": "evt_msjdbuwa_1kacy",
+      "at": "2026-08-07T19:59:21.130Z",
+      "kind": "agent",
+      "rank": "note",
+      "heat": 0,
+      "title": "Queue metrics shifted",
+      "summary": "Measured from public Stacknet counters: in-flight 7 → 5 (max 512) · avg load 0.14285714285714285 → 0.21714285714285714. No private agent transcript — just queue/load telemetry.",
+      "details": {
+        "inferred": true,
+        "dataset": "queue",
+        "inFlight": 5,
+        "maxInFlight": 512,
+        "taskCount": 0,
+        "averageLoad": 0.21714285714285714,
+        "signals": [
+          "in-flight 7 → 5 (max 512)",
+          "avg load 0.14285714285714285 → 0.21714285714285714"
+        ]
+      },
+      "severity": "low",
+      "vibe": "Note"
+    },
+    {
+      "id": "evt_msjdbfdw_dw5pc",
+      "at": "2026-08-07T19:59:01.028Z",
+      "kind": "agent",
+      "rank": "note",
+      "heat": 0,
+      "title": "Queue metrics shifted",
+      "summary": "Measured from public Stacknet counters: in-flight 4 → 7 (max 512). No private agent transcript — just queue/load telemetry.",
+      "details": {
+        "inferred": true,
+        "dataset": "queue",
+        "inFlight": 7,
+        "maxInFlight": 512,
+        "taskCount": 0,
+        "averageLoad": 0.14285714285714285,
+        "signals": [
+          "in-flight 4 → 7 (max 512)"
+        ]
+      },
+      "severity": "low",
+      "vibe": "Note"
+    },
+    {
+      "id": "evt_msjdakke_3r5o4",
+      "at": "2026-08-07T19:58:21.086Z",
+      "kind": "agent",
+      "rank": "note",
+      "heat": 0,
+      "title": "Queue metrics shifted",
+      "summary": "Measured from public Stacknet counters: in-flight 7 → 4 (max 512) · avg load 0 → 0.14285714285714285. No private agent transcript — just queue/load telemetry.",
+      "details": {
+        "inferred": true,
+        "dataset": "queue",
+        "inFlight": 4,
+        "maxInFlight": 512,
+        "taskCount": 0,
+        "averageLoad": 0.14285714285714285,
+        "signals": [
+          "in-flight 7 → 4 (max 512)",
+          "avg load 0 → 0.14285714285714285"
+        ]
+      },
+      "severity": "low",
+      "vibe": "Note"
+    },
+    {
+      "id": "evt_msjd9a91_xkavm",
+      "at": "2026-08-07T19:57:21.061Z",
+      "kind": "agent",
+      "rank": "note",
+      "heat": 0,
+      "title": "Queue looks busy",
+      "summary": "Measured from public Stacknet counters: in-flight 8/512 · avg load 0.2857142857142857 → 0. No private agent transcript — just queue/load telemetry.",
+      "details": {
+        "inferred": true,
+        "dataset": "queue",
+        "inFlight": 8,
+        "maxInFlight": 512,
+        "taskCount": 0,
+        "averageLoad": 0,
+        "signals": [
+          "in-flight 8/512",
+          "avg load 0.2857142857142857 → 0"
+        ]
+      },
+      "severity": "low",
+      "vibe": "Note"
+    },
+    {
+      "id": "evt_msjd8ucn_6s54s",
+      "at": "2026-08-07T19:57:00.455Z",
+      "kind": "agent",
+      "rank": "note",
+      "heat": 0,
+      "title": "Queue looks busy",
+      "summary": "Measured from public Stacknet counters: in-flight 8/512 · avg load 0.14285714285714285 → 0.2857142857142857. No private agent transcript — just queue/load telemetry.",
+      "details": {
+        "inferred": true,
+        "dataset": "queue",
+        "inFlight": 8,
+        "maxInFlight": 512,
+        "taskCount": 0,
+        "averageLoad": 0.2857142857142857,
+        "signals": [
+          "in-flight 8/512",
+          "avg load 0.14285714285714285 → 0.2857142857142857"
+        ]
+      },
+      "severity": "low",
+      "vibe": "Note"
+    },
+    {
+      "id": "evt_msjd807g_smaj1",
+      "at": "2026-08-07T19:56:21.388Z",
+      "kind": "agent",
+      "rank": "note",
+      "heat": 0,
+      "title": "Queue looks busy",
+      "summary": "Measured from public Stacknet counters: in-flight 6 → 8 (max 512). No private agent transcript — just queue/load telemetry.",
+      "details": {
+        "inferred": true,
+        "dataset": "queue",
+        "inFlight": 8,
+        "maxInFlight": 512,
+        "taskCount": 0,
+        "averageLoad": 0.14285714285714285,
+        "signals": [
+          "in-flight 6 → 8 (max 512)"
+        ]
+      },
+      "severity": "low",
+      "vibe": "Note"
+    },
+    {
+      "id": "evt_msjd6po1_ch1nx",
+      "at": "2026-08-07T19:55:21.073Z",
+      "kind": "agent",
+      "rank": "note",
+      "heat": 0,
+      "title": "Queue metrics shifted",
+      "summary": "Measured from public Stacknet counters: in-flight 4 → 7 (max 512). No private agent transcript — just queue/load telemetry.",
+      "details": {
+        "inferred": true,
+        "dataset": "queue",
+        "inFlight": 7,
+        "maxInFlight": 512,
+        "taskCount": 0,
+        "averageLoad": 0.14285714285714285,
+        "signals": [
+          "in-flight 4 → 7 (max 512)"
+        ]
+      },
+      "severity": "low",
+      "vibe": "Note"
+    },
+    {
+      "id": "evt_msjd6aev_p9be2",
+      "at": "2026-08-07T19:55:01.303Z",
+      "kind": "agent",
+      "rank": "note",
+      "heat": 0,
+      "title": "Queue metrics shifted",
+      "summary": "Measured from public Stacknet counters: in-flight 4/512 · avg load 0 → 0.14285714285714285. No private agent transcript — just queue/load telemetry.",
+      "details": {
+        "inferred": true,
+        "dataset": "queue",
+        "inFlight": 4,
+        "maxInFlight": 512,
+        "taskCount": 0,
+        "averageLoad": 0.14285714285714285,
+        "signals": [
+          "in-flight 4/512",
+          "avg load 0 → 0.14285714285714285"
+        ]
+      },
+      "severity": "low",
+      "vibe": "Note"
+    },
+    {
+      "id": "evt_msjd5fgu_c8srp",
+      "at": "2026-08-07T19:54:21.198Z",
+      "kind": "agent",
+      "rank": "note",
+      "heat": 0,
+      "title": "Queue metrics shifted",
+      "summary": "Measured from public Stacknet counters: in-flight 6 → 4 (max 512) · avg load 0.14285714285714285 → 0. No private agent transcript — just queue/load telemetry.",
+      "details": {
+        "inferred": true,
+        "dataset": "queue",
+        "inFlight": 4,
+        "maxInFlight": 512,
+        "taskCount": 0,
+        "averageLoad": 0,
+        "signals": [
+          "in-flight 6 → 4 (max 512)",
+          "avg load 0.14285714285714285 → 0"
+        ]
+      },
+      "severity": "low",
+      "vibe": "Note"
+    },
+    {
+      "id": "evt_msjd4zwr_kdmfm",
+      "at": "2026-08-07T19:54:01.035Z",
+      "kind": "agent",
+      "rank": "note",
+      "heat": 0,
+      "title": "Queue metrics shifted",
+      "summary": "Measured from public Stacknet counters: in-flight 5 → 6 (max 512) · avg load 0.2857142857142857 → 0.14285714285714285. No private agent transcript — just queue/load telemetry.",
+      "details": {
+        "inferred": true,
+        "dataset": "queue",
+        "inFlight": 6,
+        "maxInFlight": 512,
+        "taskCount": 0,
+        "averageLoad": 0.14285714285714285,
+        "signals": [
+          "in-flight 5 → 6 (max 512)",
+          "avg load 0.2857142857142857 → 0.14285714285714285"
+        ]
+      },
+      "severity": "low",
+      "vibe": "Note"
+    },
+    {
+      "id": "evt_msjd4563_6kw7s",
+      "at": "2026-08-07T19:53:21.195Z",
+      "kind": "agent",
+      "rank": "note",
+      "heat": 0,
+      "title": "Queue metrics shifted",
+      "summary": "Measured from public Stacknet counters: in-flight 5/512 · avg load 0.14285714285714285 → 0.2857142857142857. No private agent transcript — just queue/load telemetry.",
+      "details": {
+        "inferred": true,
+        "dataset": "queue",
+        "inFlight": 5,
+        "maxInFlight": 512,
+        "taskCount": 0,
+        "averageLoad": 0.2857142857142857,
+        "signals": [
+          "in-flight 5/512",
+          "avg load 0.14285714285714285 → 0.2857142857142857"
+        ]
+      },
+      "severity": "low",
+      "vibe": "Note"
+    },
+    {
+      "id": "evt_msjd2v33_vaphn",
+      "at": "2026-08-07T19:52:21.471Z",
+      "kind": "agent",
+      "rank": "note",
+      "heat": 0,
+      "title": "Queue metrics shifted",
+      "summary": "Measured from public Stacknet counters: in-flight 3 → 6 (max 512). No private agent transcript — just queue/load telemetry.",
+      "details": {
+        "inferred": true,
+        "dataset": "queue",
+        "inFlight": 6,
+        "maxInFlight": 512,
+        "taskCount": 0,
+        "averageLoad": 0.1457142857142857,
+        "signals": [
+          "in-flight 3 → 6 (max 512)"
+        ]
+      },
+      "severity": "low",
+      "vibe": "Note"
+    },
+    {
+      "id": "evt_msjd1kiv_h3hlj",
+      "at": "2026-08-07T19:51:21.127Z",
+      "kind": "agent",
+      "rank": "note",
+      "heat": 0,
+      "title": "Queue metrics shifted",
+      "summary": "Measured from public Stacknet counters: in-flight 5 → 3 (max 512). No private agent transcript — just queue/load telemetry.",
+      "details": {
+        "inferred": true,
+        "dataset": "queue",
+        "inFlight": 3,
+        "maxInFlight": 512,
+        "taskCount": 0,
+        "averageLoad": 0.14285714285714285,
+        "signals": [
+          "in-flight 5 → 3 (max 512)"
+        ]
+      },
+      "severity": "low",
+      "vibe": "Note"
+    },
+    {
+      "id": "evt_msjd14yy_7ikcf",
+      "at": "2026-08-07T19:51:00.970Z",
+      "kind": "agent",
+      "rank": "note",
+      "heat": 0,
+      "title": "Queue metrics shifted",
+      "summary": "Measured from public Stacknet counters: in-flight 8 → 5 (max 512). No private agent transcript — just queue/load telemetry.",
+      "details": {
+        "inferred": true,
+        "dataset": "queue",
+        "inFlight": 5,
+        "maxInFlight": 512,
+        "taskCount": 0,
+        "averageLoad": 0.14285714285714285,
+        "signals": [
+          "in-flight 8 → 5 (max 512)"
+        ]
+      },
+      "severity": "low",
+      "vibe": "Note"
+    },
+    {
+      "id": "evt_msjd0agn_0w0kr",
+      "at": "2026-08-07T19:50:21.431Z",
+      "kind": "agent",
+      "rank": "note",
+      "heat": 0,
+      "title": "Queue looks busy",
+      "summary": "Measured from public Stacknet counters: in-flight 5 → 8 (max 512). No private agent transcript — just queue/load telemetry.",
+      "details": {
+        "inferred": true,
+        "dataset": "queue",
+        "inFlight": 8,
+        "maxInFlight": 512,
+        "taskCount": 0,
+        "averageLoad": 0.14285714285714285,
+        "signals": [
+          "in-flight 5 → 8 (max 512)"
+        ]
+      },
+      "severity": "low",
+      "vibe": "Note"
+    },
+    {
+      "id": "evt_msjcxpm9_kb0u2",
+      "at": "2026-08-07T19:48:21.105Z",
+      "kind": "agent",
+      "rank": "note",
+      "heat": 0,
+      "title": "Queue metrics shifted",
+      "summary": "Measured from public Stacknet counters: in-flight 9 → 5 (max 512) · avg load 0.2857142857142857 → 0.14285714285714285. No private agent transcript — just queue/load telemetry.",
+      "details": {
+        "inferred": true,
+        "dataset": "queue",
+        "inFlight": 5,
+        "maxInFlight": 512,
+        "taskCount": 0,
+        "averageLoad": 0.14285714285714285,
+        "signals": [
+          "in-flight 9 → 5 (max 512)",
+          "avg load 0.2857142857142857 → 0.14285714285714285"
+        ]
+      },
+      "severity": "low",
+      "vibe": "Note"
+    },
+    {
+      "id": "evt_msjcx9qr_b724o",
+      "at": "2026-08-07T19:48:00.531Z",
+      "kind": "agent",
+      "rank": "note",
+      "heat": 0,
+      "title": "Queue looks busy",
+      "summary": "Measured from public Stacknet counters: in-flight 5 → 9 (max 512) · avg load 0.14285714285714285 → 0.2857142857142857. No private agent transcript — just queue/load telemetry.",
+      "details": {
+        "inferred": true,
+        "dataset": "queue",
+        "inFlight": 9,
+        "maxInFlight": 512,
+        "taskCount": 0,
+        "averageLoad": 0.2857142857142857,
+        "signals": [
+          "in-flight 5 → 9 (max 512)",
+          "avg load 0.14285714285714285 → 0.2857142857142857"
+        ]
+      },
+      "severity": "low",
+      "vibe": "Note"
+    },
+    {
+      "id": "evt_msjcv56a_mnns2",
+      "at": "2026-08-07T19:46:21.298Z",
+      "kind": "agent",
+      "rank": "note",
+      "heat": 0,
+      "title": "Queue metrics shifted",
+      "summary": "Measured from public Stacknet counters: in-flight 5 → 3 (max 512). No private agent transcript — just queue/load telemetry.",
+      "details": {
+        "inferred": true,
+        "dataset": "queue",
+        "inFlight": 3,
+        "maxInFlight": 512,
+        "taskCount": 0,
+        "averageLoad": 0.14285714285714285,
+        "signals": [
+          "in-flight 5 → 3 (max 512)"
+        ]
+      },
+      "severity": "low",
+      "vibe": "Note"
+    },
+    {
+      "id": "evt_msjctv9r_efnl3",
+      "at": "2026-08-07T19:45:21.807Z",
+      "kind": "agent",
+      "rank": "note",
+      "heat": 0,
+      "title": "Queue metrics shifted",
+      "summary": "Measured from public Stacknet counters: in-flight 8 → 4 (max 512). No private agent transcript — just queue/load telemetry.",
+      "details": {
+        "inferred": true,
+        "dataset": "queue",
+        "inFlight": 4,
+        "maxInFlight": 512,
+        "taskCount": 0,
+        "averageLoad": 0.14285714285714285,
+        "signals": [
+          "in-flight 8 → 4 (max 512)"
+        ]
+      },
+      "severity": "low",
+      "vibe": "Note"
+    },
+    {
+      "id": "evt_msjctevh_s1veh",
+      "at": "2026-08-07T19:45:00.557Z",
+      "kind": "agent",
+      "rank": "note",
+      "heat": 0,
+      "title": "Queue looks busy",
+      "summary": "Measured from public Stacknet counters: in-flight 4 → 8 (max 512) · avg load 0.045714285714285714 → 0.14285714285714285. No private agent transcript — just queue/load telemetry.",
+      "details": {
+        "inferred": true,
+        "dataset": "queue",
+        "inFlight": 8,
+        "maxInFlight": 512,
+        "taskCount": 0,
+        "averageLoad": 0.14285714285714285,
+        "signals": [
+          "in-flight 4 → 8 (max 512)",
+          "avg load 0.045714285714285714 → 0.14285714285714285"
+        ]
+      },
+      "severity": "low",
+      "vibe": "Note"
+    },
+    {
+      "id": "evt_msjcsklq_6b330",
+      "at": "2026-08-07T19:44:21.326Z",
+      "kind": "agent",
+      "rank": "note",
+      "heat": 0,
+      "title": "Queue metrics shifted",
+      "summary": "Measured from public Stacknet counters: in-flight 7 → 4 (max 512) · avg load 0.14285714285714285 → 0.045714285714285714. No private agent transcript — just queue/load telemetry.",
+      "details": {
+        "inferred": true,
+        "dataset": "queue",
+        "inFlight": 4,
+        "maxInFlight": 512,
+        "taskCount": 0,
+        "averageLoad": 0.045714285714285714,
+        "signals": [
+          "in-flight 7 → 4 (max 512)",
+          "avg load 0.14285714285714285 → 0.045714285714285714"
+        ]
+      },
+      "severity": "low",
+      "vibe": "Note"
+    },
+    {
+      "id": "evt_msjcs55m_fsmnw",
+      "at": "2026-08-07T19:44:01.306Z",
+      "kind": "agent",
+      "rank": "note",
+      "heat": 0,
+      "title": "Queue metrics shifted",
+      "summary": "Measured from public Stacknet counters: in-flight 9 → 7 (max 512). No private agent transcript — just queue/load telemetry.",
+      "details": {
+        "inferred": true,
+        "dataset": "queue",
+        "inFlight": 7,
+        "maxInFlight": 512,
+        "taskCount": 0,
+        "averageLoad": 0.14285714285714285,
+        "signals": [
+          "in-flight 9 → 7 (max 512)"
+        ]
+      },
+      "severity": "low",
+      "vibe": "Note"
+    },
+    {
+      "id": "evt_msjcra9j_1bq6r",
+      "at": "2026-08-07T19:43:21.271Z",
+      "kind": "agent",
+      "rank": "note",
+      "heat": 0,
+      "title": "Queue looks busy",
+      "summary": "Measured from public Stacknet counters: in-flight 6 → 9 (max 512). No private agent transcript — just queue/load telemetry.",
+      "details": {
+        "inferred": true,
+        "dataset": "queue",
+        "inFlight": 9,
+        "maxInFlight": 512,
+        "taskCount": 0,
+        "averageLoad": 0.14285714285714285,
+        "signals": [
+          "in-flight 6 → 9 (max 512)"
+        ]
+      },
+      "severity": "low",
+      "vibe": "Note"
+    },
+    {
+      "id": "evt_msjcqu9n_v91cx",
+      "at": "2026-08-07T19:43:00.539Z",
+      "kind": "agent",
+      "rank": "note",
+      "heat": 0,
+      "title": "Queue metrics shifted",
+      "summary": "Measured from public Stacknet counters: in-flight 6/512 · avg load 0 → 0.14285714285714285. No private agent transcript — just queue/load telemetry.",
+      "details": {
+        "inferred": true,
+        "dataset": "queue",
+        "inFlight": 6,
+        "maxInFlight": 512,
+        "taskCount": 0,
+        "averageLoad": 0.14285714285714285,
+        "signals": [
+          "in-flight 6/512",
+          "avg load 0 → 0.14285714285714285"
+        ]
+      },
+      "severity": "low",
+      "vibe": "Note"
+    },
+    {
+      "id": "evt_msjcq26o_tf3k6",
+      "at": "2026-08-07T19:42:24.144Z",
+      "kind": "agent",
+      "rank": "note",
+      "heat": 0,
+      "title": "Queue metrics shifted",
+      "summary": "Measured from public Stacknet counters: in-flight 8 → 6 (max 512) · avg load 0.14285714285714285 → 0. No private agent transcript — just queue/load telemetry.",
+      "details": {
+        "inferred": true,
+        "dataset": "queue",
+        "inFlight": 6,
+        "maxInFlight": 512,
+        "taskCount": 0,
+        "averageLoad": 0,
+        "signals": [
+          "in-flight 8 → 6 (max 512)",
+          "avg load 0.14285714285714285 → 0"
+        ]
+      },
+      "severity": "low",
+      "vibe": "Note"
+    },
     {
       "id": "evt_msjcpqld_4tqts",
       "at": "2026-08-07T19:42:09.121Z",
@@ -18371,9 +19297,9 @@
   ],
   "state": {
     "startedAt": "2026-08-07T06:15:12.347Z",
-    "lastPollAt": "2026-08-07T19:42:08.968Z",
+    "lastPollAt": "2026-08-07T20:08:56.106Z",
     "lastError": null,
-    "pollCount": 1240,
+    "pollCount": 1296,
     "temperature": 0
   }
 }
