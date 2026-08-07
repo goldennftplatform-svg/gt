@@ -501,6 +501,24 @@ a.btn {
 
 .pill.error::before { background: var(--danger); }
 
+.pill.trust.shared {
+  border-color: rgba(74, 222, 128, 0.45);
+  color: var(--green-bright);
+}
+
+.pill.trust.shared::before {
+  background: var(--green-bright);
+}
+
+.pill.trust.local {
+  border-color: rgba(251, 191, 36, 0.45);
+  color: #fbbf24;
+}
+
+.pill.trust.local::before {
+  background: #fbbf24;
+}
+
 @keyframes pulse {
   0% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.5); }
   100% { box-shadow: 0 0 0 10px rgba(74, 222, 128, 0); }
@@ -2051,7 +2069,13 @@ a.btn {
     justify-self: end;
     flex-shrink: 0;
   }
-  .top-actions .pill { display: none; }
+  .top-actions #connection { display: none; }
+  .top-actions #trustMode {
+    display: inline-flex;
+    max-width: 7.5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
   .btn-label-full { display: none; }
   .btn-label-short { display: inline; }
   .top-actions .btn {

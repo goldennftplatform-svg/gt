@@ -2,7 +2,7 @@
 
 Live **sniffer · translator · dashboard** for [geoff.ai](https://geoff.ai) deploys and [Stacknet](https://stacknet.magma-rpc.com) API heat.
 
-Designed to deploy on **Vercel** (stateless API + browser history) or run locally with a persistent file store.
+Designed to deploy on **Vercel** with a **shared live desk** (same feed in every browser, including incognito) or run locally with a persistent file store.
 
 ## Signals
 
@@ -26,7 +26,12 @@ The translator turns diffs into a readable feed and a **temperature** score (coo
 3. Output / static: `public` (see `vercel.json`)
 4. Deploy.
 
-On Vercel, each `/api/poll` sniffs fresh data. Event history lives in the browser (`localStorage`) so it works without a database.
+On Vercel, history is **not** per-browser. An authoritative bundle lives on the `gt-live` branch (`shared.json`). `/api/status` and `/api/poll` serve that shared desk to every visitor so **incognito and normal browsers match**.
+
+Persistence:
+- Set `GT_GITHUB_TOKEN` (repo-scoped PAT/token) on Vercel so polls can write the shared desk
+- Set `CRON_SECRET` for `/api/tick` (daily Vercel cron backup)
+- Optional: copy `ops/github-live-sniff.yml` → `.github/workflows/` after `gh auth refresh -s workflow` for 5-minute Actions ticks
 
 Optional env vars:
 
@@ -34,6 +39,9 @@ Optional env vars:
 - `GEOFF_PREVIEW_CODE`
 - `POLL_INTERVAL_MS` (local only)
 - `GEOFF_BASE_URL` / `STACKNET_BASE_URL`
+- `GT_GITHUB_TOKEN` (required on Vercel for shared write-back to `gt-live`)
+- `CRON_SECRET` (protects `/api/tick`)
+- `GT_SHARED_REPO` / `GT_SHARED_BRANCH` / `GT_SHARED_PATH` (defaults: this repo / `gt-live` / `shared.json`)
 
 ## Local
 

@@ -1,6 +1,13 @@
 import { config } from "./config.js";
 import { compileBriefing } from "./briefing.js";
+import { upsertDailyActivity } from "./daily-activity.js";
 import { runSniff } from "./sniffer.js";
+import {
+  loadSharedBundle,
+  pruneEvents,
+  saveSharedBundle,
+  sharedStoreConfig,
+} from "./shared-store.js";
 import { computeTemperature, inferAgentDesk, translate } from "./translator.js";
 import {
   appendEvents,
@@ -12,15 +19,24 @@ import {
   saveState,
 } from "./store.js";
 
+function isVercel() {
+  return Boolean(process.env.VERCEL);
+}
+
 export function publicConfig() {
+  const shared = sharedStoreConfig();
   return {
     pollIntervalMs: config.pollIntervalMs,
     geoffBaseUrl: config.geoffBaseUrl,
     stacknetBaseUrl: config.stacknetBaseUrl,
     catalogAuthConfigured: Boolean(config.geoffCookie || config.geoffPreviewCode),
-    mode: process.env.VERCEL ? "vercel" : "local",
+    mode: isVercel() ? "vercel" : "local",
     trackWindowHours: config.trackWindowHours,
     heatmapDays: config.heatmapDays,
+    sharedStore: isVercel(),
+    sharedStoreWritable: shared.writable,
+    sharedStoreUrl: shared.rawUrl,
+    trustMode: isVercel() ? "shared" : "local-file",
   };
 }
 
@@ -35,10 +51,15 @@ function withBriefing(payload) {
       events: payload.events,
       agentDesk,
     }),
+    config: payload.config || publicConfig(),
   };
 }
 
 export async function getStoredPayload() {
+  if (isVercel()) {
+    return getSharedPayload({ sniffLive: true });
+  }
+
   const [latest, events, state, dailyActivity] = await Promise.all([
     loadLatestSnapshot(),
     loadEvents(),
@@ -56,16 +77,89 @@ export async function getStoredPayload() {
 }
 
 /**
+ * Authoritative Vercel path: shared desk history + optional live sniff.
+ * Never trusts browser localStorage as the source of truth.
+ */
+export async function getSharedPayload({ sniffLive = true } = {}) {
+  const shared = await loadSharedBundle();
+  let latest = shared.latest;
+  let newEvents = [];
+  let events = shared.events || [];
+  let dailyActivity = shared.dailyActivity || [];
+  let persisted = false;
+  let persistError = null;
+
+  if (sniffLive) {
+    const snapshot = await runSniff();
+    newEvents = translate(shared.latest, snapshot);
+    events = pruneEvents([...newEvents, ...(shared.events || [])]);
+    dailyActivity = upsertDailyActivity(shared.dailyActivity || [], newEvents, {
+      heatmapDays: config.heatmapDays,
+    });
+    latest = snapshot;
+
+    // Persist whenever we can write — visitor polls keep the shared desk fresh
+    // even before GitHub Actions workflow scope is granted.
+    if (sharedStoreConfig().writable) {
+      try {
+        const temperature = computeTemperature(events, snapshot);
+        await saveSharedBundle({
+          latest: snapshot,
+          events,
+          dailyActivity,
+          state: {
+            startedAt: shared.state?.startedAt || new Date().toISOString(),
+            lastPollAt: snapshot.takenAt,
+            lastError: null,
+            pollCount: (shared.state?.pollCount || 0) + 1,
+            temperature: temperature.value,
+          },
+        });
+        persisted = true;
+      } catch (error) {
+        persistError = error.message;
+      }
+    }
+  }
+
+  const temperature = computeTemperature(events, latest);
+  return withBriefing({
+    latest,
+    events,
+    newEvents,
+    dailyActivity,
+    state: {
+      ...(shared.state || {}),
+      lastPollAt: latest?.takenAt || shared.state?.lastPollAt || null,
+      temperature: temperature.value,
+    },
+    temperature,
+    sharedMeta: {
+      updatedAt: shared.updatedAt,
+      persisted,
+      persistError,
+      source: sharedStoreConfig().rawUrl,
+    },
+    config: publicConfig(),
+  });
+}
+
+/**
  * @param {object} options
- * @param {object|null} [options.previous] previous snapshot (for serverless/client history)
- * @param {object[]} [options.knownEvents] existing events for temperature calc when not persisting
+ * @param {object|null} [options.previous] ignored on Vercel (shared desk is baseline)
+ * @param {object[]} [options.knownEvents] ignored on Vercel
  * @param {boolean} [options.persist] write to local data/ store
  */
 export async function pollAndTranslate({
   previous = null,
   knownEvents = [],
-  persist = !process.env.VERCEL,
+  persist = !isVercel(),
 } = {}) {
+  if (isVercel()) {
+    // Browser-supplied previous/events are intentionally ignored.
+    return getSharedPayload({ sniffLive: true });
+  }
+
   const startedState = persist ? await loadState() : { startedAt: null, pollCount: 0 };
   if (!startedState.startedAt) startedState.startedAt = new Date().toISOString();
 

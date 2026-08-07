@@ -8,7 +8,7 @@ import {
   upsertDailyActivity,
 } from "./daily-activity.js";
 
-const STORAGE_KEY = "geoff-thermometer-v5";
+const STORAGE_KEY = "geoff-thermometer-v6";
 const RANK_WEIGHT = { crazy: 5, spike: 4, move: 3, note: 2, whisper: 1 };
 const VIBE = { crazy: "Crazy", spike: "Spike", move: "Move", note: "Note", whisper: "Whisper" };
 const TRACK_HOURS = 72;
@@ -289,6 +289,7 @@ function loadMemory() {
     "geoff-thermometer-v2",
     "geoff-thermometer-v3",
     "geoff-thermometer-v4",
+    "geoff-thermometer-v5",
   ]) {
     try {
       localStorage.removeItem(key);
@@ -463,6 +464,17 @@ function escapeHtml(value) {
 function setConnection(state, label) {
   els.connection.className = `pill ${state}`;
   els.connection.textContent = label;
+}
+
+function setTrust(payload) {
+  const el = document.getElementById("trustMode");
+  if (!el) return;
+  const shared = Boolean(payload?.config?.sharedStore || payload?.config?.trustMode === "shared");
+  el.className = `pill trust ${shared ? "shared" : "local"}`;
+  el.textContent = shared ? "shared live desk" : "local desk";
+  el.title = shared
+    ? `Authoritative shared history · ${payload?.config?.sharedStoreUrl || "gt-live"}`
+    : "Local file desk — this machine only";
 }
 
 function renderMetrics(latest) {
@@ -1239,48 +1251,23 @@ function renderNetworkModels(models = [], guide = []) {
     .join("");
 }
 
-function applyPayload(payload, { mergeClient = false } = {}) {
+function applyPayload(payload) {
   if (!payload?.latest && !payload?.briefing && !payload?.events) return;
 
-  if (mergeClient || mode === "vercel") {
-    const incoming = payload.newEvents || [];
-    const merged = [...incoming, ...(memory.events || [])];
-    const seen = new Set();
-    memory.events = pruneWindow(merged)
-      .filter((e) => {
-        if (!e?.id || seen.has(e.id)) return false;
-        seen.add(e.id);
-        return true;
-      })
-      .slice(0, MAX_MEMORY_EVENTS);
-    ingestDailyFromEvents(incoming);
-    if (payload.dailyActivity?.length) {
-      memory.dailyActivity = mergeDailyActivity(
-        memory.dailyActivity,
-        payload.dailyActivity,
-        HEATMAP_DAYS,
-      );
-    }
-    memory.latest = payload.latest || memory.latest;
-    memory.pollCount = (memory.pollCount || 0) + (payload.newEvents ? 1 : 0);
-    saveMemory();
-  } else {
-    memory.latest = payload.latest;
-    memory.events = pruneWindow(payload.events || []).slice(0, MAX_MEMORY_EVENTS);
-    memory.pollCount = payload.state?.pollCount || memory.pollCount;
-    // Local server owns the long rollup; merge so a browser that sniffed earlier keeps cubes.
-    memory.dailyActivity = mergeDailyActivity(
-      memory.dailyActivity,
-      payload.dailyActivity || [],
-      HEATMAP_DAYS,
-    );
-    saveMemory();
-  }
+  mode = payload.config?.mode || mode;
+
+  // Shared desk (Vercel) and local file desk: server events are the only truth.
+  // Never merge browser localStorage into the feed — that made incognito disagree.
+  memory.latest = payload.latest || memory.latest;
+  memory.events = pruneWindow(payload.events || []).slice(0, MAX_MEMORY_EVENTS);
+  memory.dailyActivity = pruneDailyActivity(payload.dailyActivity || [], HEATMAP_DAYS);
+  memory.pollCount = payload.state?.pollCount || memory.pollCount || 0;
+  saveMemory();
 
   const briefing = payload.briefing;
   const latest = payload.latest || memory.latest;
   const pollCount = payload.state?.pollCount ?? memory.pollCount ?? 0;
-  const feedEvents = resolveFeedEvents(payload, memory.events || []);
+  const feedEvents = eventsInTrackWindow(memory.events || []);
 
   recordTracking(latest, payload.temperature);
   renderMetrics(latest);
@@ -1302,25 +1289,21 @@ function applyPayload(payload, { mergeClient = false } = {}) {
     briefing?.networkModelGuide || [],
   );
 
+  setTrust(payload);
   if (payload.state?.lastError || payload.error) setConnection("error", "degraded");
 }
 
 async function pollNow() {
   els.pollBtn.disabled = true;
   try {
-    const body = {
-      previous: memory.latest,
-      events: memory.events.slice(0, MAX_MEMORY_EVENTS),
-    };
     const res = await fetch("/api/poll", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
+      body: JSON.stringify({}),
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || "Poll failed");
-    mode = data.config?.mode || mode;
-    applyPayload(data, { mergeClient: mode === "vercel" });
+    applyPayload(data);
     setConnection("live", "live");
   } catch (error) {
     setConnection("error", "refresh failed");
@@ -1402,12 +1385,31 @@ async function boot() {
   try {
     const health = await fetch("/api/health").then((r) => r.json());
     mode = health.mode || "local";
+    if (health.sharedStore) {
+      setTrust({
+        config: {
+          sharedStore: true,
+          sharedStoreUrl: health.sharedStoreUrl,
+          trustMode: "shared",
+        },
+      });
+    }
   } catch {
     mode = "vercel";
   }
 
   try {
     if (mode === "vercel") {
+      // Paint shared desk first (same for every browser), then refresh live vitals.
+      try {
+        const status = await fetch("/api/status").then((r) => r.json());
+        if (!status.error) {
+          applyPayload(status);
+          setConnection("live", "live");
+        }
+      } catch {
+        /* fall through to poll */
+      }
       await pollNow();
       startClientPolling();
     } else {
