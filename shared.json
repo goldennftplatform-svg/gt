@@ -1,14 +1,14 @@
 {
-  "updatedAt": "2026-08-07T16:28:28.004Z",
+  "updatedAt": "2026-08-07T16:28:31.624Z",
   "latest": {
-    "id": "snap_msj5sno1",
-    "takenAt": "2026-08-07T16:28:26.894Z",
+    "id": "snap_msj5sqgl",
+    "takenAt": "2026-08-07T16:28:31.209Z",
     "sources": {
       "geoff.version": {
         "source": "geoff.version",
         "ok": true,
         "status": 200,
-        "ms": 103,
+        "ms": 94,
         "buildId": "dbfafd7e6520b4f90a390b3f3cebdd9418f5afbe",
         "raw": {
           "buildId": "dbfafd7e6520b4f90a390b3f3cebdd9418f5afbe"
@@ -18,7 +18,7 @@
         "source": "geoff.deploy",
         "ok": true,
         "status": 200,
-        "ms": 162,
+        "ms": 181,
         "deployId": "dpl_5mx7hBqDKDLucCNZyBrppwWGCLVN",
         "chunks": {
           "count": 53,
@@ -49,7 +49,7 @@
         "source": "geoff.docs.pricing",
         "ok": true,
         "status": 200,
-        "ms": 68,
+        "ms": 32,
         "scraped": true,
         "fingerprint": "32510b23",
         "model": "One monthly token pool. Shared across text, speech, video, image, music, code, and files — no per-modality nickel-and-dime.",
@@ -347,13 +347,13 @@
         "source": "stacknet.health",
         "ok": true,
         "status": 200,
-        "ms": 45,
+        "ms": 39,
         "statusText": "healthy",
         "reachable": true,
         "httpError": null,
         "version": "v3.8.340",
         "nodeId": "nk_key_FOpmPDVgCusTGcuL",
-        "inFlight": 3,
+        "inFlight": 7,
         "maxInFlight": 512,
         "remoteMcp": null,
         "error": null
@@ -362,14 +362,14 @@
         "source": "stacknet.root",
         "ok": true,
         "status": 200,
-        "ms": 458,
+        "ms": 128,
         "version": "3.8.340"
       },
       "stacknet.network": {
         "source": "stacknet.network",
         "ok": true,
         "status": 200,
-        "ms": 1086,
+        "ms": 391,
         "totalNodes": 8,
         "availableNodes": 8,
         "totalGpus": 7,
@@ -427,13 +427,13 @@
           "cluster": "mainnet",
           "pendingObligations": 0
         },
-        "timestamp": 1786120107969
+        "timestamp": 1786120111589
       },
       "stacknet.node": {
         "source": "stacknet.node",
         "ok": true,
         "status": 200,
-        "ms": 42,
+        "ms": 39,
         "nodeId": "nk_key_FOpmPDVgCusTGcuL",
         "version": "0.1.0",
         "coprocessorCount": 1,
@@ -443,7 +443,7 @@
         "source": "stacknet.models",
         "ok": true,
         "status": 200,
-        "ms": 60,
+        "ms": 65,
         "count": 5,
         "ids": [
           "magma",
@@ -480,7 +480,7 @@
               "think",
               "video"
             ],
-            "created": 1786120106
+            "created": 1786120111
           },
           {
             "id": "preview",
@@ -500,7 +500,7 @@
               "image",
               "think"
             ],
-            "created": 1786120106
+            "created": 1786120111
           },
           {
             "id": "pyro",
@@ -521,7 +521,7 @@
               "image",
               "think"
             ],
-            "created": 1786120106
+            "created": 1786120111
           },
           {
             "id": "pyro:max",
@@ -542,7 +542,7 @@
               "image",
               "think"
             ],
-            "created": 1786120106
+            "created": 1786120111
           },
           {
             "id": "stack-embed",
@@ -553,7 +553,7 @@
               "chat"
             ],
             "contentTypes": [],
-            "created": 1786120106
+            "created": 1786120111
           }
         ]
       },
@@ -561,7 +561,7 @@
         "source": "stacknet.widgets",
         "ok": true,
         "status": 200,
-        "ms": 459,
+        "ms": 130,
         "count": 19,
         "ids": [
           "system-asset-report",
@@ -921,7 +921,7 @@
       "stacknetVersion": "v3.8.340",
       "stacknetStatus": "healthy",
       "mcpContract": null,
-      "inFlight": 3,
+      "inFlight": 7,
       "maxInFlight": 512,
       "taskCount": 0,
       "nodeId": "nk_key_FOpmPDVgCusTGcuL",
@@ -953,14 +953,14 @@
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 103
+          "ms": 94
         },
         {
           "source": "geoff.deploy",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 162
+          "ms": 181
         },
         {
           "source": "geoff.catalog",
@@ -974,54 +974,76 @@
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 68
+          "ms": 32
         },
         {
           "source": "stacknet.health",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 45
+          "ms": 39
         },
         {
           "source": "stacknet.root",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 458
+          "ms": 128
         },
         {
           "source": "stacknet.network",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 1086
+          "ms": 391
         },
         {
           "source": "stacknet.node",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 42
+          "ms": 39
         },
         {
           "source": "stacknet.models",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 60
+          "ms": 65
         },
         {
           "source": "stacknet.widgets",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 459
+          "ms": 130
         }
       ]
     }
   },
   "events": [
+    {
+      "id": "evt_msj5sqgl_xi65n",
+      "at": "2026-08-07T16:28:31.605Z",
+      "kind": "agent",
+      "rank": "note",
+      "heat": 0,
+      "title": "Queue metrics shifted",
+      "summary": "Measured from public Stacknet counters: in-flight 3 → 7 (max 512). No private agent transcript — just queue/load telemetry.",
+      "details": {
+        "inferred": true,
+        "dataset": "queue",
+        "inFlight": 7,
+        "maxInFlight": 512,
+        "taskCount": 0,
+        "averageLoad": 0,
+        "signals": [
+          "in-flight 3 → 7 (max 512)"
+        ]
+      },
+      "severity": "low",
+      "vibe": "Note"
+    },
     {
       "id": "evt_msj5sno1_62tjl",
       "at": "2026-08-07T16:28:27.985Z",
@@ -11500,9 +11522,9 @@
   ],
   "state": {
     "startedAt": "2026-08-07T06:15:12.347Z",
-    "lastPollAt": "2026-08-07T16:28:26.894Z",
+    "lastPollAt": "2026-08-07T16:28:31.209Z",
     "lastError": null,
-    "pollCount": 814,
+    "pollCount": 815,
     "temperature": 0
   }
 }
