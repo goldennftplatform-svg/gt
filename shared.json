@@ -1,14 +1,14 @@
 {
-  "updatedAt": "2026-08-07T16:17:11.884Z",
+  "updatedAt": "2026-08-07T16:17:26.622Z",
   "latest": {
-    "id": "snap_msj5e5yy",
-    "takenAt": "2026-08-07T16:17:10.927Z",
+    "id": "snap_msj5ehcd",
+    "takenAt": "2026-08-07T16:17:25.931Z",
     "sources": {
       "geoff.version": {
         "source": "geoff.version",
         "ok": true,
         "status": 200,
-        "ms": 215,
+        "ms": 115,
         "buildId": "dbfafd7e6520b4f90a390b3f3cebdd9418f5afbe",
         "raw": {
           "buildId": "dbfafd7e6520b4f90a390b3f3cebdd9418f5afbe"
@@ -18,7 +18,7 @@
         "source": "geoff.deploy",
         "ok": true,
         "status": 200,
-        "ms": 205,
+        "ms": 112,
         "deployId": "dpl_5mx7hBqDKDLucCNZyBrppwWGCLVN",
         "chunks": {
           "count": 53,
@@ -49,7 +49,7 @@
         "source": "geoff.docs.pricing",
         "ok": true,
         "status": 200,
-        "ms": 86,
+        "ms": 45,
         "scraped": true,
         "fingerprint": "32510b23",
         "model": "One monthly token pool. Shared across text, speech, video, image, music, code, and files — no per-modality nickel-and-dime.",
@@ -347,13 +347,13 @@
         "source": "stacknet.health",
         "ok": true,
         "status": 200,
-        "ms": 69,
+        "ms": 59,
         "statusText": "healthy",
         "reachable": true,
         "httpError": null,
         "version": "v3.8.340",
         "nodeId": "nk_key_FOpmPDVgCusTGcuL",
-        "inFlight": 7,
+        "inFlight": 3,
         "maxInFlight": 512,
         "remoteMcp": null,
         "error": null
@@ -362,20 +362,20 @@
         "source": "stacknet.root",
         "ok": true,
         "status": 200,
-        "ms": 915,
+        "ms": 659,
         "version": "3.8.340"
       },
       "stacknet.network": {
         "source": "stacknet.network",
         "ok": true,
         "status": 200,
-        "ms": 933,
+        "ms": 669,
         "totalNodes": 8,
         "availableNodes": 8,
         "totalGpus": 7,
         "totalVramGb": 882,
         "availableVramGb": 152,
-        "averageLoad": 0.14285714285714285,
+        "averageLoad": 0,
         "totalModels": 29,
         "models": [
           "magma",
@@ -427,13 +427,13 @@
           "cluster": "mainnet",
           "pendingObligations": 0
         },
-        "timestamp": 1786119431848
+        "timestamp": 1786119446586
       },
       "stacknet.node": {
         "source": "stacknet.node",
         "ok": true,
         "status": 200,
-        "ms": 68,
+        "ms": 57,
         "nodeId": "nk_key_FOpmPDVgCusTGcuL",
         "version": "0.1.0",
         "coprocessorCount": 1,
@@ -443,7 +443,7 @@
         "source": "stacknet.models",
         "ok": true,
         "status": 200,
-        "ms": 69,
+        "ms": 58,
         "count": 5,
         "ids": [
           "magma",
@@ -480,7 +480,7 @@
               "think",
               "video"
             ],
-            "created": 1786119430
+            "created": 1786119445
           },
           {
             "id": "preview",
@@ -500,7 +500,7 @@
               "image",
               "think"
             ],
-            "created": 1786119430
+            "created": 1786119445
           },
           {
             "id": "pyro",
@@ -521,7 +521,7 @@
               "image",
               "think"
             ],
-            "created": 1786119430
+            "created": 1786119445
           },
           {
             "id": "pyro:max",
@@ -542,7 +542,7 @@
               "image",
               "think"
             ],
-            "created": 1786119430
+            "created": 1786119445
           },
           {
             "id": "stack-embed",
@@ -553,7 +553,7 @@
               "chat"
             ],
             "contentTypes": [],
-            "created": 1786119430
+            "created": 1786119445
           }
         ]
       },
@@ -561,7 +561,7 @@
         "source": "stacknet.widgets",
         "ok": true,
         "status": 200,
-        "ms": 915,
+        "ms": 663,
         "count": 19,
         "ids": [
           "system-asset-report",
@@ -921,7 +921,7 @@
       "stacknetVersion": "v3.8.340",
       "stacknetStatus": "healthy",
       "mcpContract": null,
-      "inFlight": 7,
+      "inFlight": 3,
       "maxInFlight": 512,
       "taskCount": 0,
       "nodeId": "nk_key_FOpmPDVgCusTGcuL",
@@ -931,7 +931,7 @@
       "vramGb": 882,
       "availableVramGb": 152,
       "vramAvailablePct": 17,
-      "averageLoad": 0.14285714285714285,
+      "averageLoad": 0,
       "models": 29,
       "apiModels": 5,
       "widgets": 19,
@@ -953,14 +953,14 @@
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 215
+          "ms": 115
         },
         {
           "source": "geoff.deploy",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 205
+          "ms": 112
         },
         {
           "source": "geoff.catalog",
@@ -974,54 +974,77 @@
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 86
+          "ms": 45
         },
         {
           "source": "stacknet.health",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 69
+          "ms": 59
         },
         {
           "source": "stacknet.root",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 915
+          "ms": 659
         },
         {
           "source": "stacknet.network",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 933
+          "ms": 669
         },
         {
           "source": "stacknet.node",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 68
+          "ms": 57
         },
         {
           "source": "stacknet.models",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 69
+          "ms": 58
         },
         {
           "source": "stacknet.widgets",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 915
+          "ms": 663
         }
       ]
     }
   },
   "events": [
+    {
+      "id": "evt_msj5ehce_98e7f",
+      "at": "2026-08-07T16:17:26.606Z",
+      "kind": "agent",
+      "rank": "note",
+      "heat": 0,
+      "title": "Queue metrics shifted",
+      "summary": "Measured from public Stacknet counters: in-flight 7 → 3 (max 512) · avg load 0.14285714285714285 → 0. No private agent transcript — just queue/load telemetry.",
+      "details": {
+        "inferred": true,
+        "dataset": "queue",
+        "inFlight": 3,
+        "maxInFlight": 512,
+        "taskCount": 0,
+        "averageLoad": 0,
+        "signals": [
+          "in-flight 7 → 3 (max 512)",
+          "avg load 0.14285714285714285 → 0"
+        ]
+      },
+      "severity": "low",
+      "vibe": "Note"
+    },
     {
       "id": "evt_msj5e5yy_72q57",
       "at": "2026-08-07T16:17:11.866Z",
@@ -10505,9 +10528,9 @@
   ],
   "state": {
     "startedAt": "2026-08-07T06:15:12.347Z",
-    "lastPollAt": "2026-08-07T16:17:10.927Z",
+    "lastPollAt": "2026-08-07T16:17:25.931Z",
     "lastError": null,
-    "pollCount": 753,
+    "pollCount": 754,
     "temperature": 0
   }
 }
