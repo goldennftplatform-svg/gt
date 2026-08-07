@@ -594,8 +594,8 @@ function eventsInTrackWindow(events = []) {
   return pruneWindow(events);
 }
 
-function setFeedMeta(count, pollCount) {
-  els.tempMeta.textContent = `${count} updates in ${TRACK_HOURS}h · ${pollCount ?? 0} refreshes`;
+function setFeedMeta({ surface = 0, queue = 0, pollCount = 0 } = {}) {
+  els.tempMeta.textContent = `${surface} surface · ${queue} queue · ${pollCount} refreshes · ${TRACK_HOURS}h`;
 }
 
 function hourBuckets(now = Date.now()) {
@@ -1155,14 +1155,15 @@ function splitDatasets(events = []) {
   const updates = [];
   const queue = [];
   for (const e of windowed) {
-    if (isQueueTelemetry(e) || e.kind === "agentCluster") {
-      if (isQueueTelemetry(e)) queue.push(e);
-      // agentCluster stays off both lists — desk chrome only
-    } else {
-      updates.push(e);
+    if (isQueueTelemetry(e)) {
+      queue.push(e);
+      continue;
     }
+    // Desk chrome / first lock-in — tracked, but not a "surface change"
+    if (e.kind === "agentCluster" || e.kind === "baseline") continue;
+    updates.push(e);
   }
-  return { updates, queue };
+  return { updates, queue, total: windowed.length };
 }
 
 function renderEventCard(event, { compact = false } = {}) {
@@ -1187,27 +1188,27 @@ function renderEventCard(event, { compact = false } = {}) {
 }
 
 function renderFeed(events = [], { pollCount = 0 } = {}) {
-  const { updates, queue } = splitDatasets(events);
+  const { updates, queue, total } = splitDatasets(events);
   const windowed = sortFeed(updates);
-  setFeedMeta(windowed.length, pollCount);
+  setFeedMeta({ surface: windowed.length, queue: queue.length, pollCount });
 
   if (!windowed.length) {
-    els.feed.innerHTML = `<p class="empty">No surface changes in the last ${TRACK_HOURS} hours. Queue/in-flight noise is listed separately below.</p>`;
+    els.feed.innerHTML = `<p class="empty">No surface diffs in ${TRACK_HOURS}h (deploys, models, pricing, health…). Locked desk holds ${total} total events — ${queue.length} are queue/in-flight and listed below.</p>`;
   } else {
     els.feed.innerHTML = windowed.slice(0, 80).map((e) => renderEventCard(e)).join("");
   }
 
   if (els.queueMeta) {
     els.queueMeta.textContent = queue.length
-      ? `${queue.length} queue edges · not counted as updates`
-      : "in-flight / load · not counted as updates";
+      ? `${queue.length} in-flight/load edges · universal desk · not surface updates`
+      : "in-flight / load · not counted as surface updates";
   }
   if (els.queueFeed) {
     if (!queue.length) {
       els.queueFeed.innerHTML = `<p class="empty">No queue edges yet — in-flight / load / tasks stay here when they move.</p>`;
     } else {
       els.queueFeed.innerHTML = sortFeed(queue)
-        .slice(0, 40)
+        .slice(0, 60)
         .map((e) => renderEventCard(e, { compact: true }))
         .join("");
     }
