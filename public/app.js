@@ -228,6 +228,10 @@ const els = {
   capGroups: document.getElementById("capGroups"),
   capMeta: document.getElementById("capMeta"),
   feed: document.getElementById("feed"),
+  queueFeed: document.getElementById("queueFeed"),
+  queueMeta: document.getElementById("queueMeta"),
+  queueFeed: document.getElementById("queueFeed"),
+  queueMeta: document.getElementById("queueMeta"),
   modelCards: document.getElementById("modelCards"),
   widgets: document.getElementById("widgets"),
   glossary: document.getElementById("glossary"),
@@ -617,6 +621,8 @@ function renderPumpTape(events = [], agentSamples = []) {
   const windowed = eventsInTrackWindow(events);
 
   for (const e of windowed) {
+    // Queue telemetry has its own strip — don't inflate the surface tape heat.
+    if (isQueueTelemetry(e) || e.kind === "agentCluster") continue;
     const t = Date.parse(e.at);
     const idx = Math.min(TRACK_HOURS - 1, Math.max(0, Math.floor((t - (now - TRACK_MS)) / 3_600_000)));
     const b = buckets[idx];
@@ -624,7 +630,6 @@ function renderPumpTape(events = [], agentSamples = []) {
     b.heat += e.heat || RANK_WEIGHT[e.rank] || 1;
     if (e.rank === "crazy") b.crazy += 1;
     if (e.rank === "spike") b.spike += 1;
-    if (e.kind === "agent" || e.kind === "agentCluster") b.agent += 1;
   }
 
   for (const sample of pruneWindow(agentSamples)) {
@@ -634,21 +639,22 @@ function renderPumpTape(events = [], agentSamples = []) {
     buckets[idx].maxInFlight = Math.max(buckets[idx].maxInFlight, flight);
   }
 
-  const crazy = windowed.filter((e) => e.rank === "crazy").length;
-  const spike = windowed.filter((e) => e.rank === "spike").length;
-  const agentMoves = windowed.filter((e) => e.kind === "agent" || e.kind === "agentCluster").length;
+  const surface = windowed.filter((e) => !isQueueTelemetry(e) && e.kind !== "agentCluster");
+  const crazy = surface.filter((e) => e.rank === "crazy").length;
+  const spike = surface.filter((e) => e.rank === "spike").length;
+  const queueEdges = windowed.filter((e) => isQueueTelemetry(e)).length;
   const peakFlight = Math.max(0, ...buckets.map((b) => b.maxInFlight));
   const heatSum = buckets.reduce((a, b) => a + b.heat, 0);
 
   els.pumpMeta.textContent =
-    windowed.length || peakFlight
-      ? `${windowed.length} ranked moves · peak queue ${peakFlight} · heat ${heatSum}`
-      : `Waiting for measurable moves across ${TRACK_HOURS}h`;
+    surface.length || peakFlight
+      ? `${surface.length} surface moves · peak queue ${peakFlight} · heat ${heatSum}`
+      : `Waiting for measurable surface moves across ${TRACK_HOURS}h`;
 
   els.pumpStats.innerHTML = `
     <span class="pump-stat"><em>Crazy</em><strong>${crazy}</strong></span>
     <span class="pump-stat"><em>Spike</em><strong>${spike}</strong></span>
-    <span class="pump-stat"><em>Agent signals</em><strong>${agentMoves}</strong></span>
+    <span class="pump-stat"><em>Queue edges</em><strong>${queueEdges}</strong></span>
     <span class="pump-stat"><em>Peak in-flight</em><strong>${peakFlight}</strong></span>
     <span class="pump-stat hot"><em>Tape heat</em><strong>${heatSum}</strong></span>
   `;
@@ -1140,35 +1146,72 @@ function resolveFeedEvents(payload, memoryEvents = []) {
   return normalizeFeedEvents(merged);
 }
 
+function isQueueTelemetry(event = {}) {
+  return event.kind === "agent" || event.details?.dataset === "queue";
+}
+
+function splitDatasets(events = []) {
+  const windowed = eventsInTrackWindow(events);
+  const updates = [];
+  const queue = [];
+  for (const e of windowed) {
+    if (isQueueTelemetry(e) || e.kind === "agentCluster") {
+      if (isQueueTelemetry(e)) queue.push(e);
+      // agentCluster stays off both lists — desk chrome only
+    } else {
+      updates.push(e);
+    }
+  }
+  return { updates, queue };
+}
+
+function renderEventCard(event, { compact = false } = {}) {
+  const rank = inferRank(event);
+  const vibe = displayVibe(event);
+  const float = !compact && (rank === "crazy" || rank === "spike");
+  const signals = Array.isArray(event.details?.signals) ? event.details.signals.join(" · ") : "";
+  return `
+    <article class="event rank-${escapeHtml(rank)}${float ? " float" : ""}${compact ? " queue-item" : ""}">
+      <div class="event-ico">${icon(EVENT_ICONS[event.kind] || "activity")}</div>
+      <time datetime="${event.at}">${fmtTime(event.at)}</time>
+      <div>
+        <h3>${escapeHtml(event.title)}</h3>
+        <p class="take">${escapeHtml(
+          compact && signals ? signals : event.userTake || event.summary,
+        )}</p>
+        ${compact ? "" : `<p class="tech">${escapeHtml(event.summary)}</p>`}
+      </div>
+      <span class="badge ${compact ? "queue" : escapeHtml(rank)}">${compact ? "QUEUE" : escapeHtml(vibe)}</span>
+    </article>
+  `;
+}
+
 function renderFeed(events = [], { pollCount = 0 } = {}) {
-  // Same list drives the cards and the "updates in 72h" number
-  const windowed = sortFeed(eventsInTrackWindow(events));
+  const { updates, queue } = splitDatasets(events);
+  const windowed = sortFeed(updates);
   setFeedMeta(windowed.length, pollCount);
 
   if (!windowed.length) {
-    els.feed.innerHTML = `<p class="empty">No changes in the last ${TRACK_HOURS} hours. Keep sniffing — the pump tape fills as real diffs land.</p>`;
-    return;
+    els.feed.innerHTML = `<p class="empty">No surface changes in the last ${TRACK_HOURS} hours. Queue/in-flight noise is listed separately below.</p>`;
+  } else {
+    els.feed.innerHTML = windowed.slice(0, 80).map((e) => renderEventCard(e)).join("");
   }
-  els.feed.innerHTML = windowed
-    .slice(0, 80)
-    .map((event) => {
-      const rank = inferRank(event);
-      const vibe = displayVibe(event);
-      const float = rank === "crazy" || rank === "spike";
-      return `
-      <article class="event rank-${escapeHtml(rank)}${float ? " float" : ""}">
-        <div class="event-ico">${icon(EVENT_ICONS[event.kind] || "activity")}</div>
-        <time datetime="${event.at}">${fmtTime(event.at)}</time>
-        <div>
-          <h3>${escapeHtml(event.title)}</h3>
-          <p class="take">${escapeHtml(event.userTake || event.summary)}</p>
-          <p class="tech">${escapeHtml(event.summary)}</p>
-        </div>
-        <span class="badge ${escapeHtml(rank)}">${escapeHtml(vibe)}</span>
-      </article>
-    `;
-    })
-    .join("");
+
+  if (els.queueMeta) {
+    els.queueMeta.textContent = queue.length
+      ? `${queue.length} queue edges · not counted as updates`
+      : "in-flight / load · not counted as updates";
+  }
+  if (els.queueFeed) {
+    if (!queue.length) {
+      els.queueFeed.innerHTML = `<p class="empty">No queue edges yet — in-flight / load / tasks stay here when they move.</p>`;
+    } else {
+      els.queueFeed.innerHTML = sortFeed(queue)
+        .slice(0, 40)
+        .map((e) => renderEventCard(e, { compact: true }))
+        .join("");
+    }
+  }
 }
 
 function renderModelCards(models = []) {

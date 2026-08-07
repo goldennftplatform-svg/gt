@@ -261,8 +261,20 @@
             </div>
             <p id="tempMeta">Waiting…</p>
           </div>
-          <p class="feed-hint">Last 72 hours · crazy &amp; spike float first</p>
+          <p class="feed-hint">Surface diffs only · last 72h · crazy &amp; spike float first · queue/in-flight lives below</p>
           <div id="feed" class="feed"></div>
+
+          <div class="queue-strip">
+            <div class="queue-strip-head">
+              <div class="panel-title">
+                <span class="ico-wrap sm" data-icon="bolt"></span>
+                <h3>Queue telemetry</h3>
+              </div>
+              <p id="queueMeta">in-flight / load · not counted as updates</p>
+            </div>
+            <p class="feed-hint">Separate dataset from “What’s changing” — public counters only</p>
+            <div id="queueFeed" class="feed queue-feed"></div>
+          </div>
         </section>
 
         <section class="panel glossary-panel">

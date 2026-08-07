@@ -308,7 +308,7 @@ function userTakeForEvent(event) {
     case "baseline":
       return "First reading captured — this is the starting snapshot.";
     case "agent":
-      return "Queue/load counters moved. Inferred busyness from public metrics only.";
+      return "Queue telemetry (in-flight / load / tasks) — separate from surface updates.";
     case "agentCluster":
       return "Several public diffs landed in one sniff — clustered, not invented.";
     default:

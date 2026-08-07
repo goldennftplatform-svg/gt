@@ -48,7 +48,8 @@ export function upsertDailyActivity(
   const seen = seenIds instanceof Set ? seenIds : null;
 
   for (const e of events || []) {
-    if (!e || e.kind === "agentCluster") continue; // cluster is desk chrome, not a day cube hit
+    // Queue telemetry + cluster chrome are not "what changed" day cubes
+    if (!e || e.kind === "agentCluster" || e.kind === "agent") continue;
     if (seen && e.id) {
       if (seen.has(e.id)) continue;
       seen.add(e.id);

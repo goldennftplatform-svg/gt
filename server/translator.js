@@ -660,10 +660,13 @@ function agentActivityEvent(previous, current) {
   return event({
     kind: "agent",
     rank,
+    // Queue/in-flight telemetry is its own dataset — never heats the change feed.
+    heat: 0,
     title,
     summary: `Measured from public Stacknet counters: ${signals.join(" · ")}. No private agent transcript — just queue/load telemetry.`,
     details: {
       inferred: true,
+      dataset: "queue",
       inFlight: currFlight,
       maxInFlight: maxFlight,
       taskCount: currTasks ?? null,
@@ -829,7 +832,11 @@ export function computeTemperature(events, latestSnapshot) {
   const recent = events.filter((e) => now - Date.parse(e.at) < TRACK_WINDOW_MS);
   // Ignore whisper/baseline/zero-heat narrative clusters in the heat math
   const meaningful = recent.filter(
-    (e) => (e.heat || 0) > 0 && e.kind !== "baseline" && e.kind !== "agentCluster",
+    (e) =>
+      (e.heat || 0) > 0 &&
+      e.kind !== "baseline" &&
+      e.kind !== "agentCluster" &&
+      e.kind !== "agent", // in-flight / load / tasks = queue tape, not updates
   );
 
   const decayed = meaningful.reduce((acc, e) => {
@@ -847,6 +854,7 @@ export function computeTemperature(events, latestSnapshot) {
     (e) =>
       now - Date.parse(e.at) < 6 * 60 * 60 * 1000 &&
       e.kind !== "agentCluster" &&
+      e.kind !== "agent" &&
       (e.heat || 0) > 0,
   );
   if (recentHot.some((e) => e.rank === "crazy")) temp = Math.max(temp, 58);
