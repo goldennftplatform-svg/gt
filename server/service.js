@@ -25,18 +25,21 @@ function isVercel() {
 
 export function publicConfig() {
   const shared = sharedStoreConfig();
+  const vercel = isVercel();
   return {
-    pollIntervalMs: config.pollIntervalMs,
+    // Shared desk: snappier refresh so every browser stays in lockstep
+    pollIntervalMs: vercel ? Math.min(config.pollIntervalMs, 15_000) : config.pollIntervalMs,
     geoffBaseUrl: config.geoffBaseUrl,
     stacknetBaseUrl: config.stacknetBaseUrl,
     catalogAuthConfigured: Boolean(config.geoffCookie || config.geoffPreviewCode),
-    mode: isVercel() ? "vercel" : "local",
+    mode: vercel ? "vercel" : "local",
     trackWindowHours: config.trackWindowHours,
     heatmapDays: config.heatmapDays,
-    sharedStore: isVercel(),
+    sharedStore: vercel,
     sharedStoreWritable: shared.writable,
-    sharedStoreUrl: shared.rawUrl,
-    trustMode: isVercel() ? "shared" : "local-file",
+    sharedStoreBackend: shared.backend,
+    sharedStoreUrl: shared.redis ? `redis:${shared.redisKey}` : shared.rawUrl,
+    trustMode: vercel ? "universal" : "local-file",
   };
 }
 

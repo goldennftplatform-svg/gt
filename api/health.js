@@ -9,7 +9,8 @@ export default function handler(_req, res) {
     service: "geoff-thermometer",
     mode: "vercel",
     sharedStore: true,
-    trustMode: "shared",
-    sharedStoreUrl: shared.rawUrl,
+    trustMode: "universal",
+    sharedStoreBackend: shared.backend,
+    sharedStoreUrl: shared.redis ? `redis:${shared.redisKey}` : shared.rawUrl,
   });
 }

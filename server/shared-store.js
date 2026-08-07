@@ -1,16 +1,29 @@
 /**
- * Shared live desk for Vercel — one public JSON bundle on the gt-live branch.
- * Every visitor (incognito included) reads the same events / daily cubes.
- * GitHub Actions (and optional GT_GITHUB_TOKEN writes) persist ticks.
+ * Universal live desk — one Redis bundle for every visitor.
+ * Hot path: Upstash Redis REST (instant read/write).
+ * Cold seed only: optional gt-live GitHub JSON if Redis is empty.
  */
 
 import { config } from "./config.js";
 import { pruneDailyActivity } from "./daily-activity.js";
 import { normalizeEvents } from "./translator.js";
 
+const REDIS_KEY = process.env.GT_REDIS_KEY || "gt:live:desk";
 const DEFAULT_REPO = "goldennftplatform-svg/gt";
 const DEFAULT_BRANCH = "gt-live";
 const DEFAULT_PATH = "shared.json";
+
+function redisUrl() {
+  return process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL || "";
+}
+
+function redisToken() {
+  return process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN || "";
+}
+
+function githubToken() {
+  return process.env.GT_GITHUB_TOKEN || process.env.GITHUB_TOKEN || "";
+}
 
 function repo() {
   return process.env.GT_SHARED_REPO || DEFAULT_REPO;
@@ -24,17 +37,14 @@ function filePath() {
   return process.env.GT_SHARED_PATH || DEFAULT_PATH;
 }
 
-function githubToken() {
-  return process.env.GT_GITHUB_TOKEN || process.env.GITHUB_TOKEN || "";
-}
-
 export function sharedStoreConfig() {
+  const redis = Boolean(redisUrl() && redisToken());
   return {
     enabled: true,
-    repo: repo(),
-    branch: branch(),
-    path: filePath(),
-    writable: Boolean(githubToken()),
+    backend: redis ? "redis" : githubToken() ? "github" : "none",
+    writable: redis || Boolean(githubToken()),
+    redis: redis,
+    redisKey: REDIS_KEY,
     rawUrl: `https://raw.githubusercontent.com/${repo()}/${branch()}/${filePath()}`,
   };
 }
@@ -55,7 +65,7 @@ function emptyBundle() {
   };
 }
 
-function pruneEvents(events = []) {
+export function pruneEvents(events = []) {
   const cutoff = Date.now() - config.trackWindowHours * 60 * 60 * 1000;
   return normalizeEvents(events)
     .filter((e) => {
@@ -65,7 +75,7 @@ function pruneEvents(events = []) {
     .slice(0, config.maxEvents);
 }
 
-function normalizeBundle(raw) {
+export function normalizeBundle(raw) {
   const base = emptyBundle();
   if (!raw || typeof raw !== "object") return base;
   return {
@@ -77,9 +87,45 @@ function normalizeBundle(raw) {
   };
 }
 
-export async function loadSharedBundle() {
-  const cfg = sharedStoreConfig();
-  const url = `${cfg.rawUrl}?t=${Date.now()}`;
+async function redisCommand(command) {
+  const url = redisUrl();
+  const token = redisToken();
+  if (!url || !token) throw new Error("Redis not configured");
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(command),
+    cache: "no-store",
+  });
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok || body.error) {
+    throw new Error(body.error || `redis HTTP ${res.status}`);
+  }
+  return body.result;
+}
+
+async function loadFromRedis() {
+  if (!redisUrl() || !redisToken()) return null;
+  const raw = await redisCommand(["GET", REDIS_KEY]);
+  if (!raw) return null;
+  const parsed = typeof raw === "string" ? JSON.parse(raw) : raw;
+  return normalizeBundle(parsed);
+}
+
+async function saveToRedis(bundle) {
+  const normalized = normalizeBundle({
+    ...bundle,
+    updatedAt: new Date().toISOString(),
+  });
+  await redisCommand(["SET", REDIS_KEY, JSON.stringify(normalized)]);
+  return normalized;
+}
+
+async function loadFromGithub() {
+  const url = `https://raw.githubusercontent.com/${repo()}/${branch()}/${filePath()}?t=${Date.now()}`;
   try {
     const res = await fetch(url, {
       cache: "no-store",
@@ -89,64 +135,34 @@ export async function loadSharedBundle() {
       },
     });
     if (res.status === 404) return emptyBundle();
-    if (!res.ok) {
-      throw new Error(`shared store HTTP ${res.status}`);
-    }
+    if (!res.ok) throw new Error(`github raw HTTP ${res.status}`);
     return normalizeBundle(await res.json());
-  } catch (error) {
-    // Fallback: Contents API (works for private later; public raw usually enough)
-    const token = githubToken();
-    if (!token) throw error;
-    const api = `https://api.github.com/repos/${cfg.repo}/contents/${cfg.path}?ref=${cfg.branch}`;
-    const res = await fetch(api, {
-      headers: {
-        Accept: "application/vnd.github+json",
-        Authorization: `Bearer ${token}`,
-        "User-Agent": "GeoffThermometer/shared-store",
-      },
-    });
-    if (res.status === 404) return emptyBundle();
-    if (!res.ok) throw new Error(`shared store API HTTP ${res.status}`);
-    const body = await res.json();
-    const json = Buffer.from(body.content || "", "base64").toString("utf8");
-    return normalizeBundle(JSON.parse(json || "{}"));
+  } catch {
+    return emptyBundle();
   }
 }
 
-async function getContentMeta() {
-  const cfg = sharedStoreConfig();
+async function saveToGithub(bundle, message) {
   const token = githubToken();
-  if (!token) return { sha: null };
-  const api = `https://api.github.com/repos/${cfg.repo}/contents/${cfg.path}?ref=${cfg.branch}`;
-  const res = await fetch(api, {
-    headers: {
-      Accept: "application/vnd.github+json",
-      Authorization: `Bearer ${token}`,
-      "User-Agent": "GeoffThermometer/shared-store",
-    },
-  });
-  if (res.status === 404) return { sha: null };
-  if (!res.ok) throw new Error(`content meta HTTP ${res.status}`);
-  const body = await res.json();
-  return { sha: body.sha || null };
-}
-
-export async function saveSharedBundle(bundle, { message } = {}) {
-  const cfg = sharedStoreConfig();
-  const token = githubToken();
-  if (!token) {
-    throw new Error("No GT_GITHUB_TOKEN/GITHUB_TOKEN — cannot write shared store");
-  }
+  if (!token) return null;
 
   const normalized = normalizeBundle({
     ...bundle,
     updatedAt: new Date().toISOString(),
   });
   const content = Buffer.from(JSON.stringify(normalized, null, 2), "utf8").toString("base64");
-  const api = `https://api.github.com/repos/${cfg.repo}/contents/${cfg.path}`;
+  const api = `https://api.github.com/repos/${repo()}/contents/${filePath()}`;
 
   for (let attempt = 0; attempt < 3; attempt += 1) {
-    const { sha } = await getContentMeta();
+    const metaRes = await fetch(`${api}?ref=${branch()}`, {
+      headers: {
+        Accept: "application/vnd.github+json",
+        Authorization: `Bearer ${token}`,
+        "User-Agent": "GeoffThermometer/shared-store",
+      },
+    });
+    const meta = metaRes.status === 404 ? null : await metaRes.json();
+    const sha = meta?.sha || null;
     const res = await fetch(api, {
       method: "PUT",
       headers: {
@@ -158,17 +174,46 @@ export async function saveSharedBundle(bundle, { message } = {}) {
       body: JSON.stringify({
         message: message || `live tick ${normalized.updatedAt}`,
         content,
-        branch: cfg.branch,
+        branch: branch(),
         sha: sha || undefined,
       }),
     });
     if (res.ok) return normalized;
-    // 409 = someone else wrote; retry with fresh sha
     if (res.status === 409 && attempt < 2) continue;
     const text = await res.text();
-    throw new Error(`shared store write HTTP ${res.status}: ${text.slice(0, 240)}`);
+    throw new Error(`github write HTTP ${res.status}: ${text.slice(0, 200)}`);
   }
   return normalized;
 }
 
-export { emptyBundle, normalizeBundle, pruneEvents };
+export async function loadSharedBundle() {
+  // Instant path
+  const redisBundle = await loadFromRedis().catch(() => null);
+  if (redisBundle?.latest || redisBundle?.events?.length) return redisBundle;
+
+  // One-time cold seed from GitHub if Redis empty
+  const githubBundle = await loadFromGithub();
+  if ((githubBundle.latest || githubBundle.events?.length) && redisUrl() && redisToken()) {
+    await saveToRedis(githubBundle).catch(() => {});
+  }
+  return githubBundle.latest || githubBundle.events?.length ? githubBundle : emptyBundle();
+}
+
+export async function saveSharedBundle(bundle, { message } = {}) {
+  const cfg = sharedStoreConfig();
+  if (!cfg.writable) {
+    throw new Error("No Redis/GitHub credentials — cannot write shared desk");
+  }
+
+  let saved;
+  if (cfg.redis) {
+    saved = await saveToRedis(bundle);
+    // Best-effort mirror; never block the hot path on GitHub latency
+    saveToGithub(saved, message).catch(() => {});
+    return saved;
+  }
+
+  return saveToGithub(bundle, message);
+}
+
+export { emptyBundle };

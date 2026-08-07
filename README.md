@@ -26,22 +26,19 @@ The translator turns diffs into a readable feed and a **temperature** score (coo
 3. Output / static: `public` (see `vercel.json`)
 4. Deploy.
 
-On Vercel, history is **not** per-browser. An authoritative bundle lives on the `gt-live` branch (`shared.json`). `/api/status` and `/api/poll` serve that shared desk to every visitor so **incognito and normal browsers match**.
+On Vercel, history is **universal** — one Redis live desk for every browser (incognito included). `/api/status` and `/api/poll` read/write that desk instantly. Browser `localStorage` is never the source of truth.
 
-Persistence:
-- Set `GT_GITHUB_TOKEN` (repo-scoped PAT/token) on Vercel so polls can write the shared desk
-- Set `CRON_SECRET` for `/api/tick` (daily Vercel cron backup)
-- Optional: copy `ops/github-live-sniff.yml` → `.github/workflows/` after `gh auth refresh -s workflow` for 5-minute Actions ticks
+Required on Vercel:
+- `UPSTASH_REDIS_REST_URL`
+- `UPSTASH_REDIS_REST_TOKEN`
 
-Optional env vars:
-
-- `GEOFF_COOKIE`
-- `GEOFF_PREVIEW_CODE`
-- `POLL_INTERVAL_MS` (local only)
+Optional:
+- `GEOFF_COOKIE` / `GEOFF_PREVIEW_CODE`
+- `POLL_INTERVAL_MS` (local only; Vercel caps at 15s)
 - `GEOFF_BASE_URL` / `STACKNET_BASE_URL`
-- `GT_GITHUB_TOKEN` (required on Vercel for shared write-back to `gt-live`)
+- `GT_GITHUB_TOKEN` (optional cold mirror to `gt-live`)
 - `CRON_SECRET` (protects `/api/tick`)
-- `GT_SHARED_REPO` / `GT_SHARED_BRANCH` / `GT_SHARED_PATH` (defaults: this repo / `gt-live` / `shared.json`)
+- `GT_REDIS_KEY` (default `gt:live:desk`)
 
 ## Local
 

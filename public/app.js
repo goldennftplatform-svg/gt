@@ -8,7 +8,7 @@ import {
   upsertDailyActivity,
 } from "./daily-activity.js";
 
-const STORAGE_KEY = "geoff-thermometer-v6";
+const STORAGE_KEY = "geoff-thermometer-v7";
 const RANK_WEIGHT = { crazy: 5, spike: 4, move: 3, note: 2, whisper: 1 };
 const VIBE = { crazy: "Crazy", spike: "Spike", move: "Move", note: "Note", whisper: "Whisper" };
 const TRACK_HOURS = 72;
@@ -290,6 +290,7 @@ function loadMemory() {
     "geoff-thermometer-v3",
     "geoff-thermometer-v4",
     "geoff-thermometer-v5",
+    "geoff-thermometer-v6",
   ]) {
     try {
       localStorage.removeItem(key);
@@ -469,11 +470,16 @@ function setConnection(state, label) {
 function setTrust(payload) {
   const el = document.getElementById("trustMode");
   if (!el) return;
-  const shared = Boolean(payload?.config?.sharedStore || payload?.config?.trustMode === "shared");
+  const shared = Boolean(
+    payload?.config?.sharedStore ||
+      payload?.config?.trustMode === "shared" ||
+      payload?.config?.trustMode === "universal",
+  );
+  const backend = payload?.config?.sharedStoreBackend || "";
   el.className = `pill trust ${shared ? "shared" : "local"}`;
-  el.textContent = shared ? "shared live desk" : "local desk";
+  el.textContent = shared ? "universal live" : "local desk";
   el.title = shared
-    ? `Authoritative shared history · ${payload?.config?.sharedStoreUrl || "gt-live"}`
+    ? `One live desk for every browser · ${backend || "shared"} · ${payload?.config?.sharedStoreUrl || ""}`
     : "Local file desk — this machine only";
 }
 
@@ -1330,11 +1336,12 @@ function connectStream() {
   return source;
 }
 
-function startClientPolling() {
+function startClientPolling(intervalMs = 15_000) {
   if (pollTimer) clearInterval(pollTimer);
+  const ms = Math.max(8_000, Number(intervalMs) || 15_000);
   pollTimer = setInterval(() => {
     pollNow().catch(() => {});
-  }, 30_000);
+  }, ms);
 }
 
 function startMatrix() {
@@ -1400,18 +1407,19 @@ async function boot() {
 
   try {
     if (mode === "vercel") {
-      // Paint shared desk first (same for every browser), then refresh live vitals.
+      // Universal desk first — same JSON for every browser — then keep polling.
       try {
-        const status = await fetch("/api/status").then((r) => r.json());
+        const status = await fetch("/api/status", { cache: "no-store" }).then((r) => r.json());
         if (!status.error) {
           applyPayload(status);
           setConnection("live", "live");
+          startClientPolling(status.config?.pollIntervalMs);
         }
       } catch {
         /* fall through to poll */
       }
       await pollNow();
-      startClientPolling();
+      startClientPolling(15_000);
     } else {
       const status = await fetch("/api/status").then((r) => r.json());
       mode = status.config?.mode || mode;
