@@ -1,14 +1,14 @@
 {
-  "updatedAt": "2026-08-07T18:39:53.112Z",
+  "updatedAt": "2026-08-07T18:40:08.125Z",
   "latest": {
-    "id": "snap_msjahnuq",
-    "takenAt": "2026-08-07T18:39:52.941Z",
+    "id": "snap_msjahzfp",
+    "takenAt": "2026-08-07T18:40:07.956Z",
     "sources": {
       "geoff.version": {
         "source": "geoff.version",
         "ok": true,
         "status": 200,
-        "ms": 118,
+        "ms": 110,
         "buildId": "dbfafd7e6520b4f90a390b3f3cebdd9418f5afbe",
         "raw": {
           "buildId": "dbfafd7e6520b4f90a390b3f3cebdd9418f5afbe"
@@ -18,7 +18,7 @@
         "source": "geoff.deploy",
         "ok": true,
         "status": 200,
-        "ms": 148,
+        "ms": 139,
         "deployId": "dpl_5mx7hBqDKDLucCNZyBrppwWGCLVN",
         "chunks": {
           "count": 53,
@@ -49,7 +49,7 @@
         "source": "geoff.docs.pricing",
         "ok": true,
         "status": 200,
-        "ms": 50,
+        "ms": 42,
         "scraped": true,
         "fingerprint": "32510b23",
         "model": "One monthly token pool. Shared across text, speech, video, image, music, code, and files — no per-modality nickel-and-dime.",
@@ -347,13 +347,13 @@
         "source": "stacknet.health",
         "ok": true,
         "status": 200,
-        "ms": 59,
+        "ms": 64,
         "statusText": "healthy",
         "reachable": true,
         "httpError": null,
         "version": "v3.8.340",
         "nodeId": "nk_key_FOpmPDVgCusTGcuL",
-        "inFlight": 1,
+        "inFlight": 2,
         "maxInFlight": 512,
         "remoteMcp": null,
         "error": null
@@ -362,7 +362,7 @@
         "source": "stacknet.root",
         "ok": true,
         "status": 200,
-        "ms": 115,
+        "ms": 90,
         "version": "3.8.340"
       },
       "stacknet.network": {
@@ -427,13 +427,13 @@
           "cluster": "mainnet",
           "pendingObligations": 0
         },
-        "timestamp": 1786127993042
+        "timestamp": 1786128008048
       },
       "stacknet.node": {
         "source": "stacknet.node",
         "ok": true,
         "status": 200,
-        "ms": 58,
+        "ms": 64,
         "nodeId": "nk_key_FOpmPDVgCusTGcuL",
         "version": "0.1.0",
         "coprocessorCount": 1,
@@ -443,7 +443,7 @@
         "source": "stacknet.models",
         "ok": true,
         "status": 200,
-        "ms": 116,
+        "ms": 90,
         "count": 5,
         "ids": [
           "magma",
@@ -480,7 +480,7 @@
               "think",
               "video"
             ],
-            "created": 1786127993
+            "created": 1786128008
           },
           {
             "id": "preview",
@@ -500,7 +500,7 @@
               "image",
               "think"
             ],
-            "created": 1786127993
+            "created": 1786128008
           },
           {
             "id": "pyro",
@@ -521,7 +521,7 @@
               "image",
               "think"
             ],
-            "created": 1786127993
+            "created": 1786128008
           },
           {
             "id": "pyro:max",
@@ -542,7 +542,7 @@
               "image",
               "think"
             ],
-            "created": 1786127993
+            "created": 1786128008
           },
           {
             "id": "stack-embed",
@@ -553,7 +553,7 @@
               "chat"
             ],
             "contentTypes": [],
-            "created": 1786127993
+            "created": 1786128008
           }
         ]
       },
@@ -561,7 +561,7 @@
         "source": "stacknet.widgets",
         "ok": true,
         "status": 200,
-        "ms": 118,
+        "ms": 136,
         "count": 19,
         "ids": [
           "system-asset-report",
@@ -921,7 +921,7 @@
       "stacknetVersion": "v3.8.340",
       "stacknetStatus": "healthy",
       "mcpContract": null,
-      "inFlight": 1,
+      "inFlight": 2,
       "maxInFlight": 512,
       "taskCount": 0,
       "nodeId": "nk_key_FOpmPDVgCusTGcuL",
@@ -953,14 +953,14 @@
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 118
+          "ms": 110
         },
         {
           "source": "geoff.deploy",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 148
+          "ms": 139
         },
         {
           "source": "geoff.catalog",
@@ -974,21 +974,21 @@
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 50
+          "ms": 42
         },
         {
           "source": "stacknet.health",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 59
+          "ms": 64
         },
         {
           "source": "stacknet.root",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 115
+          "ms": 90
         },
         {
           "source": "stacknet.network",
@@ -1002,26 +1002,48 @@
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 58
+          "ms": 64
         },
         {
           "source": "stacknet.models",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 116
+          "ms": 90
         },
         {
           "source": "stacknet.widgets",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 118
+          "ms": 136
         }
       ]
     }
   },
   "events": [
+    {
+      "id": "evt_msjahuag_2aaji",
+      "at": "2026-08-07T18:40:01.432Z",
+      "kind": "agent",
+      "rank": "note",
+      "heat": 0,
+      "title": "Queue metrics shifted",
+      "summary": "Measured from public Stacknet counters: in-flight 1 → 3 (max 512). No private agent transcript — just queue/load telemetry.",
+      "details": {
+        "inferred": true,
+        "dataset": "queue",
+        "inFlight": 3,
+        "maxInFlight": 512,
+        "taskCount": 0,
+        "averageLoad": 0,
+        "signals": [
+          "in-flight 1 → 3 (max 512)"
+        ]
+      },
+      "severity": "low",
+      "vibe": "Note"
+    },
     {
       "id": "evt_msjahnuq_2mvda",
       "at": "2026-08-07T18:39:53.090Z",
@@ -16978,9 +17000,9 @@
   ],
   "state": {
     "startedAt": "2026-08-07T06:15:12.347Z",
-    "lastPollAt": "2026-08-07T18:39:52.941Z",
+    "lastPollAt": "2026-08-07T18:40:07.956Z",
     "lastError": null,
-    "pollCount": 1132,
+    "pollCount": 1134,
     "temperature": 0
   }
 }
