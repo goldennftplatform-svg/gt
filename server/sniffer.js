@@ -434,6 +434,128 @@ async function sniffGeoffExplore() {
   }
 }
 
+/**
+ * Max × Solana surface — public route existence (auth-gated, but redirects prove the lanes).
+ * Caught in client as: /max || (/max/solana/* && !/max/solana/portfolio)
+ */
+const MAX_SOLANA_ROUTES = [
+  { id: "max", path: "/max", label: "Max hub" },
+  { id: "max-solana", path: "/max/solana", label: "Max × Solana" },
+  { id: "max-solana-nested", path: "/max/solana/watch", label: "Max × Solana nested" },
+  { id: "max-solana-portfolio", path: "/max/solana/portfolio", label: "Max × Solana portfolio" },
+];
+
+async function probeRoute(path) {
+  const started = Date.now();
+  // Prefer www — apex often 307s to www before the real /connect gate.
+  let url = `https://www.geoff.ai${path}`;
+  let lastStatus = 0;
+  let lastLoc = null;
+  let redirectUrl = null;
+  let toConnect = false;
+
+  try {
+    for (let hop = 0; hop < 5; hop++) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), DEFAULT_TIMEOUT_MS);
+      let res;
+      try {
+        res = await fetch(url, {
+          method: "GET",
+          redirect: "manual",
+          headers: {
+            Accept: "text/html,application/xhtml+xml",
+            "User-Agent": "GeoffThermometer/1.0 (+max-solana route probe)",
+          },
+          signal: controller.signal,
+        });
+      } finally {
+        clearTimeout(timer);
+      }
+
+      lastStatus = res.status;
+      lastLoc = res.headers.get("location") || null;
+
+      if (lastStatus >= 300 && lastStatus < 400 && lastLoc) {
+        const next = new URL(lastLoc, url);
+        redirectUrl = next.searchParams.get("redirectUrl") || redirectUrl;
+        if (next.pathname === "/connect" || redirectUrl) {
+          toConnect = true;
+          break;
+        }
+        url = next.toString();
+        continue;
+      }
+
+      // Final non-redirect response
+      break;
+    }
+
+    return {
+      id: path,
+      path,
+      status: lastStatus,
+      ms: Date.now() - started,
+      location: lastLoc,
+      redirectUrl,
+      toConnect,
+      // Lane is "live" if it auth-gates to connect or serves 200 (public open)
+      live: toConnect || lastStatus === 200,
+    };
+  } catch (error) {
+    return {
+      id: path,
+      path,
+      status: 0,
+      ms: Date.now() - started,
+      location: null,
+      redirectUrl: null,
+      toConnect: false,
+      live: false,
+      error: error.message || String(error),
+    };
+  }
+}
+
+async function sniffGeoffMaxSolana() {
+  const started = Date.now();
+  const settled = await Promise.allSettled(
+    MAX_SOLANA_ROUTES.map(async (route) => {
+      const probe = await probeRoute(route.path);
+      return { ...route, ...probe, id: route.id };
+    }),
+  );
+
+  const routes = settled
+    .filter((r) => r.status === "fulfilled")
+    .map((r) => r.value);
+  const live = routes.filter((r) => r.live);
+  const fingerprint = simpleHash(
+    routes
+      .map((r) => `${r.id}:${r.status}:${r.toConnect ? "connect" : r.live ? "open" : "down"}`)
+      .sort()
+      .join("|"),
+  );
+
+  return {
+    source: "geoff.max.solana",
+    ok: live.length > 0,
+    status: live.length ? 200 : 0,
+    ms: Date.now() - started,
+    fingerprint,
+    liveCount: live.length,
+    total: MAX_SOLANA_ROUTES.length,
+    solanaLive: Boolean(routes.find((r) => r.id === "max-solana" && r.live)),
+    portfolioLive: Boolean(routes.find((r) => r.id === "max-solana-portfolio" && r.live)),
+    maxLive: Boolean(routes.find((r) => r.id === "max" && r.live)),
+    routes,
+    note: "Public redirect probe only — Max×Solana is auth-gated; 307→/connect means the lane exists.",
+    reason: live.length
+      ? null
+      : "No Max/Solana routes answered with connect-gate or 200",
+  };
+}
+
 async function sniffGeoffDocsSurface() {
   const started = Date.now();
   const settled = await Promise.allSettled(
@@ -559,6 +681,7 @@ export async function runSniff() {
     sniffGeoffTokenPlan(),
     sniffGeoffDocsSurface(),
     sniffGeoffExplore(),
+    sniffGeoffMaxSolana(),
     sniffStacknetHealth(),
     sniffStacknetRoot(),
     sniffStacknetNetwork(),
@@ -638,6 +761,10 @@ export async function runSniff() {
       exploreAuthors: bySource["geoff.explore"]?.authorCount ?? null,
       exploreFingerprint: bySource["geoff.explore"]?.fingerprint ?? null,
       exploreMedia: bySource["geoff.explore"]?.mediaCounts ?? null,
+      maxSolanaLive: Boolean(bySource["geoff.max.solana"]?.solanaLive),
+      maxHubLive: Boolean(bySource["geoff.max.solana"]?.maxLive),
+      maxSolanaFingerprint: bySource["geoff.max.solana"]?.fingerprint ?? null,
+      maxSolanaRoutes: bySource["geoff.max.solana"]?.liveCount ?? null,
       healthySources: sources.filter((s) => s.ok).length,
       skippedSources: sources.filter((s) => s.skipped).length,
       failedSources: sources.filter((s) => !s.ok && !s.skipped).length,

@@ -405,6 +405,48 @@ export function translate(previous, current) {
     );
   }
 
+  // Max × Solana route table (public 307→connect proves the lanes exist).
+  const prevMax = prev["geoff.max.solana"];
+  const currMax = curr["geoff.max.solana"];
+  if (prevMax?.fingerprint && currMax?.fingerprint && prevMax.fingerprint !== currMax.fingerprint) {
+    const prevLive = new Set((prevMax.routes || []).filter((r) => r.live).map((r) => r.id));
+    const currLive = new Set((currMax.routes || []).filter((r) => r.live).map((r) => r.id));
+    const added = [...currLive].filter((id) => !prevLive.has(id));
+    const removed = [...prevLive].filter((id) => !currLive.has(id));
+    const labels = Object.fromEntries((currMax.routes || []).map((r) => [r.id, r.label || r.path]));
+    events.push(
+      event({
+        kind: "maxSolana",
+        rank: added.length || removed.length ? "move" : "note",
+        title: added.length
+          ? "Max × Solana surface expanded"
+          : removed.length
+            ? "Max × Solana surface shrank"
+            : "Max × Solana routes shifted",
+        summary: [
+          added.length
+            ? `+${added.map((id) => labels[id] || id).join(", ")}`
+            : null,
+          removed.length
+            ? `-${removed.map((id) => labels[id] || id).join(", ")}`
+            : null,
+          `${currMax.liveCount ?? 0}/${currMax.total ?? "?"} lanes answering (connect-gate or open)`,
+          "Public route probe — not wallet/portfolio contents.",
+        ]
+          .filter(Boolean)
+          .join(" · "),
+        details: {
+          from: prevMax.fingerprint,
+          to: currMax.fingerprint,
+          added,
+          removed,
+          solanaLive: currMax.solanaLive,
+          portfolioLive: currMax.portfolioLive,
+        },
+      }),
+    );
+  }
+
   // Community Explore board — public /api/explore/feed post IDs (not engagement spam).
   const prevExplore = prev["geoff.explore"];
   const currExplore = curr["geoff.explore"];
@@ -852,6 +894,7 @@ export function inferAgentDesk(latest, newEvents = []) {
       "catalog",
       "docs",
       "explore",
+      "maxSolana",
       "pricing",
     ].includes(e.kind),
   );

@@ -31,6 +31,7 @@ function inferRank(e = {}) {
     if (n >= 1) return "note";
     return "note";
   }
+  if (e.kind === "maxSolana") return "move";
   if (e.kind === "agent") return "note";
   if (e.kind === "agentCluster") {
     if (/crazy|full-stack/i.test(blob)) return "crazy";
@@ -209,6 +210,8 @@ const els = {
   exploreMeta: document.getElementById("exploreMeta"),
   exploreCue: document.getElementById("exploreCue"),
   exploreCueLink: document.getElementById("exploreCueLink"),
+  maxCue: document.getElementById("maxCue"),
+  maxCueLink: document.getElementById("maxCueLink"),
   story: document.getElementById("story"),
   storyHeadline: document.getElementById("storyHeadline"),
   storySentence: document.getElementById("storySentence"),
@@ -285,6 +288,7 @@ const EVENT_ICONS = {
   pricing: "tag",
   docs: "book",
   explore: "spark",
+  maxSolana: "bolt",
   metaproofs: "layers",
 };
 
@@ -619,6 +623,35 @@ function renderExploreCue(board, events = []) {
     els.exploreCue.textContent = `No new posts in ${TRACK_HOURS}h · ${board.count} on the top board`;
   } else {
     els.exploreCue.textContent = "Watching for new posts…";
+  }
+}
+
+function renderMaxCue(latest, events = []) {
+  if (!els.maxCue) return;
+  const src = latest?.sources?.["geoff.max.solana"];
+  if (els.maxCueLink) els.maxCueLink.href = "https://www.geoff.ai/max/solana";
+
+  const recent = eventsInTrackWindow(events)
+    .filter((e) => e.kind === "maxSolana")
+    .sort((a, b) => Date.parse(b.at || 0) - Date.parse(a.at || 0))[0];
+
+  if (recent) {
+    els.maxCue.textContent = recent.title || "Max × Solana surface moved";
+    els.maxCue.classList.add("hot");
+    return;
+  }
+
+  els.maxCue.classList.remove("hot");
+  if (!src) {
+    els.maxCue.textContent = "Probing /max routes…";
+    return;
+  }
+  if (src.solanaLive) {
+    els.maxCue.textContent = `Lane live · ${src.liveCount}/${src.total} routes connect-gated (auth)`;
+  } else if (src.maxLive) {
+    els.maxCue.textContent = "Max hub live · Solana nested lane quiet";
+  } else {
+    els.maxCue.textContent = "No Max/Solana routes answering";
   }
 }
 
@@ -1478,6 +1511,7 @@ function applyPayload(payload) {
   renderHorsepower(briefing?.horsepower || null);
   renderTokenPlan(briefing?.tokenPlan || CLIENT_TOKEN_PLAN);
   renderExploreCue(briefing?.exploreBoard || null, feedEvents);
+  renderMaxCue(latest, feedEvents);
   renderAgentDesk(payload.agentDesk || briefing?.agentDesk || null);
   renderPumpTape(feedEvents, memory.agentSamples || []);
   renderHeatmap(memory.dailyActivity || []);

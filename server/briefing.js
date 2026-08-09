@@ -365,6 +365,8 @@ function userTakeForEvent(event) {
       return "Public docs pages we fingerprint moved (MCP / HQ / Claw / models / usage).";
     case "explore":
       return "Community Explore board moved — new or rotated public posts on geoff.ai/explore.";
+    case "maxSolana":
+      return "Max × Solana routes moved — public connect-gate probe on /max and /max/solana/*.";
     case "pricing":
       return "Public Token Plan rates on docs.geoff.ai changed — check what seats/tokens cost now.";
     case "baseline":
@@ -638,6 +640,11 @@ function glossary() {
       term: "Explore",
       meaning:
         "Public community board on geoff.ai/explore. We fingerprint the top feed posts — new entries show up in What’s changing.",
+    },
+    {
+      term: "Max × Solana",
+      meaning:
+        "Auth-gated geoff.ai routes under /max and /max/solana/*. We only probe public redirects (307→connect) — not wallets or portfolio contents.",
     },
     {
       term: "Rank",
