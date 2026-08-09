@@ -407,8 +407,8 @@ async function sniffGeoffExplore() {
       mediaCounts,
       authors,
       authorCount: authors.length,
-      // Keep a small public sample for the community panel (no lyrics / heavy blobs).
-      sample: posts.slice(0, 12),
+      // Tiny sample for event titles only (no lyrics / heavy blobs).
+      sample: posts.slice(0, 6),
       reason: res.ok
         ? posts.length
           ? null

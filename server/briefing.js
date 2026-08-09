@@ -124,19 +124,6 @@ function healthStory(summary) {
     };
   }
 
-  const exploreN = summary.exploreCount;
-  if (typeof exploreN === "number" && exploreN > 0) {
-    const authors =
-      typeof summary.exploreAuthors === "number" ? summary.exploreAuthors : null;
-    const authorBit = authors != null ? ` · ${authors} creator${authors === 1 ? "" : "s"}` : "";
-    return {
-      tone: "good",
-      headline: `Community live · ${exploreN} on Explore${authorBit}`,
-      sentence:
-        "Public geoff.ai/explore feed is up. New posts land in What’s changing when the top board moves.",
-    };
-  }
-
   const tempHint =
     summary._temperatureLabel === "blazing"
       ? "A real cluster of meaningful change just landed."
@@ -270,22 +257,12 @@ function pieceExplore(summary, explore = null) {
 
 function buildExploreBoard(latest) {
   const src = latest?.sources?.["geoff.explore"];
-  if (!src?.ok || !src.sample?.length) return null;
+  if (!src?.ok) return null;
   return {
-    kicker: "Community · public Explore",
-    headline: "What’s on the board",
-    sentence: "Top posts from geoff.ai/explore — when this set moves, the thermometer calls it out.",
     url: src.url || "https://www.geoff.ai/explore",
-    count: src.count ?? src.sample.length,
+    count: src.count ?? 0,
     authors: src.authorCount ?? null,
-    mediaCounts: src.mediaCounts || {},
     fingerprint: src.fingerprint || null,
-    posts: src.sample.map((p) => ({
-      id: p.id,
-      title: p.title,
-      author: p.author,
-      mediaType: p.mediaType,
-    })),
   };
 }
 

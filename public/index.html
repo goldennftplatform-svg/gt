@@ -136,14 +136,14 @@
         </div>
       </section>
 
-      <section id="coverage" class="coverage-strip" aria-label="Sniff coverage">
-        <div class="coverage-head">
+      <details class="coverage-strip fold-lite" aria-label="Sniff coverage">
+        <summary class="coverage-head">
           <p class="story-kicker">Data coverage · public only</p>
           <p id="coverageMeta">Waiting for first sniff…</p>
-        </div>
+        </summary>
         <div id="coverageChips" class="coverage-chips"></div>
         <ul id="coverageNotes" class="coverage-notes"></ul>
-      </section>
+      </details>
 
       <section id="agentDesk" class="agent-desk status-quiet" aria-live="polite" hidden>
         <div class="agent-desk-icon" data-icon="bolt"></div>
@@ -157,30 +157,27 @@
         </div>
       </section>
 
-      <section class="panel explore-panel" aria-label="Community Explore board">
-        <div class="panel-head">
-          <div class="panel-title">
-            <span class="ico-wrap sm" data-icon="spark"></span>
-            <h2 id="exploreHeadline">Community · Explore</h2>
-          </div>
-          <p id="explorePanelMeta">Waiting for public feed…</p>
-        </div>
-        <p id="exploreSentence" class="explore-sentence">
-          Top posts from geoff.ai/explore — tracked so the community sees when the board moves.
-        </p>
-        <div id="exploreMix" class="explore-mix"></div>
-        <div id="explorePosts" class="explore-posts"></div>
-        <p id="exploreSource" class="explore-source"></p>
+      <section class="cue explore-cue" aria-label="Explore updates">
+        <span class="cue-label">Explore</span>
+        <p id="exploreCue" class="cue-text">Watching for new posts…</p>
+        <a
+          id="exploreCueLink"
+          class="cue-link"
+          href="https://www.geoff.ai/explore"
+          target="_blank"
+          rel="noopener noreferrer"
+          >check it out</a
+        >
       </section>
 
-      <section class="panel hp-panel" aria-label="On-demand horsepower">
-        <div class="panel-head">
+      <details class="panel hp-panel fold" aria-label="On-demand horsepower">
+        <summary class="panel-head fold-summary">
           <div class="panel-title">
             <span class="ico-wrap sm" data-icon="bolt"></span>
             <h2 id="hpHeadline">On-demand horsepower</h2>
           </div>
-          <p id="hpMeta">Public Stacknet map · what you can call now</p>
-        </div>
+          <p id="hpMeta">Public Stacknet map · tap to expand</p>
+        </summary>
         <p id="hpSentence" class="hp-sentence">Live compute, brains, power lanes, and widgets — plus what isn’t shared.</p>
         <div id="hpScore" class="hp-score"></div>
 
@@ -208,7 +205,7 @@
           <div class="hp-layer-label"><span>✕</span> Not on the public map</div>
           <div id="hpBlocked" class="hp-blocked"></div>
         </div>
-      </section>
+      </details>
 
       <section class="panel pump-panel" aria-label="72 hour pump tape">
         <div class="panel-head">
@@ -265,7 +262,7 @@
         </div>
       </section>
 
-      <section class="panel price-panel" aria-label="Token plan value sheet">
+      <section class="panel price-panel price-compact" aria-label="Token plan value sheet">
         <div class="panel-head">
           <div class="panel-title">
             <span class="ico-wrap sm" data-icon="tag"></span>
@@ -273,15 +270,18 @@
           </div>
           <p id="priceMeta">Waiting for docs.geoff.ai…</p>
         </div>
-        <p id="priceSentence" class="price-sentence">One pool. Every modality. Public numbers.</p>
-        <div id="priceWins" class="price-wins"></div>
         <div id="pricePlans" class="price-plans"></div>
-        <div id="priceYield" class="price-yield"></div>
-        <div class="price-sheet-wrap">
-          <div id="priceSheet" class="price-sheet"></div>
-        </div>
-        <div id="priceLimits" class="price-limits"></div>
         <p id="priceSource" class="price-source"></p>
+        <details class="price-more">
+          <summary>Full compare · yields · limits</summary>
+          <p id="priceSentence" class="price-sentence">One pool. Every modality. Public numbers.</p>
+          <div id="priceWins" class="price-wins"></div>
+          <div id="priceYield" class="price-yield"></div>
+          <div class="price-sheet-wrap">
+            <div id="priceSheet" class="price-sheet"></div>
+          </div>
+          <div id="priceLimits" class="price-limits"></div>
+        </details>
       </section>
 
       <div class="board">
@@ -309,16 +309,16 @@
           </div>
         </section>
 
-        <section class="panel glossary-panel">
-          <div class="panel-head">
+        <details class="panel glossary-panel fold">
+          <summary class="panel-head fold-summary">
             <div class="panel-title">
               <span class="ico-wrap sm" data-icon="book"></span>
               <h2>Glossary</h2>
             </div>
             <p>Jargon → meaning</p>
-          </div>
+          </summary>
           <div id="glossary" class="glossary"></div>
-        </section>
+        </details>
       </div>
 
       <details class="raw-drawer">

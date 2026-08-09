@@ -207,12 +207,8 @@ const els = {
   treasuryMeta: document.getElementById("treasuryMeta"),
   exploreCount: document.getElementById("exploreCount"),
   exploreMeta: document.getElementById("exploreMeta"),
-  exploreHeadline: document.getElementById("exploreHeadline"),
-  explorePanelMeta: document.getElementById("explorePanelMeta"),
-  exploreSentence: document.getElementById("exploreSentence"),
-  exploreMix: document.getElementById("exploreMix"),
-  explorePosts: document.getElementById("explorePosts"),
-  exploreSource: document.getElementById("exploreSource"),
+  exploreCue: document.getElementById("exploreCue"),
+  exploreCueLink: document.getElementById("exploreCueLink"),
   story: document.getElementById("story"),
   storyHeadline: document.getElementById("storyHeadline"),
   storySentence: document.getElementById("storySentence"),
@@ -593,57 +589,36 @@ function renderMetrics(latest) {
   }
 }
 
-function renderExploreBoard(board) {
-  if (!els.explorePosts) return;
-  if (!board?.posts?.length) {
-    if (els.exploreHeadline) els.exploreHeadline.textContent = "Community · Explore";
-    if (els.explorePanelMeta) els.explorePanelMeta.textContent = "Waiting for public feed…";
-    if (els.exploreSentence) {
-      els.exploreSentence.textContent =
-        "Top posts from geoff.ai/explore — tracked so the community sees when the board moves.";
-    }
-    if (els.exploreMix) els.exploreMix.innerHTML = "";
-    els.explorePosts.innerHTML = `<p class="empty">Explore feed not sniffed yet.</p>`;
-    if (els.exploreSource) els.exploreSource.innerHTML = "";
+function renderExploreCue(board, events = []) {
+  if (!els.exploreCue) return;
+  const href = board?.url || "https://www.geoff.ai/explore";
+  if (els.exploreCueLink) els.exploreCueLink.href = href;
+
+  const recent = eventsInTrackWindow(events)
+    .filter((e) => e.kind === "explore")
+    .sort((a, b) => Date.parse(b.at || 0) - Date.parse(a.at || 0));
+  const hit = recent[0];
+
+  if (hit) {
+    const added = hit.details?.added?.length || 0;
+    const titles = (hit.summary || "")
+      .match(/“([^”]+)”/g)
+      ?.map((t) => t.slice(1, -1))
+      .slice(0, 2);
+    const titleBit = titles?.length ? ` · ${titles.join(", ")}` : "";
+    els.exploreCue.textContent =
+      added > 0
+        ? `New stuff added · +${added}${titleBit}`
+        : hit.title || "Explore board moved";
+    els.exploreCue.classList.add("hot");
     return;
   }
 
-  if (els.exploreHeadline) els.exploreHeadline.textContent = board.headline || "Community · Explore";
-  if (els.explorePanelMeta) {
-    const bits = [`${board.count ?? board.posts.length} on top board`];
-    if (board.authors != null) bits.push(`${board.authors} creators`);
-    els.explorePanelMeta.textContent = bits.join(" · ");
-  }
-  if (els.exploreSentence) {
-    els.exploreSentence.textContent =
-      board.sentence ||
-      "Top posts from geoff.ai/explore — when this set moves, What’s changing lights up.";
-  }
-  if (els.exploreMix) {
-    const media = board.mediaCounts || {};
-    const chips = Object.entries(media)
-      .filter(([, n]) => n > 0)
-      .map(
-        ([k, n]) =>
-          `<span class="chip">${escapeHtml(String(n))} ${escapeHtml(k)}</span>`,
-      );
-    els.exploreMix.innerHTML = chips.join("") || "";
-  }
-  els.explorePosts.innerHTML = board.posts
-    .slice(0, 10)
-    .map((p) => {
-      const author = p.author ? `@${p.author}` : "anon";
-      const type = p.mediaType || "post";
-      return `<article class="explore-card">
-        <span class="explore-type">${escapeHtml(type)}</span>
-        <strong>${escapeHtml(p.title || "Untitled")}</strong>
-        <em>${escapeHtml(author)}</em>
-      </article>`;
-    })
-    .join("");
-  if (els.exploreSource) {
-    const href = board.url || "https://www.geoff.ai/explore";
-    els.exploreSource.innerHTML = `<a href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer">Open geoff.ai/explore</a> · public /api/explore/feed`;
+  els.exploreCue.classList.remove("hot");
+  if (board?.count != null) {
+    els.exploreCue.textContent = `No new posts in ${TRACK_HOURS}h · ${board.count} on the top board`;
+  } else {
+    els.exploreCue.textContent = "Watching for new posts…";
   }
 }
 
@@ -1088,17 +1063,10 @@ function renderTokenPlan(plan) {
     .map((p) => {
       const hi = p.highlighted ? " highlighted" : "";
       return `
-      <article class="price-tier tier-${escapeHtml(p.id)}${hi}">
-        <p class="price-badge">${escapeHtml(p.badge || p.name)}</p>
+      <article class="price-tier compact tier-${escapeHtml(p.id)}${hi}">
         <h3>${escapeHtml(p.name)}</h3>
         <p class="price-amount">${escapeHtml(p.price)}</p>
-        <p class="price-tokens"><span>${escapeHtml(p.tokens)}</span> tokens / mo</p>
-        <p class="price-pitch">${escapeHtml(p.pitch || p.why || "")}</p>
-        <div class="price-yield-mini">
-          <span><em>Images</em>${escapeHtml(p.images || "—")}</span>
-          <span><em>Videos (5 sec)</em>${escapeHtml(p.videos5s || "—")}</span>
-          <span><em>Songs</em>${escapeHtml(p.songs || "—")}</span>
-        </div>
+        <p class="price-tokens"><span>${escapeHtml(p.tokens)}</span> / mo</p>
       </article>`;
     })
     .join("");
@@ -1453,7 +1421,7 @@ function applyPayload(payload) {
   renderCoverage(briefing?.coverage || null);
   renderHorsepower(briefing?.horsepower || null);
   renderTokenPlan(briefing?.tokenPlan || CLIENT_TOKEN_PLAN);
-  renderExploreBoard(briefing?.exploreBoard || null);
+  renderExploreCue(briefing?.exploreBoard || null, feedEvents);
   renderAgentDesk(payload.agentDesk || briefing?.agentDesk || null);
   renderPumpTape(feedEvents, memory.agentSamples || []);
   renderHeatmap(memory.dailyActivity || []);
