@@ -20,26 +20,32 @@ import {
 } from "./store.js";
 
 function isVercel() {
-  return Boolean(process.env.VERCEL);
+  // Real Vercel runtime only — ignore VERCEL= from a pulled .env.local
+  return Boolean(process.env.VERCEL) && Boolean(process.env.VERCEL_ENV || process.env.VERCEL_URL);
+}
+
+/** Local + Vercel both use Redis when configured — one desk, no empty local wipe. */
+function useSharedDesk() {
+  return sharedStoreConfig().redis || isVercel();
 }
 
 export function publicConfig() {
   const shared = sharedStoreConfig();
-  const vercel = isVercel();
+  const sharedDesk = useSharedDesk();
   return {
     // Shared desk: snappier refresh so every browser stays in lockstep
-    pollIntervalMs: vercel ? Math.min(config.pollIntervalMs, 15_000) : config.pollIntervalMs,
+    pollIntervalMs: sharedDesk ? Math.min(config.pollIntervalMs, 15_000) : config.pollIntervalMs,
     geoffBaseUrl: config.geoffBaseUrl,
     stacknetBaseUrl: config.stacknetBaseUrl,
     catalogAuthConfigured: Boolean(config.geoffCookie || config.geoffPreviewCode),
-    mode: vercel ? "vercel" : "local",
+    mode: isVercel() ? "vercel" : sharedDesk ? "local-shared" : "local",
     trackWindowHours: config.trackWindowHours,
     heatmapDays: config.heatmapDays,
-    sharedStore: vercel,
+    sharedStore: sharedDesk,
     sharedStoreWritable: shared.writable,
     sharedStoreBackend: shared.backend,
     sharedStoreUrl: shared.redis ? `redis:${shared.redisKey}` : shared.rawUrl,
-    trustMode: vercel ? "universal" : "local-file",
+    trustMode: sharedDesk ? "universal" : "local-file",
   };
 }
 
@@ -59,7 +65,7 @@ function withBriefing(payload) {
 }
 
 export async function getStoredPayload() {
-  if (isVercel()) {
+  if (useSharedDesk()) {
     return getSharedPayload({ sniffLive: true });
   }
 
@@ -156,10 +162,10 @@ export async function getSharedPayload({ sniffLive = true } = {}) {
 export async function pollAndTranslate({
   previous = null,
   knownEvents = [],
-  persist = !isVercel(),
+  persist = !useSharedDesk(),
 } = {}) {
-  if (isVercel()) {
-    // Browser-supplied previous/events are intentionally ignored.
+  if (useSharedDesk()) {
+    // Shared Redis desk is authoritative — browser/local empty files must not replace it.
     return getSharedPayload({ sniffLive: true });
   }
 

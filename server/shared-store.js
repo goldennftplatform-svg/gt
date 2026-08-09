@@ -65,7 +65,8 @@ function emptyBundle() {
   };
 }
 
-const MAX_QUEUE_EVENTS = 150;
+// Keep a fat queue tape for the 72h pump chart. Surface always reserved first.
+const MAX_QUEUE_EVENTS = 1800;
 
 export function pruneEvents(events = []) {
   const cutoff = Date.now() - config.trackWindowHours * 60 * 60 * 1000;
@@ -74,14 +75,17 @@ export function pruneEvents(events = []) {
     return Number.isFinite(t) && t >= cutoff;
   });
 
-  // Keep all surface diffs; cap noisy queue/in-flight edges so the desk stays readable.
+  // Keep all surface diffs first; cap noisy queue/in-flight edges.
+  // Surface MUST come before the maxEvents slice so queue spam can't erase history.
   const surface = [];
   const queue = [];
   for (const e of normalized) {
     if (e?.kind === "agent") queue.push(e);
     else surface.push(e);
   }
-  return [...queue.slice(0, MAX_QUEUE_EVENTS), ...surface].slice(0, config.maxEvents);
+  const cappedQueue = queue.slice(0, MAX_QUEUE_EVENTS);
+  const room = Math.max(0, config.maxEvents - cappedQueue.length);
+  return [...surface.slice(0, room), ...cappedQueue].slice(0, config.maxEvents);
 }
 
 export function normalizeBundle(raw) {

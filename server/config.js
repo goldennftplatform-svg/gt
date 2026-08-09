@@ -23,6 +23,8 @@ function loadEnvFile() {
       ) {
         value = value.slice(1, -1);
       }
+      // Never let a pulled Vercel env pretend this process is on Vercel.
+      if (key === "VERCEL" || key.startsWith("VERCEL_")) continue;
       if (process.env[key] == null || process.env[key] === "") {
         process.env[key] = value;
       }

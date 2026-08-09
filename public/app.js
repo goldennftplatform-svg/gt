@@ -1404,16 +1404,65 @@ function renderNetworkModels(models = [], guide = []) {
     .join("");
 }
 
+function mergeEventsById(a = [], b = []) {
+  const map = new Map();
+  for (const e of [...(a || []), ...(b || [])]) {
+    if (!e?.id) continue;
+    map.set(e.id, e);
+  }
+  return pruneWindow([...map.values()])
+    .sort((x, y) => Date.parse(y.at || 0) - Date.parse(x.at || 0))
+    .slice(0, MAX_MEMORY_EVENTS);
+}
+
+function agentSamplesFromEvents(events = []) {
+  const out = [];
+  for (const e of events || []) {
+    if (!isQueueTelemetry(e)) continue;
+    const d = e.details || {};
+    let inFlight = d.inFlight ?? d.to ?? d.currFlight ?? null;
+    if (inFlight == null) {
+      const m = String(e.summary || "").match(/in-flight\s+(\d+)\s*→\s*(\d+)/i);
+      if (m) inFlight = Number(m[2]);
+      else {
+        const m2 = String(e.summary || "").match(/in-flight\s+(\d+)/i);
+        if (m2) inFlight = Number(m2[1]);
+      }
+    }
+    if (inFlight == null || !Number.isFinite(Number(inFlight))) continue;
+    out.push({
+      at: e.at,
+      inFlight: Number(inFlight),
+      taskCount: d.tasks ?? d.taskCount ?? null,
+      load: d.load ?? d.averageLoad ?? null,
+    });
+  }
+  return pruneWindow(out);
+}
+
 function applyPayload(payload) {
   if (!payload?.latest && !payload?.briefing && !payload?.events) return;
 
   mode = payload.config?.mode || mode;
 
-  // Shared desk (Vercel) and local file desk: server events are the only truth.
-  // Never merge browser localStorage into the feed — that made incognito disagree.
+  const incomingEvents = pruneWindow(payload.events || []);
+  const incomingDaily = pruneDailyActivity(payload.dailyActivity || [], HEATMAP_DAYS);
+  const universal = payload.config?.trustMode === "universal";
+
+  // Universal Redis desk: server wins. Local empty files must NEVER clobber richer browser history.
+  if (universal && incomingEvents.length) {
+    memory.events = incomingEvents.slice(0, MAX_MEMORY_EVENTS);
+    memory.dailyActivity = mergeDailyActivity(memory.dailyActivity || [], incomingDaily, HEATMAP_DAYS);
+  } else {
+    memory.events = mergeEventsById(memory.events, incomingEvents);
+    memory.dailyActivity = mergeDailyActivity(memory.dailyActivity || [], incomingDaily, HEATMAP_DAYS);
+  }
   memory.latest = payload.latest || memory.latest;
-  memory.events = pruneWindow(payload.events || []).slice(0, MAX_MEMORY_EVENTS);
-  memory.dailyActivity = pruneDailyActivity(payload.dailyActivity || [], HEATMAP_DAYS);
+  // Rebuild pump-tape queue dots from stored agent edges when browser samples were wiped.
+  const derived = agentSamplesFromEvents(memory.events);
+  if (derived.length > (memory.agentSamples?.length || 0)) {
+    memory.agentSamples = derived;
+  }
   memory.pollCount = payload.state?.pollCount || memory.pollCount || 0;
   saveMemory();
 
