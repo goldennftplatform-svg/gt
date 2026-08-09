@@ -346,6 +346,94 @@ function extractDocsFingerprint(html = "") {
   };
 }
 
+const EXPLORE_FEED_LIMIT = 48;
+
+function normalizeExplorePost(post) {
+  if (!post || typeof post !== "object") return null;
+  const id = typeof post.id === "string" ? post.id : null;
+  if (!id) return null;
+  const author =
+    post.author?.username ||
+    post.author?.handle ||
+    post.author?.name ||
+    null;
+  const title =
+    (typeof post.content === "string" && post.content.trim()) ||
+    (typeof post.title === "string" && post.title.trim()) ||
+    "Untitled";
+  const mediaType = typeof post.media_type === "string" ? post.media_type : "unknown";
+  return {
+    id,
+    title: title.slice(0, 120),
+    author: author ? String(author).slice(0, 64) : null,
+    mediaType,
+    createdAt: typeof post.created_at === "number" ? post.created_at : null,
+    likes: typeof post.likes_count === "number" ? post.likes_count : null,
+    views: typeof post.views_count === "number" ? post.views_count : null,
+    nsfw: Boolean(post.nsfw),
+  };
+}
+
+async function sniffGeoffExplore() {
+  const started = Date.now();
+  const url = `${config.geoffBaseUrl}/api/explore/feed?limit=${EXPLORE_FEED_LIMIT}`;
+  try {
+    const res = await fetchJson(url, {
+      headers: { Accept: "application/json" },
+    });
+    const posts = Array.isArray(res.json?.posts)
+      ? res.json.posts.map(normalizeExplorePost).filter(Boolean)
+      : [];
+    const ids = posts.map((p) => p.id);
+    const mediaCounts = {};
+    for (const p of posts) {
+      mediaCounts[p.mediaType] = (mediaCounts[p.mediaType] || 0) + 1;
+    }
+    const authors = [...new Set(posts.map((p) => p.author).filter(Boolean))].sort();
+    const fingerprint = simpleHash(ids.slice().sort().join("|"));
+
+    return {
+      source: "geoff.explore",
+      ok: res.ok && posts.length > 0,
+      status: res.status,
+      ms: Date.now() - started,
+      url: "https://www.geoff.ai/explore",
+      feedUrl: url,
+      count: posts.length,
+      hasMore: Boolean(res.json?.hasMore),
+      page: res.json?.page ?? null,
+      fingerprint,
+      ids,
+      mediaCounts,
+      authors,
+      authorCount: authors.length,
+      // Keep a small public sample for the community panel (no lyrics / heavy blobs).
+      sample: posts.slice(0, 12),
+      reason: res.ok
+        ? posts.length
+          ? null
+          : "Explore feed returned zero posts"
+        : `Explore feed HTTP ${res.status}`,
+    };
+  } catch (error) {
+    return {
+      source: "geoff.explore",
+      ok: false,
+      status: 0,
+      ms: Date.now() - started,
+      url: "https://www.geoff.ai/explore",
+      count: 0,
+      fingerprint: null,
+      ids: [],
+      mediaCounts: {},
+      authors: [],
+      authorCount: 0,
+      sample: [],
+      reason: error.message || String(error),
+    };
+  }
+}
+
 async function sniffGeoffDocsSurface() {
   const started = Date.now();
   const settled = await Promise.allSettled(
@@ -470,6 +558,7 @@ export async function runSniff() {
     sniffGeoffCatalog(),
     sniffGeoffTokenPlan(),
     sniffGeoffDocsSurface(),
+    sniffGeoffExplore(),
     sniffStacknetHealth(),
     sniffStacknetRoot(),
     sniffStacknetNetwork(),
@@ -545,6 +634,10 @@ export async function runSniff() {
       tokenPlanFingerprint: bySource["geoff.docs.pricing"]?.fingerprint ?? null,
       docsSurfaceScraped: bySource["geoff.docs.surface"]?.scraped ?? null,
       docsSurfaceFingerprint: bySource["geoff.docs.surface"]?.fingerprint ?? null,
+      exploreCount: bySource["geoff.explore"]?.count ?? null,
+      exploreAuthors: bySource["geoff.explore"]?.authorCount ?? null,
+      exploreFingerprint: bySource["geoff.explore"]?.fingerprint ?? null,
+      exploreMedia: bySource["geoff.explore"]?.mediaCounts ?? null,
       healthySources: sources.filter((s) => s.ok).length,
       skippedSources: sources.filter((s) => s.skipped).length,
       failedSources: sources.filter((s) => !s.ok && !s.skipped).length,

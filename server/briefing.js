@@ -120,7 +120,20 @@ function healthStory(summary) {
       tone: "good",
       headline: `Queue live · ${q}`,
       sentence:
-        "Public /health shows work on the wire. Surface feed stays quiet until deploy/models/docs actually change.",
+        "Public /health shows work on the wire. Surface feed stays quiet until deploy/models/docs/explore actually change.",
+    };
+  }
+
+  const exploreN = summary.exploreCount;
+  if (typeof exploreN === "number" && exploreN > 0) {
+    const authors =
+      typeof summary.exploreAuthors === "number" ? summary.exploreAuthors : null;
+    const authorBit = authors != null ? ` · ${authors} creator${authors === 1 ? "" : "s"}` : "";
+    return {
+      tone: "good",
+      headline: `Community live · ${exploreN} on Explore${authorBit}`,
+      sentence:
+        "Public geoff.ai/explore feed is up. New posts land in What’s changing when the top board moves.",
     };
   }
 
@@ -131,7 +144,7 @@ function healthStory(summary) {
         ? "A spike showed up recently — check the feed."
         : summary._temperatureLabel === "warming"
           ? "Some measurable movement, nothing crazy."
-          : "No surface diffs lately — deploy/models/docs unchanged.";
+          : "No surface diffs lately — deploy/models/docs/explore unchanged.";
 
   return {
     tone: "good",
@@ -226,6 +239,53 @@ function pieceTools(summary, capabilityGroups = [], widgets = []) {
         ? "Agent plug-in contract (MCP) published on /health"
         : "MCP contract not on /health — see public docs.geoff.ai/mcp (fingerprinted)",
     ],
+  };
+}
+
+function pieceExplore(summary, explore = null) {
+  const count = explore?.count ?? summary.exploreCount;
+  const authors = explore?.authorCount ?? summary.exploreAuthors;
+  const media = explore?.mediaCounts || summary.exploreMedia || {};
+  const mediaBits = Object.entries(media)
+    .filter(([, n]) => n > 0)
+    .map(([k, n]) => `${n} ${k}`)
+    .slice(0, 4);
+  return {
+    id: "explore",
+    title: "The community",
+    plain: "Explore — public posts people share on geoff.ai",
+    status:
+      typeof count === "number"
+        ? `${count} on the top board${typeof authors === "number" ? ` · ${authors} creators` : ""}`
+        : "Explore feed not sniffed yet",
+    tone: typeof count === "number" && count > 0 ? "good" : "muted",
+    meaning:
+      "Tracked from public /api/explore/feed. When new posts enter the top board, What’s changing lights up.",
+    facts: [
+      mediaBits.length ? `Mix: ${mediaBits.join(", ")}` : "Media mix unknown",
+      "Source: geoff.ai/explore (no login)",
+    ],
+  };
+}
+
+function buildExploreBoard(latest) {
+  const src = latest?.sources?.["geoff.explore"];
+  if (!src?.ok || !src.sample?.length) return null;
+  return {
+    kicker: "Community · public Explore",
+    headline: "What’s on the board",
+    sentence: "Top posts from geoff.ai/explore — when this set moves, the thermometer calls it out.",
+    url: src.url || "https://www.geoff.ai/explore",
+    count: src.count ?? src.sample.length,
+    authors: src.authorCount ?? null,
+    mediaCounts: src.mediaCounts || {},
+    fingerprint: src.fingerprint || null,
+    posts: src.sample.map((p) => ({
+      id: p.id,
+      title: p.title,
+      author: p.author,
+      mediaType: p.mediaType,
+    })),
   };
 }
 
@@ -326,6 +386,8 @@ function userTakeForEvent(event) {
       return "Network metaproofs counter moved — public summary field only.";
     case "docs":
       return "Public docs pages we fingerprint moved (MCP / HQ / Claw / models / usage).";
+    case "explore":
+      return "Community Explore board moved — new or rotated public posts on geoff.ai/explore.";
     case "pricing":
       return "Public Token Plan rates on docs.geoff.ai changed — check what seats/tokens cost now.";
     case "baseline":
@@ -359,6 +421,7 @@ export function compileBriefing({ latest, temperature, events = [], agentDesk = 
       agentDesk: null,
       coverage: null,
       tokenPlan: null,
+      exploreBoard: null,
       glossary: glossary(),
     };
   }
@@ -376,6 +439,8 @@ export function compileBriefing({ latest, temperature, events = [], agentDesk = 
   const coverage = buildCoverage(latest, summary);
   const horsepower = buildHorsepower(summary, models, capabilityGroups, widgets, coverage);
   const tokenPlan = buildTokenPlan(latest);
+  const exploreSrc = latest.sources?.["geoff.explore"] || null;
+  const exploreBoard = buildExploreBoard(latest);
 
   return {
     story,
@@ -383,11 +448,13 @@ export function compileBriefing({ latest, temperature, events = [], agentDesk = 
     coverage,
     horsepower,
     tokenPlan,
+    exploreBoard,
     pieces: [
       pieceApp(summary),
       pieceNetwork(summary),
       pieceBrains(summary, models),
       pieceTools(summary, capabilityGroups, widgets),
+      pieceExplore(summary, exploreSrc),
     ],
     capabilityGroups,
     models,
@@ -589,6 +656,11 @@ function glossary() {
     {
       term: "Build / deploy",
       meaning: "Proof the geoff.ai website shipped a new version.",
+    },
+    {
+      term: "Explore",
+      meaning:
+        "Public community board on geoff.ai/explore. We fingerprint the top feed posts — new entries show up in What’s changing.",
     },
     {
       term: "Rank",

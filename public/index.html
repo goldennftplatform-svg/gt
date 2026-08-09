@@ -116,6 +116,14 @@
           <strong id="treasurySol">—</strong>
           <em id="treasuryMeta">—</em>
         </article>
+        <article class="metric">
+          <div class="metric-top">
+            <span class="ico-wrap" data-icon="spark"></span>
+            <span class="k">Explore board</span>
+          </div>
+          <strong id="exploreCount">—</strong>
+          <em id="exploreMeta">—</em>
+        </article>
       </section>
 
       <section id="story" class="story tone-muted" aria-live="polite">
@@ -147,6 +155,22 @@
           <ul id="agentCluster" class="agent-cluster"></ul>
           <p id="agentDisclaimer" class="agent-disclaimer"></p>
         </div>
+      </section>
+
+      <section class="panel explore-panel" aria-label="Community Explore board">
+        <div class="panel-head">
+          <div class="panel-title">
+            <span class="ico-wrap sm" data-icon="spark"></span>
+            <h2 id="exploreHeadline">Community · Explore</h2>
+          </div>
+          <p id="explorePanelMeta">Waiting for public feed…</p>
+        </div>
+        <p id="exploreSentence" class="explore-sentence">
+          Top posts from geoff.ai/explore — tracked so the community sees when the board moves.
+        </p>
+        <div id="exploreMix" class="explore-mix"></div>
+        <div id="explorePosts" class="explore-posts"></div>
+        <p id="exploreSource" class="explore-source"></p>
       </section>
 
       <section class="panel price-panel" aria-label="Token plan value sheet">
@@ -269,7 +293,7 @@
             </div>
             <p id="tempMeta">Waiting…</p>
           </div>
-          <p class="feed-hint">Surface diffs only (deploy / models / docs / health) · queue/in-flight is a separate locked dataset below</p>
+          <p class="feed-hint">Surface diffs only (deploy / models / docs / explore / health) · queue/in-flight is a separate locked dataset below</p>
           <div id="feed" class="feed"></div>
 
           <div class="queue-strip">

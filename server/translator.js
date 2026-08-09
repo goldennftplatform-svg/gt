@@ -405,6 +405,57 @@ export function translate(previous, current) {
     );
   }
 
+  // Community Explore board — public /api/explore/feed post IDs (not engagement spam).
+  const prevExplore = prev["geoff.explore"];
+  const currExplore = curr["geoff.explore"];
+  if (prevExplore?.ok && currExplore?.ok && prevExplore.fingerprint && currExplore.fingerprint) {
+    if (prevExplore.fingerprint !== currExplore.fingerprint) {
+      const prevIds = prevExplore.ids || [];
+      const currIds = currExplore.ids || [];
+      const diff = listDiff(prevIds, currIds);
+      const addedN = diff.added.length;
+      const removedN = diff.removed.length;
+      const sampleById = new Map((currExplore.sample || []).map((p) => [p.id, p]));
+      const addedTitles = diff.added
+        .map((id) => sampleById.get(id)?.title)
+        .filter(Boolean)
+        .slice(0, 4);
+      // Heavy both-ways churn = trending reshuffle, not a content dump.
+      const reshuffle = addedN >= 10 && removedN >= 10;
+      const rank = reshuffle
+        ? "whisper"
+        : rankForListChange(addedN || removedN);
+      const title = reshuffle
+        ? "Explore feed reshuffled"
+        : addedN
+          ? "New posts on Explore"
+          : "Explore board changed";
+      const bits = [];
+      if (addedN) bits.push(`+${addedN} post${addedN === 1 ? "" : "s"}`);
+      if (removedN) bits.push(`-${removedN} rotated off the top`);
+      if (addedTitles.length) bits.push(addedTitles.map((t) => `“${t}”`).join(", "));
+      events.push(
+        event({
+          kind: "explore",
+          rank,
+          title,
+          summary: bits.length
+            ? `${bits.join(" · ")}. Public geoff.ai/explore feed.`
+            : "Public Explore feed fingerprint moved.",
+          details: {
+            from: prevExplore.fingerprint,
+            to: currExplore.fingerprint,
+            added: diff.added.slice(0, 12),
+            removed: diff.removed.slice(0, 12),
+            count: currExplore.count,
+            authors: currExplore.authorCount,
+            mediaCounts: currExplore.mediaCounts,
+          },
+        }),
+      );
+    }
+  }
+
   const prevMeta = prev["stacknet.network"]?.metaproofs?.total;
   const currMeta = curr["stacknet.network"]?.metaproofs?.total;
   if (isNumber(prevMeta) && isNumber(currMeta) && prevMeta !== currMeta) {
@@ -791,9 +842,18 @@ export function inferAgentDesk(latest, newEvents = []) {
   }
 
   const surface = newEvents.filter((e) =>
-    ["deploy", "version", "models", "apiModels", "widgets", "capabilities", "catalog"].includes(
-      e.kind,
-    ),
+    [
+      "deploy",
+      "version",
+      "models",
+      "apiModels",
+      "widgets",
+      "capabilities",
+      "catalog",
+      "docs",
+      "explore",
+      "pricing",
+    ].includes(e.kind),
   );
   const clustered = surface.length >= 2;
 

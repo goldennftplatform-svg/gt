@@ -23,6 +23,14 @@ function inferRank(e = {}) {
   if (/full-stack ship/i.test(blob)) return "crazy";
   if (e.kind === "baseline" || e.kind === "treasury" || e.kind === "metaproofs") return "whisper";
   if (e.kind === "docs") return "note";
+  if (e.kind === "explore") {
+    const n = (e.details?.added?.length || 0) + (e.details?.removed?.length || 0);
+    if (/reshuffl/i.test(blob)) return "whisper";
+    if (n >= 8) return "spike";
+    if (n >= 3) return "move";
+    if (n >= 1) return "note";
+    return "note";
+  }
   if (e.kind === "agent") return "note";
   if (e.kind === "agentCluster") {
     if (/crazy|full-stack/i.test(blob)) return "crazy";
@@ -197,6 +205,14 @@ const els = {
   mcpContract: document.getElementById("mcpContract"),
   treasurySol: document.getElementById("treasurySol"),
   treasuryMeta: document.getElementById("treasuryMeta"),
+  exploreCount: document.getElementById("exploreCount"),
+  exploreMeta: document.getElementById("exploreMeta"),
+  exploreHeadline: document.getElementById("exploreHeadline"),
+  explorePanelMeta: document.getElementById("explorePanelMeta"),
+  exploreSentence: document.getElementById("exploreSentence"),
+  exploreMix: document.getElementById("exploreMix"),
+  explorePosts: document.getElementById("explorePosts"),
+  exploreSource: document.getElementById("exploreSource"),
   story: document.getElementById("story"),
   storyHeadline: document.getElementById("storyHeadline"),
   storySentence: document.getElementById("storySentence"),
@@ -241,7 +257,13 @@ const els = {
   models: document.getElementById("models"),
 };
 
-const PIECE_ICONS = { app: "app", network: "network", brains: "brain", tools: "tools" };
+const PIECE_ICONS = {
+  app: "app",
+  network: "network",
+  brains: "brain",
+  tools: "tools",
+  explore: "spark",
+};
 const CAP_ICONS = {
   chat: "chat",
   media: "image",
@@ -266,6 +288,7 @@ const EVENT_ICONS = {
   agentCluster: "spark",
   pricing: "tag",
   docs: "book",
+  explore: "spark",
   metaproofs: "layers",
 };
 
@@ -554,6 +577,73 @@ function renderMetrics(latest) {
     els.treasuryMeta.title = s.treasuryAddress
       ? `Treasury ${s.treasuryAddress}`
       : "Public treasury + metaproofs from /network/summary";
+  }
+  if (els.exploreCount) {
+    els.exploreCount.textContent = s.exploreCount != null ? String(s.exploreCount) : "—";
+  }
+  if (els.exploreMeta) {
+    const bits = [];
+    if (s.exploreAuthors != null) bits.push(`${s.exploreAuthors} creators`);
+    const media = s.exploreMedia || {};
+    for (const key of ["image", "video", "audio"]) {
+      if (media[key]) bits.push(`${media[key]} ${key}`);
+    }
+    els.exploreMeta.textContent = bits.length ? bits.join(" · ") : "geoff.ai/explore";
+    els.exploreMeta.title = "Top board from public /api/explore/feed";
+  }
+}
+
+function renderExploreBoard(board) {
+  if (!els.explorePosts) return;
+  if (!board?.posts?.length) {
+    if (els.exploreHeadline) els.exploreHeadline.textContent = "Community · Explore";
+    if (els.explorePanelMeta) els.explorePanelMeta.textContent = "Waiting for public feed…";
+    if (els.exploreSentence) {
+      els.exploreSentence.textContent =
+        "Top posts from geoff.ai/explore — tracked so the community sees when the board moves.";
+    }
+    if (els.exploreMix) els.exploreMix.innerHTML = "";
+    els.explorePosts.innerHTML = `<p class="empty">Explore feed not sniffed yet.</p>`;
+    if (els.exploreSource) els.exploreSource.innerHTML = "";
+    return;
+  }
+
+  if (els.exploreHeadline) els.exploreHeadline.textContent = board.headline || "Community · Explore";
+  if (els.explorePanelMeta) {
+    const bits = [`${board.count ?? board.posts.length} on top board`];
+    if (board.authors != null) bits.push(`${board.authors} creators`);
+    els.explorePanelMeta.textContent = bits.join(" · ");
+  }
+  if (els.exploreSentence) {
+    els.exploreSentence.textContent =
+      board.sentence ||
+      "Top posts from geoff.ai/explore — when this set moves, What’s changing lights up.";
+  }
+  if (els.exploreMix) {
+    const media = board.mediaCounts || {};
+    const chips = Object.entries(media)
+      .filter(([, n]) => n > 0)
+      .map(
+        ([k, n]) =>
+          `<span class="chip">${escapeHtml(String(n))} ${escapeHtml(k)}</span>`,
+      );
+    els.exploreMix.innerHTML = chips.join("") || "";
+  }
+  els.explorePosts.innerHTML = board.posts
+    .slice(0, 10)
+    .map((p) => {
+      const author = p.author ? `@${p.author}` : "anon";
+      const type = p.mediaType || "post";
+      return `<article class="explore-card">
+        <span class="explore-type">${escapeHtml(type)}</span>
+        <strong>${escapeHtml(p.title || "Untitled")}</strong>
+        <em>${escapeHtml(author)}</em>
+      </article>`;
+    })
+    .join("");
+  if (els.exploreSource) {
+    const href = board.url || "https://www.geoff.ai/explore";
+    els.exploreSource.innerHTML = `<a href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer">Open geoff.ai/explore</a> · public /api/explore/feed`;
   }
 }
 
@@ -1363,6 +1453,7 @@ function applyPayload(payload) {
   renderCoverage(briefing?.coverage || null);
   renderHorsepower(briefing?.horsepower || null);
   renderTokenPlan(briefing?.tokenPlan || CLIENT_TOKEN_PLAN);
+  renderExploreBoard(briefing?.exploreBoard || null);
   renderAgentDesk(payload.agentDesk || briefing?.agentDesk || null);
   renderPumpTape(feedEvents, memory.agentSamples || []);
   renderHeatmap(memory.dailyActivity || []);
