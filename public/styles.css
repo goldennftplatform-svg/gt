@@ -1029,45 +1029,117 @@ details[open] > .fold-summary::after {
   content: "−";
 }
 
-.price-compact .price-plans {
-  margin-top: 0.15rem;
-  margin-bottom: 0.45rem;
+/* Dense value sheet — same bullish content, tighter packing */
+.price-dense .price-sentence {
+  margin: -0.1rem 0 0.55rem;
+  font-size: 0.95rem;
+  max-width: 44rem;
 }
 
-.price-tier.compact {
-  padding: 0.65rem 0.7rem;
+.price-dense .price-wins {
+  gap: 0.4rem;
+  margin-bottom: 0.65rem;
+}
+
+.price-dense .price-win {
+  padding: 0.5rem 0.6rem;
+  border-radius: 12px;
   gap: 0.15rem;
 }
 
-.price-tier.compact h3 {
-  font-size: 0.85rem;
-}
-
-.price-tier.compact .price-amount {
-  font-size: 1.15rem;
-}
-
-.price-tier.compact .price-tokens {
-  font-size: 0.72rem;
-  margin: 0;
-}
-
-.price-more {
-  margin-top: 0.75rem;
-  border-top: 1px solid var(--line);
-  padding-top: 0.55rem;
-}
-
-.price-more > summary {
-  cursor: pointer;
-  color: var(--muted);
+.price-dense .price-win strong {
   font-size: 0.78rem;
-  font-weight: 600;
-  list-style: none;
 }
 
-.price-more > summary::-webkit-details-marker {
-  display: none;
+.price-dense .price-win span {
+  font-size: 0.68rem;
+  line-height: 1.3;
+}
+
+.price-dense .price-plans {
+  gap: 0.45rem;
+  margin-bottom: 0.65rem;
+}
+
+.price-dense .price-tier {
+  padding: 0.7rem 0.7rem 0.65rem;
+  border-radius: 14px;
+  gap: 0.18rem;
+}
+
+.price-dense .price-tier h3 {
+  font-size: 0.95rem;
+  margin: 0.05rem 0 0;
+}
+
+.price-dense .price-amount {
+  font-size: 1.35rem;
+}
+
+.price-dense .price-tokens {
+  font-size: 0.72rem;
+}
+
+.price-dense .price-pitch {
+  font-size: 0.72rem;
+  line-height: 1.3;
+  margin: 0.1rem 0 0.15rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.price-dense .price-yield-mini {
+  gap: 0.25rem;
+  margin-top: 0.2rem;
+}
+
+.price-dense .price-yield-mini span {
+  font-size: 0.68rem;
+}
+
+.price-dense .price-yield {
+  margin-bottom: 0.65rem;
+}
+
+.price-dense .price-yield-head {
+  margin-bottom: 0.4rem;
+}
+
+.price-dense .price-yield-head strong {
+  font-size: 0.88rem;
+}
+
+.price-dense .price-yield-grid {
+  gap: 0.4rem;
+}
+
+.price-dense .price-yield-grid article {
+  padding: 0.55rem 0.65rem;
+}
+
+.price-dense .price-sheet-wrap {
+  margin-bottom: 0.55rem;
+}
+
+.price-dense .apple-sheet th,
+.price-dense .apple-sheet td {
+  padding: 0.35rem 0.45rem;
+  font-size: 0.72rem;
+}
+
+.price-dense .price-limits {
+  margin-bottom: 0.35rem;
+}
+
+.price-dense .price-limits-grid {
+  gap: 0.35rem;
+}
+
+.price-dense .price-limit {
+  padding: 0.45rem 0.55rem;
+  font-size: 0.7rem;
 }
 
 .price-sentence {

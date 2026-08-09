@@ -1063,10 +1063,17 @@ function renderTokenPlan(plan) {
     .map((p) => {
       const hi = p.highlighted ? " highlighted" : "";
       return `
-      <article class="price-tier compact tier-${escapeHtml(p.id)}${hi}">
+      <article class="price-tier tier-${escapeHtml(p.id)}${hi}">
+        <p class="price-badge">${escapeHtml(p.badge || p.name)}</p>
         <h3>${escapeHtml(p.name)}</h3>
         <p class="price-amount">${escapeHtml(p.price)}</p>
-        <p class="price-tokens"><span>${escapeHtml(p.tokens)}</span> / mo</p>
+        <p class="price-tokens"><span>${escapeHtml(p.tokens)}</span> tokens / mo</p>
+        <p class="price-pitch">${escapeHtml(p.pitch || p.why || "")}</p>
+        <div class="price-yield-mini">
+          <span><em>Images</em>${escapeHtml(p.images || "—")}</span>
+          <span><em>Videos (5s)</em>${escapeHtml(p.videos5s || "—")}</span>
+          <span><em>Songs</em>${escapeHtml(p.songs || "—")}</span>
+        </div>
       </article>`;
     })
     .join("");
