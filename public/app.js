@@ -1231,7 +1231,7 @@ function renderFeed(events = [], { pollCount = 0 } = {}) {
   setFeedMeta({ surface: windowed.length, queue: queue.length, pollCount });
 
   if (!windowed.length) {
-    els.feed.innerHTML = `<p class="empty">No surface diffs in ${TRACK_HOURS}h (deploys, models, pricing, health…). Locked desk holds ${total} total events — ${queue.length} are queue/in-flight and listed below.</p>`;
+    els.feed.innerHTML = `<p class="empty">Surface quiet in ${TRACK_HOURS}h — no deploy / models / docs / pricing diffs. Live activity is queue/in-flight (${queue.length} edges below). Not a sync miss.</p>`;
   } else {
     els.feed.innerHTML = windowed.slice(0, 80).map((e) => renderEventCard(e)).join("");
   }

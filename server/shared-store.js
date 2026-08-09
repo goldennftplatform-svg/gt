@@ -65,14 +65,23 @@ function emptyBundle() {
   };
 }
 
+const MAX_QUEUE_EVENTS = 150;
+
 export function pruneEvents(events = []) {
   const cutoff = Date.now() - config.trackWindowHours * 60 * 60 * 1000;
-  return normalizeEvents(events)
-    .filter((e) => {
-      const t = Date.parse(e?.at || "");
-      return Number.isFinite(t) && t >= cutoff;
-    })
-    .slice(0, config.maxEvents);
+  const normalized = normalizeEvents(events).filter((e) => {
+    const t = Date.parse(e?.at || "");
+    return Number.isFinite(t) && t >= cutoff;
+  });
+
+  // Keep all surface diffs; cap noisy queue/in-flight edges so the desk stays readable.
+  const surface = [];
+  const queue = [];
+  for (const e of normalized) {
+    if (e?.kind === "agent") queue.push(e);
+    else surface.push(e);
+  }
+  return [...queue.slice(0, MAX_QUEUE_EVENTS), ...surface].slice(0, config.maxEvents);
 }
 
 export function normalizeBundle(raw) {

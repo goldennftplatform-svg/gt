@@ -653,14 +653,17 @@ function agentActivityEvent(previous, current) {
   const prevLoad = previous.summary?.averageLoad;
   const currLoad = current.summary?.averageLoad;
 
-  // Only emit on measurable edges — not every poll while the queue is non-zero
-  const wokeUp = isNumber(prevFlight) && prevFlight === 0 && isNumber(currFlight) && currFlight > 0;
-  const wentIdle = isNumber(prevFlight) && prevFlight > 0 && isNumber(currFlight) && currFlight === 0;
+  // High bar — 0↔1↔2 flaps every 15s were flooding the desk (1000+ "updates").
+  const wokeUp =
+    isNumber(prevFlight) && prevFlight === 0 && isNumber(currFlight) && currFlight >= 3;
+  const wentIdle =
+    isNumber(prevFlight) && prevFlight >= 3 && isNumber(currFlight) && currFlight === 0;
   const flightJump =
-    isNumber(prevFlight) && isNumber(currFlight) && Math.abs(currFlight - prevFlight) >= 2;
-  const taskJump = isNumber(prevTasks) && isNumber(currTasks) && currTasks !== prevTasks;
+    isNumber(prevFlight) && isNumber(currFlight) && Math.abs(currFlight - prevFlight) >= 4;
+  const taskJump =
+    isNumber(prevTasks) && isNumber(currTasks) && Math.abs(currTasks - prevTasks) >= 2;
   const loadJump =
-    isNumber(prevLoad) && isNumber(currLoad) && Math.abs(currLoad - prevLoad) >= 0.05;
+    isNumber(prevLoad) && isNumber(currLoad) && Math.abs(currLoad - prevLoad) >= 0.15;
 
   if (!wokeUp && !wentIdle && !flightJump && !taskJump && !loadJump) return null;
 

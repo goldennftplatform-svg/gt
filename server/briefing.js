@@ -106,6 +106,24 @@ function healthStory(summary) {
     };
   }
 
+  const inFlight = summary.inFlight;
+  const maxInFlight = summary.maxInFlight;
+  const busy = typeof inFlight === "number" && inFlight > 0;
+
+  // Live queue is real activity — don't pretend the board is idle when only surface is quiet.
+  if (busy) {
+    const q =
+      typeof maxInFlight === "number"
+        ? `${inFlight}/${maxInFlight} in flight`
+        : `${inFlight} in flight`;
+    return {
+      tone: "good",
+      headline: `Queue live · ${q}`,
+      sentence:
+        "Public /health shows work on the wire. Surface feed stays quiet until deploy/models/docs actually change.",
+    };
+  }
+
   const tempHint =
     summary._temperatureLabel === "blazing"
       ? "A real cluster of meaningful change just landed."
@@ -113,12 +131,12 @@ function healthStory(summary) {
         ? "A spike showed up recently — check the feed."
         : summary._temperatureLabel === "warming"
           ? "Some measurable movement, nothing crazy."
-          : "Ops look calm — routine telemetry only.";
+          : "No surface diffs lately — deploy/models/docs unchanged.";
 
   return {
     tone: "good",
-    headline: "Geoff is online",
-    sentence: `${tempHint} App + network are reachable.`,
+    headline: "Geoff online · surface quiet",
+    sentence: `${tempHint} Queue is idle on public counters.`,
   };
 }
 
