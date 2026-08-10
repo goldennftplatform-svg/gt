@@ -1,14 +1,14 @@
 {
-  "updatedAt": "2026-08-10T00:58:22.016Z",
+  "updatedAt": "2026-08-10T00:59:22.473Z",
   "latest": {
-    "id": "snap_msmiw3gp",
-    "takenAt": "2026-08-10T00:58:21.758Z",
+    "id": "snap_msmixe3g",
+    "takenAt": "2026-08-10T00:59:21.836Z",
     "sources": {
       "geoff.version": {
         "source": "geoff.version",
         "ok": true,
         "status": 200,
-        "ms": 202,
+        "ms": 98,
         "buildId": "98ed7e7c76af29d9c75be096b1f12465b5f822f9",
         "raw": {
           "buildId": "98ed7e7c76af29d9c75be096b1f12465b5f822f9"
@@ -18,7 +18,7 @@
         "source": "geoff.deploy",
         "ok": true,
         "status": 200,
-        "ms": 201,
+        "ms": 144,
         "deployId": "dpl_AELfWqNJJrXawfDstyV8KZX2YAax",
         "chunks": {
           "count": 53,
@@ -49,7 +49,7 @@
         "source": "geoff.docs.pricing",
         "ok": true,
         "status": 200,
-        "ms": 121,
+        "ms": 80,
         "scraped": true,
         "fingerprint": "32510b23",
         "model": "One monthly token pool. Shared across text, speech, video, image, music, code, and files — no per-modality nickel-and-dime.",
@@ -347,7 +347,7 @@
         "source": "geoff.docs.surface",
         "ok": true,
         "status": 200,
-        "ms": 173,
+        "ms": 115,
         "scraped": 8,
         "total": 8,
         "fingerprint": "c93f4f72",
@@ -459,7 +459,7 @@
         "source": "geoff.explore",
         "ok": true,
         "status": 200,
-        "ms": 188,
+        "ms": 99,
         "url": "https://www.geoff.ai/explore",
         "feedUrl": "https://geoff.ai/api/explore/feed?limit=48",
         "count": 48,
@@ -597,7 +597,7 @@
         "source": "geoff.max.solana",
         "ok": true,
         "status": 200,
-        "ms": 107,
+        "ms": 83,
         "fingerprint": "a2a0c8ef",
         "liveCount": 4,
         "total": 4,
@@ -610,7 +610,7 @@
             "path": "/max",
             "label": "Max hub",
             "status": 307,
-            "ms": 94,
+            "ms": 50,
             "location": "/connect?redirectUrl=https%3A%2F%2Fwww.geoff.ai%2Fmax",
             "redirectUrl": "https://www.geoff.ai/max",
             "toConnect": true,
@@ -621,7 +621,7 @@
             "path": "/max/solana",
             "label": "Max × Solana",
             "status": 307,
-            "ms": 100,
+            "ms": 56,
             "location": "/connect?redirectUrl=https%3A%2F%2Fwww.geoff.ai%2Fmax%2Fsolana",
             "redirectUrl": "https://www.geoff.ai/max/solana",
             "toConnect": true,
@@ -632,7 +632,7 @@
             "path": "/max/solana/watch",
             "label": "Max × Solana nested",
             "status": 307,
-            "ms": 103,
+            "ms": 82,
             "location": "/connect?redirectUrl=https%3A%2F%2Fwww.geoff.ai%2Fmax%2Fsolana%2Fwatch",
             "redirectUrl": "https://www.geoff.ai/max/solana/watch",
             "toConnect": true,
@@ -643,7 +643,7 @@
             "path": "/max/solana/portfolio",
             "label": "Max × Solana portfolio",
             "status": 307,
-            "ms": 105,
+            "ms": 53,
             "location": "/connect?redirectUrl=https%3A%2F%2Fwww.geoff.ai%2Fmax%2Fsolana%2Fportfolio",
             "redirectUrl": "https://www.geoff.ai/max/solana/portfolio",
             "toConnect": true,
@@ -655,71 +655,601 @@
       },
       "stacknet.health": {
         "source": "stacknet.health",
-        "ok": false,
-        "status": 502,
-        "ms": 139,
-        "statusText": null,
-        "reachable": false,
-        "httpError": 502,
-        "version": null,
-        "nodeId": null,
-        "inFlight": null,
-        "maxInFlight": null,
+        "ok": true,
+        "status": 200,
+        "ms": 176,
+        "statusText": "healthy",
+        "reachable": true,
+        "httpError": null,
+        "version": "v3.8.346",
+        "nodeId": "nk_key_FOpmPDVgCusTGcuL",
+        "inFlight": 12,
+        "maxInFlight": 512,
         "remoteMcp": null,
-        "error": "HTTP 502 from /health"
+        "error": null
       },
       "stacknet.root": {
         "source": "stacknet.root",
-        "ok": false,
-        "status": 502,
-        "ms": 140,
-        "version": null
+        "ok": true,
+        "status": 200,
+        "ms": 505,
+        "version": "3.8.346"
       },
       "stacknet.network": {
         "source": "stacknet.network",
-        "ok": false,
-        "status": 502,
-        "ms": 137,
-        "totalNodes": null,
-        "availableNodes": null,
-        "totalGpus": null,
-        "totalVramGb": null,
-        "availableVramGb": null,
-        "averageLoad": null,
-        "totalModels": null,
-        "models": [],
-        "capabilities": [],
-        "treasury": null,
-        "metaproofs": null,
-        "timestamp": "2026-08-10T00:58:21Z"
+        "ok": true,
+        "status": 200,
+        "ms": 552,
+        "totalNodes": 8,
+        "availableNodes": 8,
+        "totalGpus": 7,
+        "totalVramGb": 882,
+        "availableVramGb": 253,
+        "averageLoad": 0,
+        "totalModels": 29,
+        "models": [
+          "magma",
+          "mom-preview",
+          "preview",
+          "pyro",
+          "pyro-magma",
+          "pyro-preview",
+          "pyro:max",
+          "stack-chat",
+          "stack-chat-magma",
+          "stack-chat-preview",
+          "stack-chat-pyro",
+          "stack-chat-pyro:max",
+          "stack-embed",
+          "stack-embed-magma",
+          "stack-embed-preview",
+          "stack-embed-pyro",
+          "stack-embed-pyro:max",
+          "stack-media-magma",
+          "stack-media-preview",
+          "stack-media-pyro",
+          "stack-media-pyro:max",
+          "stack-vision-magma",
+          "stack-vision-preview",
+          "stack-vision-pyro",
+          "stack-vision-pyro:max",
+          "stack-voice-magma",
+          "stack-voice-preview",
+          "stack-voice-pyro",
+          "stack-voice-pyro:max"
+        ],
+        "capabilities": [
+          "ai-prompt",
+          "chat",
+          "chat-completion",
+          "coder-execute",
+          "coder-session",
+          "coder-tool",
+          "completion",
+          "e2b-code",
+          "e2b-execute",
+          "embedding",
+          "image-edit-pipeline",
+          "image-pipeline",
+          "image_editing",
+          "image_generation",
+          "mcp-tool",
+          "media-analyze",
+          "media-generate",
+          "media-orchestration",
+          "media_generation",
+          "music-pipeline",
+          "prompt",
+          "runtime:shell",
+          "sequential-thinking",
+          "sizzle-video-pipeline",
+          "skill-auto-execute",
+          "streaming",
+          "style_transfer",
+          "text",
+          "tts-stream",
+          "tts-synthesize",
+          "video_generation",
+          "voice-session"
+        ],
+        "treasury": {
+          "solPriceUsd": 76.6,
+          "cluster": "mainnet",
+          "pendingObligations": 0,
+          "totalUsd": 0,
+          "receivableUsd": 0,
+          "totalLamports": "0",
+          "staleSeconds": 31,
+          "treasuryAddress": "2W5gxAio1Bz76P58EaDtGC71MuyH4ZAdXHu3qqmeGy7g",
+          "warnings": []
+        },
+        "metaproofs": {
+          "total": 0
+        },
+        "timestamp": 1786323562346
       },
       "stacknet.node": {
         "source": "stacknet.node",
-        "ok": false,
-        "status": 502,
-        "ms": 137,
-        "nodeId": null,
-        "version": null,
-        "coprocessorCount": null,
-        "taskCount": null
+        "ok": true,
+        "status": 200,
+        "ms": 217,
+        "nodeId": "nk_key_FOpmPDVgCusTGcuL",
+        "version": "0.1.0",
+        "coprocessorCount": 1,
+        "taskCount": 0
       },
       "stacknet.models": {
         "source": "stacknet.models",
-        "ok": false,
-        "status": 502,
-        "ms": 138,
-        "count": 0,
-        "ids": [],
-        "models": []
+        "ok": true,
+        "status": 200,
+        "ms": 216,
+        "count": 5,
+        "ids": [
+          "magma",
+          "preview",
+          "pyro",
+          "pyro:max",
+          "stack-embed"
+        ],
+        "models": [
+          {
+            "id": "magma",
+            "displayName": "Magma",
+            "ownedBy": "stacknet-layer",
+            "description": "SOTA music and media generation with creative AI capabilities",
+            "capabilities": [
+              "agent",
+              "chat",
+              "code",
+              "crypto",
+              "image",
+              "music",
+              "reasoning",
+              "think",
+              "tool-calling",
+              "video",
+              "vision"
+            ],
+            "contentTypes": [
+              "agent",
+              "code",
+              "crypto",
+              "image",
+              "music",
+              "think",
+              "video"
+            ],
+            "created": 1786323562
+          },
+          {
+            "id": "preview",
+            "displayName": "Preview",
+            "ownedBy": "stacknet-layer",
+            "description": "Advanced multimodal model with audio, vision and text capabilities",
+            "capabilities": [
+              "chat",
+              "code",
+              "image",
+              "reasoning",
+              "think",
+              "tool-calling"
+            ],
+            "contentTypes": [
+              "code",
+              "image",
+              "think"
+            ],
+            "created": 1786323562
+          },
+          {
+            "id": "pyro",
+            "displayName": "Pyro",
+            "ownedBy": "stacknet-layer",
+            "description": "Companion reasoning brain — multimodal chat with deep reasoning",
+            "capabilities": [
+              "chat",
+              "code",
+              "image",
+              "reasoning",
+              "think",
+              "tool-calling",
+              "vision"
+            ],
+            "contentTypes": [
+              "code",
+              "image",
+              "think"
+            ],
+            "created": 1786323562
+          },
+          {
+            "id": "pyro:max",
+            "displayName": "Pyro Max",
+            "ownedBy": "stacknet-layer",
+            "description": "Companion reasoning brain (max tier) — 1M-context multimodal chat with deep reasoning",
+            "capabilities": [
+              "chat",
+              "code",
+              "image",
+              "reasoning",
+              "think",
+              "tool-calling",
+              "vision"
+            ],
+            "contentTypes": [
+              "code",
+              "image",
+              "think"
+            ],
+            "created": 1786323562
+          },
+          {
+            "id": "stack-embed",
+            "displayName": "stack-embed",
+            "ownedBy": "stacknet",
+            "description": null,
+            "capabilities": [
+              "chat"
+            ],
+            "contentTypes": [],
+            "created": 1786323562
+          }
+        ]
       },
       "stacknet.widgets": {
         "source": "stacknet.widgets",
-        "ok": false,
-        "status": 502,
-        "ms": 99,
-        "count": 0,
-        "ids": [],
-        "widgets": []
+        "ok": true,
+        "status": 200,
+        "ms": 554,
+        "count": 19,
+        "ids": [
+          "system-asset-report",
+          "system-calendar-invite",
+          "system-citation-card",
+          "system-code-block",
+          "system-crypto-blue-chips",
+          "system-crypto-chart",
+          "system-data-table",
+          "system-email-draft",
+          "system-lp-manager",
+          "system-music-sample-selector",
+          "system-photo-editor",
+          "system-search-results",
+          "system-shopping-cart",
+          "system-shopping-item",
+          "system-solana-wallet",
+          "system-stock-chart",
+          "system-token-swap",
+          "system-video-editor",
+          "system-weather-card"
+        ],
+        "widgets": [
+          {
+            "id": "system-asset-report",
+            "name": "asset-report",
+            "description": "Comprehensive crypto asset report with sentiment analysis, technical summary, key events/news from multiple sources (news, reddit, polymarket, X). Use for in-depth asset research and analysis.",
+            "version": "1.0.0",
+            "tags": [
+              "analysis",
+              "asset",
+              "crypto",
+              "news",
+              "report",
+              "research",
+              "sentiment"
+            ],
+            "isSystem": true,
+            "isPublic": true,
+            "usageCount": 2,
+            "updatedAt": 1770871773234
+          },
+          {
+            "id": "system-calendar-invite",
+            "name": "calendar-invite",
+            "description": "Display a calendar event invitation with date, time, attendees, and RSVP actions. Use for scheduling.",
+            "version": "1.0.0",
+            "tags": [
+              "calendar",
+              "event",
+              "invite",
+              "meeting",
+              "schedule"
+            ],
+            "isSystem": true,
+            "isPublic": true,
+            "usageCount": 2,
+            "updatedAt": 1770871773232
+          },
+          {
+            "id": "system-citation-card",
+            "name": "citation-card",
+            "description": "Display an inline citation with expandable source details. Use when citing information from sources.",
+            "version": "1.0.0",
+            "tags": [
+              "citation",
+              "inline",
+              "reference",
+              "source"
+            ],
+            "isSystem": true,
+            "isPublic": true,
+            "usageCount": 2,
+            "updatedAt": 1770871773230
+          },
+          {
+            "id": "system-code-block",
+            "name": "code-block",
+            "description": "Display syntax-highlighted code with optional title and copy button.",
+            "version": "1.0.0",
+            "tags": [
+              "code",
+              "programming",
+              "snippet",
+              "syntax"
+            ],
+            "isSystem": true,
+            "isPublic": true,
+            "usageCount": 2,
+            "updatedAt": 1770871773230
+          },
+          {
+            "id": "system-crypto-blue-chips",
+            "name": "crypto-blue-chips",
+            "description": "Display a list of top cryptocurrencies with prices, 24h changes, market caps, and trading actions. Use for crypto overview dashboards.",
+            "version": "1.0.0",
+            "tags": [
+              "bitcoin",
+              "crypto",
+              "dashboard",
+              "ethereum",
+              "market",
+              "prices",
+              "trading"
+            ],
+            "isSystem": true,
+            "isPublic": true,
+            "usageCount": 2,
+            "updatedAt": 1770871773234
+          },
+          {
+            "id": "system-crypto-chart",
+            "name": "crypto-chart",
+            "description": "Display cryptocurrency price chart with market data, supply info, and trading actions. Use for crypto data.",
+            "version": "1.0.0",
+            "tags": [
+              "bitcoin",
+              "chart",
+              "crypto",
+              "price",
+              "solana",
+              "trading"
+            ],
+            "isSystem": true,
+            "isPublic": true,
+            "usageCount": 2,
+            "updatedAt": 1770871773232
+          },
+          {
+            "id": "system-data-table",
+            "name": "data-table",
+            "description": "Display tabular data with headers and rows. Use for structured data presentation.",
+            "version": "1.0.0",
+            "tags": [
+              "data",
+              "grid",
+              "structured",
+              "table"
+            ],
+            "isSystem": true,
+            "isPublic": true,
+            "usageCount": 2,
+            "updatedAt": 1770871773230
+          },
+          {
+            "id": "system-email-draft",
+            "name": "email-draft",
+            "description": "Display an email draft with recipient, subject, body, and send action. Use for email composition workflows.",
+            "version": "1.0.0",
+            "tags": [
+              "communication",
+              "compose",
+              "draft",
+              "email"
+            ],
+            "isSystem": true,
+            "isPublic": true,
+            "usageCount": 2,
+            "updatedAt": 1770871773231
+          },
+          {
+            "id": "system-lp-manager",
+            "name": "lp-manager",
+            "description": "Manage liquidity pool positions - collect fees, add/remove liquidity, close position. Use for DeFi LP management.",
+            "version": "1.0.0",
+            "tags": [
+              "defi",
+              "fees",
+              "liquidity",
+              "lp",
+              "pool",
+              "solana"
+            ],
+            "isSystem": true,
+            "isPublic": true,
+            "usageCount": 2,
+            "updatedAt": 1770871773231
+          },
+          {
+            "id": "system-music-sample-selector",
+            "name": "music-sample-selector",
+            "description": "Browse and preview audio samples with waveforms, sort by key/tempo, adjust speed/pitch globally, and select samples.",
+            "version": "1.0.0",
+            "tags": [
+              "audio",
+              "loops",
+              "music",
+              "production",
+              "samples"
+            ],
+            "isSystem": true,
+            "isPublic": true,
+            "usageCount": 2,
+            "updatedAt": 1770871773233
+          },
+          {
+            "id": "system-photo-editor",
+            "name": "photo-editor",
+            "description": "Photo editor with brush masking and SAM-style point selection for marking regions. Supports brush tool with size presets (S/M/L/XL) and selection tool (left click=include, right click=exclude).",
+            "version": "2.0.0",
+            "tags": [
+              "annotation",
+              "brush",
+              "editor",
+              "image",
+              "mask",
+              "sam",
+              "selection"
+            ],
+            "isSystem": true,
+            "isPublic": true,
+            "usageCount": 2,
+            "updatedAt": 1770871773233
+          },
+          {
+            "id": "system-search-results",
+            "name": "search-results",
+            "description": "Display web search results with thumbnails, sources, and expandable cards. Use when displaying search engine results.",
+            "version": "1.0.0",
+            "tags": [
+              "citations",
+              "results",
+              "search",
+              "sources"
+            ],
+            "isSystem": true,
+            "isPublic": true,
+            "usageCount": 2,
+            "updatedAt": 1770871773229
+          },
+          {
+            "id": "system-shopping-cart",
+            "name": "shopping-cart",
+            "description": "Display a shopping cart with items, quantities, prices, and checkout action. Use for e-commerce flows.",
+            "version": "1.0.0",
+            "tags": [
+              "cart",
+              "checkout",
+              "ecommerce",
+              "shopping"
+            ],
+            "isSystem": true,
+            "isPublic": true,
+            "usageCount": 2,
+            "updatedAt": 1770871773230
+          },
+          {
+            "id": "system-shopping-item",
+            "name": "shopping-item",
+            "description": "Display a single product item with image, price, and add-to-cart action. Use for product recommendations.",
+            "version": "1.0.0",
+            "tags": [
+              "ecommerce",
+              "item",
+              "product",
+              "shopping"
+            ],
+            "isSystem": true,
+            "isPublic": true,
+            "usageCount": 2,
+            "updatedAt": 1770871773231
+          },
+          {
+            "id": "system-solana-wallet",
+            "name": "solana-wallet",
+            "description": "Display Solana wallet overview with balance, tokens, recent transactions, and actions. Use for crypto wallet views.",
+            "version": "1.0.0",
+            "tags": [
+              "balance",
+              "crypto",
+              "solana",
+              "tokens",
+              "wallet"
+            ],
+            "isSystem": true,
+            "isPublic": true,
+            "usageCount": 2,
+            "updatedAt": 1770871773232
+          },
+          {
+            "id": "system-stock-chart",
+            "name": "stock-chart",
+            "description": "Display stock price chart with key metrics, price change, and trading actions. Use for financial data.",
+            "version": "1.0.0",
+            "tags": [
+              "chart",
+              "finance",
+              "market",
+              "stock",
+              "trading"
+            ],
+            "isSystem": true,
+            "isPublic": true,
+            "usageCount": 2,
+            "updatedAt": 1770871773232
+          },
+          {
+            "id": "system-token-swap",
+            "name": "token-swap",
+            "description": "Display a token swap interface with input/output tokens, amounts, rates, and swap action. Use for DeFi swaps.",
+            "version": "1.0.0",
+            "tags": [
+              "defi",
+              "exchange",
+              "solana",
+              "swap",
+              "token"
+            ],
+            "isSystem": true,
+            "isPublic": true,
+            "usageCount": 2,
+            "updatedAt": 1770871773231
+          },
+          {
+            "id": "system-video-editor",
+            "name": "video-editor",
+            "description": "Video editor with timeline, keyframes, brush masking, and SAM-style point selection. Supports frame-by-frame navigation, play/pause, and per-frame annotations.",
+            "version": "1.0.0",
+            "tags": [
+              "annotation",
+              "brush",
+              "editor",
+              "keyframe",
+              "mask",
+              "selection",
+              "timeline",
+              "video"
+            ],
+            "isSystem": true,
+            "isPublic": true,
+            "usageCount": 2,
+            "updatedAt": 1770871773233
+          },
+          {
+            "id": "system-weather-card",
+            "name": "weather-card",
+            "description": "Display current weather conditions for a location. Use when showing weather information.",
+            "version": "1.0.0",
+            "tags": [
+              "forecast",
+              "temperature",
+              "weather"
+            ],
+            "isSystem": true,
+            "isPublic": true,
+            "usageCount": 2,
+            "updatedAt": 1770871773230
+          }
+        ]
       }
     },
     "summary": {
@@ -727,34 +1257,34 @@
       "geoffDeployId": "dpl_AELfWqNJJrXawfDstyV8KZX2YAax",
       "chunkHash": "b5bd9593",
       "chunkCount": 53,
-      "stacknetVersion": null,
-      "stacknetStatus": "unreachable (502)",
+      "stacknetVersion": "v3.8.346",
+      "stacknetStatus": "healthy",
       "mcpContract": null,
       "mcpOnHealth": false,
-      "inFlight": null,
-      "maxInFlight": null,
-      "taskCount": null,
-      "nodeId": null,
-      "nodes": null,
-      "totalNodes": null,
-      "gpus": null,
-      "vramGb": null,
-      "availableVramGb": null,
-      "vramAvailablePct": null,
-      "averageLoad": null,
-      "models": null,
-      "apiModels": 0,
-      "widgets": 0,
-      "capabilities": 0,
-      "solPriceUsd": null,
-      "treasuryAddress": null,
-      "treasuryCluster": null,
-      "treasuryStaleSeconds": null,
-      "treasuryTotalUsd": null,
-      "treasuryReceivableUsd": null,
-      "treasuryPending": null,
+      "inFlight": 12,
+      "maxInFlight": 512,
+      "taskCount": 0,
+      "nodeId": "nk_key_FOpmPDVgCusTGcuL",
+      "nodes": 8,
+      "totalNodes": 8,
+      "gpus": 7,
+      "vramGb": 882,
+      "availableVramGb": 253,
+      "vramAvailablePct": 29,
+      "averageLoad": 0,
+      "models": 29,
+      "apiModels": 5,
+      "widgets": 19,
+      "capabilities": 32,
+      "solPriceUsd": 76.6,
+      "treasuryAddress": "2W5gxAio1Bz76P58EaDtGC71MuyH4ZAdXHu3qqmeGy7g",
+      "treasuryCluster": "mainnet",
+      "treasuryStaleSeconds": 31,
+      "treasuryTotalUsd": 0,
+      "treasuryReceivableUsd": 0,
+      "treasuryPending": 0,
       "treasuryWarnings": 0,
-      "metaproofsTotal": null,
+      "metaproofsTotal": 0,
       "catalogModels": 0,
       "catalogSkipped": true,
       "catalogSkipReason": "Set GEOFF_COOKIE or GEOFF_PREVIEW_CODE to sniff authenticated catalogs",
@@ -775,9 +1305,9 @@
       "maxHubLive": true,
       "maxSolanaFingerprint": "a2a0c8ef",
       "maxSolanaRoutes": 4,
-      "healthySources": 6,
+      "healthySources": 12,
       "skippedSources": 1,
-      "failedSources": 6,
+      "failedSources": 0,
       "totalSources": 13,
       "coverage": [
         {
@@ -785,14 +1315,14 @@
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 202
+          "ms": 98
         },
         {
           "source": "geoff.deploy",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 201
+          "ms": 144
         },
         {
           "source": "geoff.catalog",
@@ -806,75 +1336,91 @@
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 121
+          "ms": 80
         },
         {
           "source": "geoff.docs.surface",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 173
+          "ms": 115
         },
         {
           "source": "geoff.explore",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 188
+          "ms": 99
         },
         {
           "source": "geoff.max.solana",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 107
+          "ms": 83
         },
         {
           "source": "stacknet.health",
-          "ok": false,
+          "ok": true,
           "skipped": false,
-          "reason": "HTTP 502 from /health",
-          "ms": 139
+          "reason": null,
+          "ms": 176
         },
         {
           "source": "stacknet.root",
-          "ok": false,
+          "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 140
+          "ms": 505
         },
         {
           "source": "stacknet.network",
-          "ok": false,
+          "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 137
+          "ms": 552
         },
         {
           "source": "stacknet.node",
-          "ok": false,
+          "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 137
+          "ms": 217
         },
         {
           "source": "stacknet.models",
-          "ok": false,
+          "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 138
+          "ms": 216
         },
         {
           "source": "stacknet.widgets",
-          "ok": false,
+          "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 99
+          "ms": 554
         }
       ]
     }
   },
   "events": [
+    {
+      "id": "evt_msmixe3g_9vdlc",
+      "at": "2026-08-10T00:59:22.396Z",
+      "kind": "health",
+      "rank": "note",
+      "title": "Health endpoint recovered",
+      "summary": "Public /health is answering again · status healthy.",
+      "details": {
+        "from": "unreachable",
+        "to": "reachable",
+        "status": "healthy"
+      },
+      "severity": "low",
+      "heat": 1,
+      "vibe": "Note"
+    },
     {
       "id": "evt_msmiw3gq_7gv04",
       "at": "2026-08-10T00:58:21.962Z",
@@ -1009,22 +1555,6 @@
       },
       "severity": "low",
       "heat": 2,
-      "vibe": "Note"
-    },
-    {
-      "id": "evt_msmh7jmc_yo33r",
-      "at": "2026-08-10T00:11:16.884Z",
-      "kind": "health",
-      "rank": "note",
-      "title": "Health endpoint recovered",
-      "summary": "Public /health is answering again · status healthy.",
-      "details": {
-        "from": "unreachable",
-        "to": "reachable",
-        "status": "healthy"
-      },
-      "severity": "low",
-      "heat": 1,
       "vibe": "Note"
     },
     {
@@ -35769,17 +36299,17 @@
     },
     {
       "day": "2026-08-10",
-      "count": 10,
-      "heat": 20,
+      "count": 11,
+      "heat": 21,
       "crazy": 0,
       "spike": 2
     }
   ],
   "state": {
     "startedAt": "2026-08-07T06:15:12.347Z",
-    "lastPollAt": "2026-08-10T00:58:21.758Z",
+    "lastPollAt": "2026-08-10T00:59:21.836Z",
     "lastError": null,
-    "pollCount": 2659,
+    "pollCount": 2660,
     "temperature": 100
   }
 }
