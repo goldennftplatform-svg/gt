@@ -1611,31 +1611,44 @@ function startClientPolling(intervalMs = 15_000) {
 function startMatrix() {
   const canvas = document.getElementById("matrix");
   if (!canvas) return;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    canvas.style.opacity = "0.12";
+    return;
+  }
   const ctx = canvas.getContext("2d");
-  let width = 0;
-  let height = 0;
   let columns = [];
-  const glyphs = "01アイウエオカキクケコGEOFFSTACKNET<>/=";
+  const glyphs = "01アイウエオカキクケコサシスセソGEOFFSTACKNETMCP<>/=#";
+  const step = 16;
 
   function resize() {
-    width = canvas.width = window.innerWidth;
-    height = canvas.height = window.innerHeight;
-    const colCount = Math.floor(width / 18);
-    columns = Array.from({ length: colCount }, () => Math.random() * -40);
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    canvas.width = Math.floor(w * dpr);
+    canvas.height = Math.floor(h * dpr);
+    canvas.style.width = `${w}px`;
+    canvas.style.height = `${h}px`;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const colCount = Math.floor(w / step);
+    columns = Array.from({ length: colCount }, () => Math.random() * -50);
   }
 
   function tick() {
-    ctx.fillStyle = "rgba(5, 8, 5, 0.08)";
-    ctx.fillRect(0, 0, width, height);
-    ctx.fillStyle = "rgba(74, 222, 128, 0.55)";
-    ctx.font = "12px ui-monospace, SF Mono, Menlo, monospace";
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    ctx.fillStyle = "rgba(3, 6, 4, 0.085)";
+    ctx.fillRect(0, 0, w, h);
+    ctx.font = '12px "IBM Plex Mono", ui-monospace, Menlo, monospace';
     for (let i = 0; i < columns.length; i++) {
       const ch = glyphs[(Math.random() * glyphs.length) | 0];
-      const x = i * 18;
-      const y = columns[i] * 18;
+      const x = i * step;
+      const y = columns[i] * step;
+      ctx.fillStyle = "rgba(167, 243, 208, 0.9)";
       ctx.fillText(ch, x, y);
-      if (y > height && Math.random() > 0.975) columns[i] = 0;
-      columns[i] += 0.65;
+      ctx.fillStyle = "rgba(52, 211, 153, 0.35)";
+      ctx.fillText(glyphs[(Math.random() * glyphs.length) | 0], x, y - step);
+      if (y > h && Math.random() > 0.968) columns[i] = 0;
+      columns[i] += 0.72 + (i % 5) * 0.04;
     }
     requestAnimationFrame(tick);
   }

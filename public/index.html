@@ -6,14 +6,21 @@
     <title>Geoff Thermometer</title>
     <meta
       name="description"
-      content="Plain-English live board for geoff.ai deploys and Stacknet heat."
+      content="Quick-learn desk for Geoff / Stacknet — live vitals, heat maps, and plain-English value."
     />
-    <meta name="theme-color" content="#050805" />
+    <meta name="theme-color" content="#030604" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
     <canvas id="matrix" class="matrix" aria-hidden="true"></canvas>
     <div class="atmosphere" aria-hidden="true"></div>
+    <div class="scanlines" aria-hidden="true"></div>
 
     <header class="topbar">
       <div class="brand-lockup">
@@ -24,7 +31,7 @@
         </div>
         <div>
           <h1 class="brand">Geoff <span class="brand-full">Thermometer</span><span class="brand-short">Meter</span></h1>
-          <p class="tag">live matrix · plain English</p>
+          <p class="tag">quick-learn desk · public stacknet</p>
         </div>
       </div>
 
@@ -59,8 +66,9 @@
     </header>
 
     <main class="shell">
+      <p class="deck-label"><span>01</span> Live vitals · glanceable truth</p>
       <section class="metrics" aria-label="Live network vitals">
-        <article class="metric">
+        <article class="metric" style="--i:0">
           <div class="metric-top">
             <span class="ico-wrap" data-icon="server"></span>
             <span class="k">Stacknet</span>
@@ -68,7 +76,7 @@
           <strong id="stackVersion">—</strong>
           <em id="stackHealth">—</em>
         </article>
-        <article class="metric">
+        <article class="metric" style="--i:1">
           <div class="metric-top">
             <span class="ico-wrap" data-icon="cpu"></span>
             <span class="k">Nodes / GPUs</span>
@@ -76,7 +84,7 @@
           <strong id="stackNodes">—</strong>
           <em id="stackLoad">load —</em>
         </article>
-        <article class="metric">
+        <article class="metric" style="--i:2">
           <div class="metric-top">
             <span class="ico-wrap" data-icon="memory"></span>
             <span class="k">VRAM free</span>
@@ -84,7 +92,7 @@
           <strong id="vramText">—</strong>
           <div class="bar"><i id="vramBar"></i></div>
         </article>
-        <article class="metric">
+        <article class="metric" style="--i:3">
           <div class="metric-top">
             <span class="ico-wrap" data-icon="rocket"></span>
             <span class="k">geoff build</span>
@@ -92,7 +100,7 @@
           <strong id="geoffBuild">—</strong>
           <em id="geoffDeploy">—</em>
         </article>
-        <article class="metric">
+        <article class="metric" style="--i:4">
           <div class="metric-top">
             <span class="ico-wrap" data-icon="brain"></span>
             <span class="k">Models</span>
@@ -100,7 +108,7 @@
           <strong id="modelCount">—</strong>
           <em id="apiModelCount">api —</em>
         </article>
-        <article class="metric">
+        <article class="metric" style="--i:5">
           <div class="metric-top">
             <span class="ico-wrap" data-icon="blocks"></span>
             <span class="k">Widgets / MCP</span>
@@ -108,7 +116,7 @@
           <strong id="widgetCount">—</strong>
           <em id="mcpContract">—</em>
         </article>
-        <article class="metric">
+        <article class="metric" style="--i:6">
           <div class="metric-top">
             <span class="ico-wrap" data-icon="tag"></span>
             <span class="k">Treasury / proofs</span>
@@ -116,7 +124,7 @@
           <strong id="treasurySol">—</strong>
           <em id="treasuryMeta">—</em>
         </article>
-        <article class="metric">
+        <article class="metric" style="--i:7">
           <div class="metric-top">
             <span class="ico-wrap" data-icon="spark"></span>
             <span class="k">Explore board</span>
@@ -126,6 +134,7 @@
         </article>
       </section>
 
+      <p class="deck-label"><span>02</span> Plain English · what it means</p>
       <section id="story" class="story tone-muted" aria-live="polite">
         <div class="story-icon" data-icon="pulse"></div>
         <div class="story-copy">
@@ -157,6 +166,7 @@
         </div>
       </section>
 
+      <p class="deck-label"><span>03</span> Surface lanes · docs · explore · max</p>
       <section class="cue-rail" aria-label="Live surface cues">
         <section class="cue docs-cue" aria-label="Docs surface updates">
           <span class="cue-label">Docs</span>
@@ -198,6 +208,64 @@
         </section>
       </section>
 
+      <p class="deck-label"><span>04</span> Heat · bars + cubes prove the story</p>
+      <div class="signal-deck">
+        <section class="panel pump-panel" aria-label="72 hour pump tape">
+          <div class="panel-head">
+            <div class="panel-title">
+              <span class="ico-wrap sm" data-icon="activity"></span>
+              <h2>72h pump tape</h2>
+            </div>
+            <p id="pumpMeta">Building history from live sniffs…</p>
+          </div>
+          <p class="feed-hint">Heat = ranked public diffs · cyan dots = sampled in_flight · no fake volume</p>
+          <div id="pumpStats" class="pump-stats"></div>
+          <div class="pump-chart-wrap">
+            <svg id="pumpChart" class="pump-chart" viewBox="0 0 720 140" role="img" aria-label="72 hour activity chart"></svg>
+            <div class="pump-legend">
+              <span><i class="lg-heat"></i> update heat</span>
+              <span><i class="lg-agent"></i> in_flight sample</span>
+              <span><i class="lg-crazy"></i> crazy / spike</span>
+            </div>
+          </div>
+          <div class="pump-axis">
+            <span>72h ago</span>
+            <span>now</span>
+          </div>
+        </section>
+
+        <section class="panel heat-panel" aria-label="Two month activity heatmap">
+          <div class="panel-head">
+            <div class="panel-title">
+              <span class="ico-wrap sm" data-icon="activity"></span>
+              <h2>2-month change map</h2>
+            </div>
+            <p id="heatMeta">Collecting daily cubes…</p>
+          </div>
+          <p class="feed-hint">One cell per day · darker = more ranked public diffs</p>
+          <div class="heat-shell">
+            <div id="heatMonths" class="heat-months" aria-hidden="true"></div>
+            <div class="heat-body">
+              <div class="heat-doy" aria-hidden="true">
+                <span></span>
+                <span>Mon</span>
+                <span></span>
+                <span>Wed</span>
+                <span></span>
+                <span>Fri</span>
+                <span></span>
+              </div>
+              <div id="heatGrid" class="heat-grid" role="img" aria-label="Sixty day activity heatmap"></div>
+            </div>
+            <div class="heat-scale">
+              <span>Less</span>
+              <i class="lvl0"></i><i class="lvl1"></i><i class="lvl2"></i><i class="lvl3"></i><i class="lvl4"></i>
+              <span>More</span>
+            </div>
+          </div>
+        </section>
+      </div>
+
       <details class="panel hp-panel fold" aria-label="On-demand horsepower">
         <summary class="panel-head fold-summary">
           <div class="panel-title">
@@ -235,61 +303,7 @@
         </div>
       </details>
 
-      <section class="panel pump-panel" aria-label="72 hour pump tape">
-        <div class="panel-head">
-          <div class="panel-title">
-            <span class="ico-wrap sm" data-icon="activity"></span>
-            <h2>72h pump tape</h2>
-          </div>
-          <p id="pumpMeta">Building history from live sniffs…</p>
-        </div>
-        <p class="feed-hint">Heat = ranked public diffs · cyan dots = sampled in_flight · no fake volume</p>
-        <div id="pumpStats" class="pump-stats"></div>
-        <div class="pump-chart-wrap">
-          <svg id="pumpChart" class="pump-chart" viewBox="0 0 720 140" role="img" aria-label="72 hour activity chart"></svg>
-          <div class="pump-legend">
-            <span><i class="lg-heat"></i> update heat</span>
-            <span><i class="lg-agent"></i> in_flight sample</span>
-            <span><i class="lg-crazy"></i> crazy / spike</span>
-          </div>
-        </div>
-        <div class="pump-axis">
-          <span>72h ago</span>
-          <span>now</span>
-        </div>
-      </section>
-
-      <section class="panel heat-panel" aria-label="Two month activity heatmap">
-        <div class="panel-head">
-          <div class="panel-title">
-            <span class="ico-wrap sm" data-icon="activity"></span>
-            <h2>2-month change map</h2>
-          </div>
-          <p id="heatMeta">Collecting daily cubes…</p>
-        </div>
-        <p class="feed-hint">GitHub-style baby cubes · one cell per day · darker = more ranked public diffs</p>
-        <div class="heat-shell">
-          <div id="heatMonths" class="heat-months" aria-hidden="true"></div>
-          <div class="heat-body">
-            <div class="heat-doy" aria-hidden="true">
-              <span></span>
-              <span>Mon</span>
-              <span></span>
-              <span>Wed</span>
-              <span></span>
-              <span>Fri</span>
-              <span></span>
-            </div>
-            <div id="heatGrid" class="heat-grid" role="img" aria-label="Sixty day activity heatmap"></div>
-          </div>
-          <div class="heat-scale">
-            <span>Less</span>
-            <i class="lvl0"></i><i class="lvl1"></i><i class="lvl2"></i><i class="lvl3"></i><i class="lvl4"></i>
-            <span>More</span>
-          </div>
-        </div>
-      </section>
-
+      <p class="deck-label"><span>05</span> Value · Token Plan vs the field</p>
       <section class="panel price-panel price-dense" aria-label="Token plan value sheet">
         <div class="panel-head">
           <div class="panel-title">
@@ -309,6 +323,7 @@
         <p id="priceSource" class="price-source"></p>
       </section>
 
+      <p class="deck-label"><span>06</span> Feed · ranked public diffs only</p>
       <div class="board">
         <section class="panel feed-panel">
           <div class="panel-head">
