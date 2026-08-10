@@ -1936,7 +1936,7 @@ details[open] > .fold-summary::after {
   grid-template-columns: 1.2fr 0.8fr;
   gap: 0.85rem;
   margin-bottom: 0.85rem;
-  align-items: stretch;
+  align-items: start;
 }
 
 .board .panel {
@@ -1944,7 +1944,12 @@ details[open] > .fold-summary::after {
   display: flex;
   flex-direction: column;
   min-height: 0;
+}
+
+.board .feed-panel {
+  /* Feed owns the tall scroll column; glossary stays content-height. */
   height: 100%;
+  align-self: stretch;
 }
 
 .board .panel-head { flex: 0 0 auto; }
@@ -2203,11 +2208,18 @@ details[open] > .fold-summary::after {
   overflow: hidden;
 }
 
+.board .glossary-panel {
+  height: auto;
+  max-height: none;
+  position: sticky;
+  top: 0.75rem;
+}
+
 .glossary-panel .glossary {
-  flex: 1 1 auto;
-  min-height: 480px;
-  max-height: 640px;
-  overflow: auto;
+  flex: 0 0 auto;
+  min-height: 0;
+  max-height: none;
+  overflow: visible;
   align-content: start;
 }
 
