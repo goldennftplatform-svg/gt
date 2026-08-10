@@ -621,6 +621,60 @@ async function sniffGeoffMaxSolana() {
   };
 }
 
+/** Auth-gated product shells on geoff.ai — 307→/connect proves the lane ships. */
+const PRODUCT_LANES = [
+  { id: "hq", path: "/hq", label: "HQ" },
+  { id: "studio", path: "/studio", label: "Studio" },
+  { id: "skills", path: "/skills", label: "Skills" },
+  { id: "code", path: "/code", label: "Geoff Code" },
+  { id: "claw", path: "/claw", label: "Claw" },
+  { id: "max", path: "/max", label: "Max" },
+];
+
+async function sniffGeoffProductLanes() {
+  const started = Date.now();
+  const settled = await Promise.allSettled(
+    PRODUCT_LANES.map(async (route) => {
+      const probe = await probeRoute(route.path);
+      return { ...route, ...probe, id: route.id };
+    }),
+  );
+
+  const routes = settled
+    .filter((r) => r.status === "fulfilled")
+    .map((r) => r.value);
+  const live = routes.filter((r) => r.live);
+  const fingerprint = simpleHash(
+    routes
+      .map((r) => `${r.id}:${r.status}:${r.toConnect ? "connect" : r.live ? "open" : "down"}`)
+      .sort()
+      .join("|"),
+  );
+  const liveLabels = live.map((r) => r.label || r.id);
+
+  return {
+    source: "geoff.product.lanes",
+    ok: live.length > 0,
+    status: live.length ? 200 : 0,
+    ms: Date.now() - started,
+    fingerprint,
+    liveCount: live.length,
+    total: PRODUCT_LANES.length,
+    liveLabels,
+    hqLive: Boolean(routes.find((r) => r.id === "hq" && r.live)),
+    studioLive: Boolean(routes.find((r) => r.id === "studio" && r.live)),
+    skillsLive: Boolean(routes.find((r) => r.id === "skills" && r.live)),
+    codeLive: Boolean(routes.find((r) => r.id === "code" && r.live)),
+    clawLive: Boolean(routes.find((r) => r.id === "claw" && r.live)),
+    maxLive: Boolean(routes.find((r) => r.id === "max" && r.live)),
+    routes,
+    note: "Public connect-gate probe — HQ / Studio / Skills / Code / Claw / Max. Not private contents.",
+    reason: live.length
+      ? null
+      : "No product lanes answered with connect-gate or 200",
+  };
+}
+
 async function sniffGeoffDocsSurface() {
   const started = Date.now();
   const settled = await Promise.allSettled(
@@ -747,6 +801,7 @@ export async function runSniff() {
     sniffGeoffDocsSurface(),
     sniffGeoffExplore(),
     sniffGeoffMaxSolana(),
+    sniffGeoffProductLanes(),
     sniffStacknetHealth(),
     sniffStacknetRoot(),
     sniffStacknetNetwork(),
@@ -822,6 +877,10 @@ export async function runSniff() {
       tokenPlanFingerprint: bySource["geoff.docs.pricing"]?.fingerprint ?? null,
       docsSurfaceScraped: bySource["geoff.docs.surface"]?.scraped ?? null,
       docsSurfaceFingerprint: bySource["geoff.docs.surface"]?.fingerprint ?? null,
+      mcpToolsDoc:
+        bySource["geoff.docs.surface"]?.pages?.find((p) => p.id === "mcp-tools")?.toolHint ?? null,
+      clawToolsDoc:
+        bySource["geoff.docs.surface"]?.pages?.find((p) => p.id === "claw")?.toolHint ?? null,
       exploreCount: bySource["geoff.explore"]?.count ?? null,
       exploreAuthors: bySource["geoff.explore"]?.authorCount ?? null,
       exploreFingerprint: bySource["geoff.explore"]?.fingerprint ?? null,
@@ -830,6 +889,10 @@ export async function runSniff() {
       maxHubLive: Boolean(bySource["geoff.max.solana"]?.maxLive),
       maxSolanaFingerprint: bySource["geoff.max.solana"]?.fingerprint ?? null,
       maxSolanaRoutes: bySource["geoff.max.solana"]?.liveCount ?? null,
+      productLanesLive: bySource["geoff.product.lanes"]?.liveCount ?? null,
+      productLanesTotal: bySource["geoff.product.lanes"]?.total ?? null,
+      productLanesLabels: bySource["geoff.product.lanes"]?.liveLabels ?? null,
+      productLanesFingerprint: bySource["geoff.product.lanes"]?.fingerprint ?? null,
       healthySources: sources.filter((s) => s.ok).length,
       skippedSources: sources.filter((s) => s.skipped).length,
       failedSources: sources.filter((s) => !s.ok && !s.skipped).length,

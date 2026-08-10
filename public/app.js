@@ -31,7 +31,7 @@ function inferRank(e = {}) {
     if (n >= 1) return "note";
     return "note";
   }
-  if (e.kind === "maxSolana") return "move";
+  if (e.kind === "maxSolana" || e.kind === "productLanes") return "move";
   if (e.kind === "agent") return "note";
   if (e.kind === "agentCluster") {
     if (/crazy|full-stack/i.test(blob)) return "crazy";
@@ -212,6 +212,8 @@ const els = {
   exploreCueLink: document.getElementById("exploreCueLink"),
   docsCue: document.getElementById("docsCue"),
   docsCueLink: document.getElementById("docsCueLink"),
+  lanesCue: document.getElementById("lanesCue"),
+  lanesCueLink: document.getElementById("lanesCueLink"),
   maxCue: document.getElementById("maxCue"),
   maxCueLink: document.getElementById("maxCueLink"),
   story: document.getElementById("story"),
@@ -265,6 +267,7 @@ const PIECE_ICONS = {
   tools: "tools",
   docs: "book",
   explore: "spark",
+  productLanes: "layers",
   maxSolana: "bolt",
 };
 const CAP_ICONS = {
@@ -292,6 +295,7 @@ const EVENT_ICONS = {
   pricing: "tag",
   docs: "book",
   explore: "spark",
+  productLanes: "layers",
   maxSolana: "bolt",
   metaproofs: "layers",
 };
@@ -624,7 +628,15 @@ function renderExploreCue(board, events = []) {
 
   els.exploreCue.classList.remove("hot");
   if (board?.count != null) {
-    els.exploreCue.textContent = `No new posts in ${TRACK_HOURS}h · ${board.count} on the top board`;
+    const media = board.mediaCounts || memory?.latest?.summary?.exploreMedia || {};
+    const mix = ["video", "image", "audio"]
+      .filter((k) => media[k])
+      .map((k) => `${media[k]} ${k}`)
+      .slice(0, 3)
+      .join(" · ");
+    els.exploreCue.textContent = mix
+      ? `Top ${board.count} · ${mix}`
+      : `No new posts in ${TRACK_HOURS}h · ${board.count} on the top board`;
   } else {
     els.exploreCue.textContent = "Watching for new posts…";
   }
@@ -652,10 +664,50 @@ function renderDocsCue(board, events = []) {
   els.docsCue.classList.remove("hot");
   if (board?.scraped != null) {
     const total = board.total != null ? `/${board.total}` : "";
-    els.docsCue.textContent = `Armed · ${board.scraped}${total} pages watched`;
+    const mcp = latestMcpToolsHint();
+    els.docsCue.textContent = mcp
+      ? `Armed · ${board.scraped}${total} · MCP ${mcp}`
+      : `Armed · ${board.scraped}${total} pages watched`;
   } else {
     els.docsCue.textContent = "Fingerprinting docs…";
   }
+}
+
+function latestMcpToolsHint() {
+  try {
+    const pages = memory?.latest?.sources?.["geoff.docs.surface"]?.pages || [];
+    return pages.find((p) => p.id === "mcp-tools")?.toolHint || null;
+  } catch {
+    return null;
+  }
+}
+
+function renderLanesCue(board, latest, events = []) {
+  if (!els.lanesCue) return;
+  const src = latest?.sources?.["geoff.product.lanes"];
+  const maxSrc = latest?.sources?.["geoff.max.solana"];
+  if (els.lanesCueLink) els.lanesCueLink.href = board?.url || "https://www.geoff.ai/hq";
+
+  const recent = eventsInTrackWindow(events)
+    .filter((e) => e.kind === "productLanes" || e.kind === "maxSolana")
+    .sort((a, b) => Date.parse(b.at || 0) - Date.parse(a.at || 0))[0];
+
+  if (recent) {
+    els.lanesCue.textContent = recent.title || "Product lanes moved";
+    els.lanesCue.classList.add("hot");
+    return;
+  }
+
+  els.lanesCue.classList.remove("hot");
+  if (src?.liveCount != null) {
+    const labels = (src.liveLabels || board?.labels || []).slice(0, 4).join(" · ");
+    const solana = maxSrc?.solanaLive ? " · Max×Solana" : "";
+    els.lanesCue.textContent = labels
+      ? `${src.liveCount}/${src.total} live · ${labels}${solana}`
+      : `${src.liveCount}/${src.total} product lanes connect-gated`;
+    return;
+  }
+  els.lanesCue.textContent = "Probing product lanes…";
 }
 
 function renderMaxCue(latest, events = []) {
@@ -1544,6 +1596,7 @@ function applyPayload(payload) {
   renderTokenPlan(briefing?.tokenPlan || CLIENT_TOKEN_PLAN);
   renderDocsCue(briefing?.docsBoard || null, feedEvents);
   renderExploreCue(briefing?.exploreBoard || null, feedEvents);
+  renderLanesCue(briefing?.lanesBoard || null, latest, feedEvents);
   renderMaxCue(latest, feedEvents);
   renderAgentDesk(payload.agentDesk || briefing?.agentDesk || null);
   renderPumpTape(feedEvents, memory.agentSamples || []);

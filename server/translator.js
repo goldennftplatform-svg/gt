@@ -411,6 +411,43 @@ export function translate(previous, current) {
     );
   }
 
+  // Product lanes (HQ / Studio / Skills / Code / Claw / Max) — public connect-gate.
+  const prevLanes = prev["geoff.product.lanes"];
+  const currLanes = curr["geoff.product.lanes"];
+  if (prevLanes?.fingerprint && currLanes?.fingerprint && prevLanes.fingerprint !== currLanes.fingerprint) {
+    const prevLive = new Set((prevLanes.routes || []).filter((r) => r.live).map((r) => r.id));
+    const currLive = new Set((currLanes.routes || []).filter((r) => r.live).map((r) => r.id));
+    const added = [...currLive].filter((id) => !prevLive.has(id));
+    const removed = [...prevLive].filter((id) => !currLive.has(id));
+    const labels = Object.fromEntries((currLanes.routes || []).map((r) => [r.id, r.label || r.path]));
+    events.push(
+      event({
+        kind: "productLanes",
+        rank: added.length || removed.length ? "move" : "note",
+        title: added.length
+          ? "Product lane surface expanded"
+          : removed.length
+            ? "Product lane surface shrank"
+            : "Product lanes shifted",
+        summary: [
+          added.length ? `+${added.map((id) => labels[id] || id).join(", ")}` : null,
+          removed.length ? `-${removed.map((id) => labels[id] || id).join(", ")}` : null,
+          `${currLanes.liveCount ?? 0}/${currLanes.total ?? "?"} lanes answering (connect-gate)`,
+          "HQ · Studio · Skills · Code · Claw · Max — public probe only.",
+        ]
+          .filter(Boolean)
+          .join(" · "),
+        details: {
+          from: prevLanes.fingerprint,
+          to: currLanes.fingerprint,
+          added,
+          removed,
+          liveLabels: currLanes.liveLabels,
+        },
+      }),
+    );
+  }
+
   // Max × Solana route table (public 307→connect proves the lanes exist).
   const prevMax = prev["geoff.max.solana"];
   const currMax = curr["geoff.max.solana"];
@@ -977,6 +1014,7 @@ export function inferAgentDesk(latest, newEvents = []) {
       "docs",
       "explore",
       "maxSolana",
+      "productLanes",
       "pricing",
     ].includes(e.kind),
   );
