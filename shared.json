@@ -1,25 +1,25 @@
 {
-  "updatedAt": "2026-08-10T00:51:22.200Z",
+  "updatedAt": "2026-08-10T00:52:39.763Z",
   "latest": {
-    "id": "snap_msmin3je",
-    "takenAt": "2026-08-10T00:51:21.750Z",
+    "id": "snap_msmiordp",
+    "takenAt": "2026-08-10T00:52:21.698Z",
     "sources": {
       "geoff.version": {
         "source": "geoff.version",
         "ok": true,
         "status": 200,
-        "ms": 199,
-        "buildId": "8ee3f86127b93155ba4ebf88281181fd8e4e0c6a",
+        "ms": 943,
+        "buildId": "a2d38495b736fe5acbc1c7772dd2a53b4e169a4a",
         "raw": {
-          "buildId": "8ee3f86127b93155ba4ebf88281181fd8e4e0c6a"
+          "buildId": "a2d38495b736fe5acbc1c7772dd2a53b4e169a4a"
         }
       },
       "geoff.deploy": {
         "source": "geoff.deploy",
         "ok": true,
         "status": 200,
-        "ms": 190,
-        "deployId": "dpl_H5U8BN6kjBvauwueett5M6Y5Jivz",
+        "ms": 1104,
+        "deployId": "dpl_8hDZLw3gDeMxhMHjLStvcv1jQ9ek",
         "chunks": {
           "count": 53,
           "sample": [
@@ -32,7 +32,7 @@
             "02g3tg682mbie.js",
             "03c9d3~-b3gbh.js"
           ],
-          "hash": "d008a07e"
+          "hash": "b4d233ef"
         }
       },
       "geoff.catalog": {
@@ -49,7 +49,7 @@
         "source": "geoff.docs.pricing",
         "ok": true,
         "status": 200,
-        "ms": 141,
+        "ms": 76,
         "scraped": true,
         "fingerprint": "32510b23",
         "model": "One monthly token pool. Shared across text, speech, video, image, music, code, and files — no per-modality nickel-and-dime.",
@@ -347,7 +347,7 @@
         "source": "geoff.docs.surface",
         "ok": true,
         "status": 200,
-        "ms": 148,
+        "ms": 97,
         "scraped": 8,
         "total": 8,
         "fingerprint": "c93f4f72",
@@ -457,147 +457,24 @@
       },
       "geoff.explore": {
         "source": "geoff.explore",
-        "ok": true,
-        "status": 200,
-        "ms": 151,
+        "ok": false,
+        "status": 0,
+        "ms": 18002,
         "url": "https://www.geoff.ai/explore",
-        "feedUrl": "https://geoff.ai/api/explore/feed?limit=48",
-        "count": 48,
-        "hasMore": true,
-        "page": 1,
-        "fingerprint": "c4fa231d",
-        "ids": [
-          "41835dcafae66c99f58d894d1ae33a431ab1f62fbfdb920bb72fb5c9a0792852",
-          "5f3ca9532f1cdb3f43f18765ce6abd6be9ea1d53085472d401f02e57362ebdba",
-          "aa15e412bd2cf5dda3833215535a7bcc4636df11a9bf6d06343f8d47453f4634",
-          "773608c913356dc0751963fc269af5fa4b4f6ee62214f288b6a9b91916a381d4",
-          "d387cad2c7b632dd2de680623d4c554d1ba6f039cf5aa8ed32c7675ce97eb910",
-          "092496b8e62ab9f1c64f0bcf1337e43683c9ee0c96fdedaff0ccddf0a31c19af",
-          "8e556ead6a9241cab6b021219e8a994d7d7c2fc6f97ab7e8ae40bf46d824fa03",
-          "f330f77f8acdd664632ab6e13660086b5810359270027fe31d122e8f0047601e",
-          "1f1511f2dfc656e926aabf53172ff86fbeec092efcd65024c2d25b124a6683a0",
-          "c3bc891baa2d7a07fb4e93d610e67ace5f076c26d4c3cd10644f7fe6f1c3a2cf",
-          "f6a2cca1e0b2492dbcaa4c132a076624d7fc4accd743d7d8b243afb58e063a52",
-          "858946f24b2a50486d3f4e2333d6ab0cacc9462cd18c66c6203bc6dcfb1546c5",
-          "9f292dc5ff6b5b0d8d70d5a7da720daa0abbcc0c4a2d627de34c01df7442e6ad",
-          "f696306b6bf1208e47591b3b5928c5c6ca09154efb52311fbcee20a3585d8cfd",
-          "68f74d80f4c90d867180735dfd5fde2e8a47a6de5e91c6bd038dd78aa269fb93",
-          "3e6fbf011faacb7c728644ae00ca304b6e5f5c2f973cc827f5d88d17d84cf735",
-          "73e90096bd7833120dfe1315807390beea1f68d09fdc5aed3e8d730387cc70f5",
-          "c68627dd4db0feb079097341dba27824b26a1cb9a2a48acd7f9964adb328fa2d",
-          "3da849ee98b85ee353dfe4adf0029ebcfb510e03b8606b3853562efa7fed6fdb",
-          "ea5a7072d2b0a13edeeeea23e5cd8eddf91d83e78977f26dbef9264ba01350ba",
-          "2980edb857dfa97451200e2aedab0fe79656494f75e4a1d9aea317bdf888c57c",
-          "cc67886c5f9fd9fe9b1b724ae7730a205ffdec6fb517e2265c8c63732dcb6693",
-          "8000223805c66a3d90bdf35f8799aa3fb30a5b47f436dcf26a17344c53c55c40",
-          "7199cc4c255d8b5b885e5fbe3b38b1f15eb57a42c4b3f4ca8971d217712ab4d0",
-          "aa3b87ae4db86b0297a2a84fd5d990944c74e2c274668a870b98d5e495af9121",
-          "ea7b2b9eb767af6d82f6e343978f6cdca927549b2fb4462bc104605841e1e8ab",
-          "7c228de875973b6adacf80d455c2d1e2f09d0dc4124d4745d833bc7628c68293",
-          "7dbfd4397bcd23f05036b5fcee9e969be18c7f8fcc13fc2dca505324117035fb",
-          "c7f9a89815261e7916691c40a381dabb55c6fbe418f55491458b119053aec03b",
-          "435577f2630f2f16daaa9b95ab224d209c1f7851b14a930128617602ac53ec7a",
-          "2a04b7e849741209933a94b6a1d2a322bb7d2bdf4c215fcf07c8f791653ebf4b",
-          "2c1828e5e84cb4ee3689aada9dcb2ab54bd6d65f499874b498dffe6b12cd310b",
-          "d835c2e5943176bf92e13358670a29995f358de2b09b8ea2e0e1171264026fcd",
-          "d80e29e824155a66bdfdba287a420426a3816bbdcf5f3cedc85f8004b9e2c259",
-          "5b5506f6691dc8e987ddd6c8fe451436468b515b02d55c10f408112c03cb5e61",
-          "20d34aa20f7393f0bc361a2ba121cc1a75442656ef7db2dbd4628d793690ac58",
-          "8e2d62893910f86ad90bf80c5dea82cabb81a1b9b3cc39a7d0fd267bec28e07e",
-          "825a3bbc7969db7f80de7cf6b540998ff3d8b7019b69011de078d6b2e20d5ca0",
-          "a0e8e58054f8d286eeea57cf0e6b98531725f6321b3b9e6201bef1e6c45daed7",
-          "653b503599d552557ec55e6a4e3e12acb328b5f1abaa16d152bc3c788af5b19b",
-          "fabaa33dc8cc9a74a14ecae67506e0d998d6374b8ce077ce477a16a85026c1db",
-          "85f19fe3b67569902c35f5c72ea756f95f689a4337e26e676615e8dd54e786cd",
-          "d5c3cd190b556e39d6ddddb467c9820a766f1dac5d09337fb5150826fdab0012",
-          "d4e8fae206b8cc8984cb6062f6d49f78501d4048b71a6a0643be88e72ff038b1",
-          "e81f2a3405148f19eb7150aa61e9ae04eafdd6fe4fca79cc53e15adb84dc1ddc",
-          "d2386586cdc8d70157dfecb130d41f6503fcb73a5f28ce240fa460a137ea0db7",
-          "e2d6cc0c36d40c2c9aed0d725de310e6229394d5cc9407afa3943f0ac9d2170b",
-          "b1a7b3e07fb2d2719c2838a7990593c05d8dfb91bf54a8a26cbc9f666701d4d9"
-        ],
-        "mediaCounts": {
-          "audio": 12,
-          "image": 19,
-          "video": 17
-        },
-        "authors": [
-          "Sn0w",
-          "mistr",
-          "user_preview_",
-          "user_user_120",
-          "user_user_kz5"
-        ],
-        "authorCount": 5,
-        "sample": [
-          {
-            "id": "41835dcafae66c99f58d894d1ae33a431ab1f62fbfdb920bb72fb5c9a0792852",
-            "title": "Sitting Perky",
-            "author": "mistr",
-            "mediaType": "audio",
-            "createdAt": 1784788960078,
-            "likes": 0,
-            "views": 0,
-            "nsfw": false
-          },
-          {
-            "id": "5f3ca9532f1cdb3f43f18765ce6abd6be9ea1d53085472d401f02e57362ebdba",
-            "title": "incredible!",
-            "author": "Sn0w",
-            "mediaType": "audio",
-            "createdAt": 1771387082712,
-            "likes": 0,
-            "views": 0,
-            "nsfw": false
-          },
-          {
-            "id": "aa15e412bd2cf5dda3833215535a7bcc4636df11a9bf6d06343f8d47453f4634",
-            "title": "Imma Give Her That Salami",
-            "author": "mistr",
-            "mediaType": "audio",
-            "createdAt": 1785305774744,
-            "likes": 0,
-            "views": 0,
-            "nsfw": false
-          },
-          {
-            "id": "773608c913356dc0751963fc269af5fa4b4f6ee62214f288b6a9b91916a381d4",
-            "title": "James Earl Jones - Frank Speech",
-            "author": "user_preview_",
-            "mediaType": "audio",
-            "createdAt": 1778986425804,
-            "likes": 0,
-            "views": 0,
-            "nsfw": false
-          },
-          {
-            "id": "d387cad2c7b632dd2de680623d4c554d1ba6f039cf5aa8ed32c7675ce97eb910",
-            "title": "r we doing it right?",
-            "author": "mistr",
-            "mediaType": "audio",
-            "createdAt": 1778930064223,
-            "likes": 0,
-            "views": 0,
-            "nsfw": false
-          },
-          {
-            "id": "092496b8e62ab9f1c64f0bcf1337e43683c9ee0c96fdedaff0ccddf0a31c19af",
-            "title": "Drugs R Bad",
-            "author": "mistr",
-            "mediaType": "audio",
-            "createdAt": 1785141263566,
-            "likes": 0,
-            "views": 0,
-            "nsfw": false
-          }
-        ],
-        "reason": null
+        "count": 0,
+        "fingerprint": null,
+        "ids": [],
+        "mediaCounts": {},
+        "authors": [],
+        "authorCount": 0,
+        "sample": [],
+        "reason": "This operation was aborted"
       },
       "geoff.max.solana": {
         "source": "geoff.max.solana",
         "ok": true,
         "status": 200,
-        "ms": 96,
+        "ms": 935,
         "fingerprint": "a2a0c8ef",
         "liveCount": 4,
         "total": 4,
@@ -610,7 +487,7 @@
             "path": "/max",
             "label": "Max hub",
             "status": 307,
-            "ms": 91,
+            "ms": 900,
             "location": "/connect?redirectUrl=https%3A%2F%2Fwww.geoff.ai%2Fmax",
             "redirectUrl": "https://www.geoff.ai/max",
             "toConnect": true,
@@ -621,7 +498,7 @@
             "path": "/max/solana",
             "label": "Max × Solana",
             "status": 307,
-            "ms": 95,
+            "ms": 918,
             "location": "/connect?redirectUrl=https%3A%2F%2Fwww.geoff.ai%2Fmax%2Fsolana",
             "redirectUrl": "https://www.geoff.ai/max/solana",
             "toConnect": true,
@@ -632,7 +509,7 @@
             "path": "/max/solana/watch",
             "label": "Max × Solana nested",
             "status": 307,
-            "ms": 89,
+            "ms": 904,
             "location": "/connect?redirectUrl=https%3A%2F%2Fwww.geoff.ai%2Fmax%2Fsolana%2Fwatch",
             "redirectUrl": "https://www.geoff.ai/max/solana/watch",
             "toConnect": true,
@@ -643,7 +520,7 @@
             "path": "/max/solana/portfolio",
             "label": "Max × Solana portfolio",
             "status": 307,
-            "ms": 90,
+            "ms": 932,
             "location": "/connect?redirectUrl=https%3A%2F%2Fwww.geoff.ai%2Fmax%2Fsolana%2Fportfolio",
             "redirectUrl": "https://www.geoff.ai/max/solana/portfolio",
             "toConnect": true,
@@ -657,13 +534,13 @@
         "source": "stacknet.health",
         "ok": true,
         "status": 200,
-        "ms": 262,
+        "ms": 164,
         "statusText": "healthy",
         "reachable": true,
         "httpError": null,
         "version": "v3.8.345",
         "nodeId": "nk_key_FOpmPDVgCusTGcuL",
-        "inFlight": 13,
+        "inFlight": 15,
         "maxInFlight": 512,
         "remoteMcp": null,
         "error": null
@@ -672,14 +549,14 @@
         "source": "stacknet.root",
         "ok": true,
         "status": 200,
-        "ms": 312,
+        "ms": 464,
         "version": "3.8.345"
       },
       "stacknet.network": {
         "source": "stacknet.network",
         "ok": true,
         "status": 200,
-        "ms": 387,
+        "ms": 763,
         "totalNodes": 8,
         "availableNodes": 8,
         "totalGpus": 7,
@@ -753,26 +630,26 @@
           "voice-session"
         ],
         "treasury": {
-          "solPriceUsd": 76.41,
+          "solPriceUsd": 76.44,
           "cluster": "mainnet",
           "pendingObligations": 0,
           "totalUsd": 0,
           "receivableUsd": 0,
           "totalLamports": "0",
-          "staleSeconds": 44,
+          "staleSeconds": 37,
           "treasuryAddress": "2W5gxAio1Bz76P58EaDtGC71MuyH4ZAdXHu3qqmeGy7g",
           "warnings": []
         },
         "metaproofs": {
           "total": 0
         },
-        "timestamp": 1786323082137
+        "timestamp": 1786323142437
       },
       "stacknet.node": {
         "source": "stacknet.node",
         "ok": true,
         "status": 200,
-        "ms": 292,
+        "ms": 75,
         "nodeId": "nk_key_FOpmPDVgCusTGcuL",
         "version": "0.1.0",
         "coprocessorCount": 1,
@@ -782,7 +659,7 @@
         "source": "stacknet.models",
         "ok": true,
         "status": 200,
-        "ms": 297,
+        "ms": 162,
         "count": 5,
         "ids": [
           "magma",
@@ -819,7 +696,7 @@
               "think",
               "video"
             ],
-            "created": 1786323082
+            "created": 1786323141
           },
           {
             "id": "preview",
@@ -839,7 +716,7 @@
               "image",
               "think"
             ],
-            "created": 1786323082
+            "created": 1786323141
           },
           {
             "id": "pyro",
@@ -860,7 +737,7 @@
               "image",
               "think"
             ],
-            "created": 1786323082
+            "created": 1786323141
           },
           {
             "id": "pyro:max",
@@ -881,7 +758,7 @@
               "image",
               "think"
             ],
-            "created": 1786323082
+            "created": 1786323141
           },
           {
             "id": "stack-embed",
@@ -892,7 +769,7 @@
               "chat"
             ],
             "contentTypes": [],
-            "created": 1786323082
+            "created": 1786323141
           }
         ]
       },
@@ -900,7 +777,7 @@
         "source": "stacknet.widgets",
         "ok": true,
         "status": 200,
-        "ms": 319,
+        "ms": 366,
         "count": 19,
         "ids": [
           "system-asset-report",
@@ -1253,15 +1130,15 @@
       }
     },
     "summary": {
-      "geoffBuildId": "8ee3f86127b93155ba4ebf88281181fd8e4e0c6a",
-      "geoffDeployId": "dpl_H5U8BN6kjBvauwueett5M6Y5Jivz",
-      "chunkHash": "d008a07e",
+      "geoffBuildId": "a2d38495b736fe5acbc1c7772dd2a53b4e169a4a",
+      "geoffDeployId": "dpl_8hDZLw3gDeMxhMHjLStvcv1jQ9ek",
+      "chunkHash": "b4d233ef",
       "chunkCount": 53,
       "stacknetVersion": "v3.8.345",
       "stacknetStatus": "healthy",
       "mcpContract": null,
       "mcpOnHealth": false,
-      "inFlight": 13,
+      "inFlight": 15,
       "maxInFlight": 512,
       "taskCount": 0,
       "nodeId": "nk_key_FOpmPDVgCusTGcuL",
@@ -1276,10 +1153,10 @@
       "apiModels": 5,
       "widgets": 19,
       "capabilities": 32,
-      "solPriceUsd": 76.41,
+      "solPriceUsd": 76.44,
       "treasuryAddress": "2W5gxAio1Bz76P58EaDtGC71MuyH4ZAdXHu3qqmeGy7g",
       "treasuryCluster": "mainnet",
-      "treasuryStaleSeconds": 44,
+      "treasuryStaleSeconds": 37,
       "treasuryTotalUsd": 0,
       "treasuryReceivableUsd": 0,
       "treasuryPending": 0,
@@ -1293,21 +1170,17 @@
       "tokenPlanFingerprint": "32510b23",
       "docsSurfaceScraped": 8,
       "docsSurfaceFingerprint": "c93f4f72",
-      "exploreCount": 48,
-      "exploreAuthors": 5,
-      "exploreFingerprint": "c4fa231d",
-      "exploreMedia": {
-        "audio": 12,
-        "image": 19,
-        "video": 17
-      },
+      "exploreCount": 0,
+      "exploreAuthors": 0,
+      "exploreFingerprint": null,
+      "exploreMedia": {},
       "maxSolanaLive": true,
       "maxHubLive": true,
       "maxSolanaFingerprint": "a2a0c8ef",
       "maxSolanaRoutes": 4,
-      "healthySources": 12,
+      "healthySources": 11,
       "skippedSources": 1,
-      "failedSources": 0,
+      "failedSources": 1,
       "totalSources": 13,
       "coverage": [
         {
@@ -1315,14 +1188,14 @@
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 199
+          "ms": 943
         },
         {
           "source": "geoff.deploy",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 190
+          "ms": 1104
         },
         {
           "source": "geoff.catalog",
@@ -1336,75 +1209,105 @@
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 141
+          "ms": 76
         },
         {
           "source": "geoff.docs.surface",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 148
+          "ms": 97
         },
         {
           "source": "geoff.explore",
-          "ok": true,
+          "ok": false,
           "skipped": false,
-          "reason": null,
-          "ms": 151
+          "reason": "This operation was aborted",
+          "ms": 18002
         },
         {
           "source": "geoff.max.solana",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 96
+          "ms": 935
         },
         {
           "source": "stacknet.health",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 262
+          "ms": 164
         },
         {
           "source": "stacknet.root",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 312
+          "ms": 464
         },
         {
           "source": "stacknet.network",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 387
+          "ms": 763
         },
         {
           "source": "stacknet.node",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 292
+          "ms": 75
         },
         {
           "source": "stacknet.models",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 297
+          "ms": 162
         },
         {
           "source": "stacknet.widgets",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 319
+          "ms": 366
         }
       ]
     }
   },
   "events": [
+    {
+      "id": "evt_msmiordp_rrjqm",
+      "at": "2026-08-10T00:52:39.709Z",
+      "kind": "deploy",
+      "rank": "note",
+      "title": "Geoff website shipped",
+      "summary": "Live app update detected (build 8ee3f861…4e0c6a → a2d38495…169a4a; deploy dpl_H5U8…Y5Jivz → dpl_8hDZ…1jQ9ek; assets d008a07e → b4d233ef). Routine unless the network version moves too.",
+      "details": {
+        "build": {
+          "from": "8ee3f86127b93155ba4ebf88281181fd8e4e0c6a",
+          "to": "a2d38495b736fe5acbc1c7772dd2a53b4e169a4a"
+        },
+        "deploy": {
+          "from": "dpl_H5U8BN6kjBvauwueett5M6Y5Jivz",
+          "to": "dpl_8hDZLw3gDeMxhMHjLStvcv1jQ9ek"
+        },
+        "chunks": {
+          "from": "d008a07e",
+          "to": "b4d233ef",
+          "chunkCount": 53
+        },
+        "coalesced": 1,
+        "legacyIds": [
+          "evt_msmiordp_rrjqm"
+        ]
+      },
+      "severity": "low",
+      "heat": 1,
+      "vibe": "Note"
+    },
     {
       "id": "evt_msmihy9g_mo3qm",
       "at": "2026-08-10T00:47:22.036Z",
@@ -36151,17 +36054,17 @@
     },
     {
       "day": "2026-08-10",
-      "count": 7,
-      "heat": 14,
+      "count": 8,
+      "heat": 15,
       "crazy": 0,
       "spike": 1
     }
   ],
   "state": {
     "startedAt": "2026-08-07T06:15:12.347Z",
-    "lastPollAt": "2026-08-10T00:51:21.750Z",
+    "lastPollAt": "2026-08-10T00:52:21.698Z",
     "lastError": null,
-    "pollCount": 2648,
+    "pollCount": 2649,
     "temperature": 100
   }
 }
