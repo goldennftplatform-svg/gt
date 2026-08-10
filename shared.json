@@ -1,14 +1,14 @@
 {
-  "updatedAt": "2026-08-10T00:11:22.173Z",
+  "updatedAt": "2026-08-10T00:13:19.190Z",
   "latest": {
-    "id": "snap_msmh7no8",
-    "takenAt": "2026-08-10T00:11:21.683Z",
+    "id": "snap_msmha5yn",
+    "takenAt": "2026-08-10T00:13:18.811Z",
     "sources": {
       "geoff.version": {
         "source": "geoff.version",
         "ok": true,
         "status": 200,
-        "ms": 208,
+        "ms": 340,
         "buildId": "8ee3f86127b93155ba4ebf88281181fd8e4e0c6a",
         "raw": {
           "buildId": "8ee3f86127b93155ba4ebf88281181fd8e4e0c6a"
@@ -18,7 +18,7 @@
         "source": "geoff.deploy",
         "ok": true,
         "status": 200,
-        "ms": 452,
+        "ms": 189,
         "deployId": "dpl_H5U8BN6kjBvauwueett5M6Y5Jivz",
         "chunks": {
           "count": 53,
@@ -49,7 +49,7 @@
         "source": "geoff.docs.pricing",
         "ok": true,
         "status": 200,
-        "ms": 166,
+        "ms": 117,
         "scraped": true,
         "fingerprint": "32510b23",
         "model": "One monthly token pool. Shared across text, speech, video, image, music, code, and files — no per-modality nickel-and-dime.",
@@ -347,7 +347,7 @@
         "source": "geoff.docs.surface",
         "ok": true,
         "status": 200,
-        "ms": 181,
+        "ms": 140,
         "scraped": 8,
         "total": 8,
         "fingerprint": "c93f4f72",
@@ -459,7 +459,7 @@
         "source": "geoff.explore",
         "ok": true,
         "status": 200,
-        "ms": 189,
+        "ms": 206,
         "url": "https://www.geoff.ai/explore",
         "feedUrl": "https://geoff.ai/api/explore/feed?limit=48",
         "count": 48,
@@ -597,7 +597,7 @@
         "source": "geoff.max.solana",
         "ok": true,
         "status": 200,
-        "ms": 156,
+        "ms": 81,
         "fingerprint": "a2a0c8ef",
         "liveCount": 4,
         "total": 4,
@@ -610,7 +610,7 @@
             "path": "/max",
             "label": "Max hub",
             "status": 307,
-            "ms": 120,
+            "ms": 65,
             "location": "/connect?redirectUrl=https%3A%2F%2Fwww.geoff.ai%2Fmax",
             "redirectUrl": "https://www.geoff.ai/max",
             "toConnect": true,
@@ -621,7 +621,7 @@
             "path": "/max/solana",
             "label": "Max × Solana",
             "status": 307,
-            "ms": 156,
+            "ms": 61,
             "location": "/connect?redirectUrl=https%3A%2F%2Fwww.geoff.ai%2Fmax%2Fsolana",
             "redirectUrl": "https://www.geoff.ai/max/solana",
             "toConnect": true,
@@ -632,7 +632,7 @@
             "path": "/max/solana/watch",
             "label": "Max × Solana nested",
             "status": 307,
-            "ms": 138,
+            "ms": 58,
             "location": "/connect?redirectUrl=https%3A%2F%2Fwww.geoff.ai%2Fmax%2Fsolana%2Fwatch",
             "redirectUrl": "https://www.geoff.ai/max/solana/watch",
             "toConnect": true,
@@ -643,7 +643,7 @@
             "path": "/max/solana/portfolio",
             "label": "Max × Solana portfolio",
             "status": 307,
-            "ms": 139,
+            "ms": 80,
             "location": "/connect?redirectUrl=https%3A%2F%2Fwww.geoff.ai%2Fmax%2Fsolana%2Fportfolio",
             "redirectUrl": "https://www.geoff.ai/max/solana/portfolio",
             "toConnect": true,
@@ -657,57 +657,132 @@
         "source": "stacknet.health",
         "ok": true,
         "status": 200,
-        "ms": 140,
+        "ms": 64,
         "statusText": "healthy",
         "reachable": true,
         "httpError": null,
         "version": "v3.8.345",
         "nodeId": "nk_key_FOpmPDVgCusTGcuL",
-        "inFlight": 1,
+        "inFlight": 0,
         "maxInFlight": 512,
         "remoteMcp": null,
         "error": null
       },
       "stacknet.root": {
         "source": "stacknet.root",
-        "ok": false,
-        "status": 502,
-        "ms": 139,
-        "version": null
+        "ok": true,
+        "status": 200,
+        "ms": 79,
+        "version": "3.8.345"
       },
       "stacknet.network": {
         "source": "stacknet.network",
-        "ok": false,
-        "status": 502,
-        "ms": 225,
-        "totalNodes": null,
-        "availableNodes": null,
-        "totalGpus": null,
-        "totalVramGb": null,
-        "availableVramGb": null,
-        "averageLoad": null,
-        "totalModels": null,
-        "models": [],
-        "capabilities": [],
-        "treasury": null,
-        "metaproofs": null,
-        "timestamp": "2026-08-10T00:11:21Z"
+        "ok": true,
+        "status": 200,
+        "ms": 95,
+        "totalNodes": 8,
+        "availableNodes": 8,
+        "totalGpus": 7,
+        "totalVramGb": 882,
+        "availableVramGb": 253,
+        "averageLoad": 0,
+        "totalModels": 29,
+        "models": [
+          "magma",
+          "mom-preview",
+          "preview",
+          "pyro",
+          "pyro-magma",
+          "pyro-preview",
+          "pyro:max",
+          "stack-chat",
+          "stack-chat-magma",
+          "stack-chat-preview",
+          "stack-chat-pyro",
+          "stack-chat-pyro:max",
+          "stack-embed",
+          "stack-embed-magma",
+          "stack-embed-preview",
+          "stack-embed-pyro",
+          "stack-embed-pyro:max",
+          "stack-media-magma",
+          "stack-media-preview",
+          "stack-media-pyro",
+          "stack-media-pyro:max",
+          "stack-vision-magma",
+          "stack-vision-preview",
+          "stack-vision-pyro",
+          "stack-vision-pyro:max",
+          "stack-voice-magma",
+          "stack-voice-preview",
+          "stack-voice-pyro",
+          "stack-voice-pyro:max"
+        ],
+        "capabilities": [
+          "ai-prompt",
+          "chat",
+          "chat-completion",
+          "coder-execute",
+          "coder-session",
+          "coder-tool",
+          "completion",
+          "e2b-code",
+          "e2b-execute",
+          "embedding",
+          "image-edit-pipeline",
+          "image-pipeline",
+          "image_editing",
+          "image_generation",
+          "mcp-tool",
+          "media-analyze",
+          "media-generate",
+          "media-orchestration",
+          "media_generation",
+          "music-pipeline",
+          "prompt",
+          "runtime:shell",
+          "sequential-thinking",
+          "sizzle-video-pipeline",
+          "skill-auto-execute",
+          "streaming",
+          "style_transfer",
+          "text",
+          "tts-stream",
+          "tts-synthesize",
+          "video_generation",
+          "voice-session"
+        ],
+        "treasury": {
+          "solPriceUsd": 76.53,
+          "cluster": "mainnet",
+          "pendingObligations": 0,
+          "totalUsd": 0,
+          "receivableUsd": 0,
+          "totalLamports": "0",
+          "staleSeconds": 36,
+          "treasuryAddress": "2W5gxAio1Bz76P58EaDtGC71MuyH4ZAdXHu3qqmeGy7g",
+          "warnings": []
+        },
+        "metaproofs": {
+          "total": 0
+        },
+        "timestamp": 1786320798907
       },
       "stacknet.node": {
         "source": "stacknet.node",
         "ok": true,
         "status": 200,
-        "ms": 139,
+        "ms": 79,
         "nodeId": "nk_key_FOpmPDVgCusTGcuL",
         "version": "0.1.0",
-        "coprocessorCount": 0,
+        "coprocessorCount": 1,
         "taskCount": 0
       },
       "stacknet.models": {
         "source": "stacknet.models",
         "ok": true,
         "status": 200,
-        "ms": 140,
+        "ms": 63,
         "count": 5,
         "ids": [
           "magma",
@@ -744,7 +819,7 @@
               "think",
               "video"
             ],
-            "created": 1786320681
+            "created": 1786320798
           },
           {
             "id": "preview",
@@ -764,7 +839,7 @@
               "image",
               "think"
             ],
-            "created": 1786320681
+            "created": 1786320798
           },
           {
             "id": "pyro",
@@ -785,7 +860,7 @@
               "image",
               "think"
             ],
-            "created": 1786320681
+            "created": 1786320798
           },
           {
             "id": "pyro:max",
@@ -806,7 +881,7 @@
               "image",
               "think"
             ],
-            "created": 1786320681
+            "created": 1786320798
           },
           {
             "id": "stack-embed",
@@ -817,18 +892,364 @@
               "chat"
             ],
             "contentTypes": [],
-            "created": 1786320681
+            "created": 1786320798
           }
         ]
       },
       "stacknet.widgets": {
         "source": "stacknet.widgets",
-        "ok": false,
-        "status": 502,
-        "ms": 218,
-        "count": 0,
-        "ids": [],
-        "widgets": []
+        "ok": true,
+        "status": 200,
+        "ms": 108,
+        "count": 19,
+        "ids": [
+          "system-asset-report",
+          "system-calendar-invite",
+          "system-citation-card",
+          "system-code-block",
+          "system-crypto-blue-chips",
+          "system-crypto-chart",
+          "system-data-table",
+          "system-email-draft",
+          "system-lp-manager",
+          "system-music-sample-selector",
+          "system-photo-editor",
+          "system-search-results",
+          "system-shopping-cart",
+          "system-shopping-item",
+          "system-solana-wallet",
+          "system-stock-chart",
+          "system-token-swap",
+          "system-video-editor",
+          "system-weather-card"
+        ],
+        "widgets": [
+          {
+            "id": "system-asset-report",
+            "name": "asset-report",
+            "description": "Comprehensive crypto asset report with sentiment analysis, technical summary, key events/news from multiple sources (news, reddit, polymarket, X). Use for in-depth asset research and analysis.",
+            "version": "1.0.0",
+            "tags": [
+              "analysis",
+              "asset",
+              "crypto",
+              "news",
+              "report",
+              "research",
+              "sentiment"
+            ],
+            "isSystem": true,
+            "isPublic": true,
+            "usageCount": 2,
+            "updatedAt": 1770871773234
+          },
+          {
+            "id": "system-calendar-invite",
+            "name": "calendar-invite",
+            "description": "Display a calendar event invitation with date, time, attendees, and RSVP actions. Use for scheduling.",
+            "version": "1.0.0",
+            "tags": [
+              "calendar",
+              "event",
+              "invite",
+              "meeting",
+              "schedule"
+            ],
+            "isSystem": true,
+            "isPublic": true,
+            "usageCount": 2,
+            "updatedAt": 1770871773232
+          },
+          {
+            "id": "system-citation-card",
+            "name": "citation-card",
+            "description": "Display an inline citation with expandable source details. Use when citing information from sources.",
+            "version": "1.0.0",
+            "tags": [
+              "citation",
+              "inline",
+              "reference",
+              "source"
+            ],
+            "isSystem": true,
+            "isPublic": true,
+            "usageCount": 2,
+            "updatedAt": 1770871773230
+          },
+          {
+            "id": "system-code-block",
+            "name": "code-block",
+            "description": "Display syntax-highlighted code with optional title and copy button.",
+            "version": "1.0.0",
+            "tags": [
+              "code",
+              "programming",
+              "snippet",
+              "syntax"
+            ],
+            "isSystem": true,
+            "isPublic": true,
+            "usageCount": 2,
+            "updatedAt": 1770871773230
+          },
+          {
+            "id": "system-crypto-blue-chips",
+            "name": "crypto-blue-chips",
+            "description": "Display a list of top cryptocurrencies with prices, 24h changes, market caps, and trading actions. Use for crypto overview dashboards.",
+            "version": "1.0.0",
+            "tags": [
+              "bitcoin",
+              "crypto",
+              "dashboard",
+              "ethereum",
+              "market",
+              "prices",
+              "trading"
+            ],
+            "isSystem": true,
+            "isPublic": true,
+            "usageCount": 2,
+            "updatedAt": 1770871773234
+          },
+          {
+            "id": "system-crypto-chart",
+            "name": "crypto-chart",
+            "description": "Display cryptocurrency price chart with market data, supply info, and trading actions. Use for crypto data.",
+            "version": "1.0.0",
+            "tags": [
+              "bitcoin",
+              "chart",
+              "crypto",
+              "price",
+              "solana",
+              "trading"
+            ],
+            "isSystem": true,
+            "isPublic": true,
+            "usageCount": 2,
+            "updatedAt": 1770871773232
+          },
+          {
+            "id": "system-data-table",
+            "name": "data-table",
+            "description": "Display tabular data with headers and rows. Use for structured data presentation.",
+            "version": "1.0.0",
+            "tags": [
+              "data",
+              "grid",
+              "structured",
+              "table"
+            ],
+            "isSystem": true,
+            "isPublic": true,
+            "usageCount": 2,
+            "updatedAt": 1770871773230
+          },
+          {
+            "id": "system-email-draft",
+            "name": "email-draft",
+            "description": "Display an email draft with recipient, subject, body, and send action. Use for email composition workflows.",
+            "version": "1.0.0",
+            "tags": [
+              "communication",
+              "compose",
+              "draft",
+              "email"
+            ],
+            "isSystem": true,
+            "isPublic": true,
+            "usageCount": 2,
+            "updatedAt": 1770871773231
+          },
+          {
+            "id": "system-lp-manager",
+            "name": "lp-manager",
+            "description": "Manage liquidity pool positions - collect fees, add/remove liquidity, close position. Use for DeFi LP management.",
+            "version": "1.0.0",
+            "tags": [
+              "defi",
+              "fees",
+              "liquidity",
+              "lp",
+              "pool",
+              "solana"
+            ],
+            "isSystem": true,
+            "isPublic": true,
+            "usageCount": 2,
+            "updatedAt": 1770871773231
+          },
+          {
+            "id": "system-music-sample-selector",
+            "name": "music-sample-selector",
+            "description": "Browse and preview audio samples with waveforms, sort by key/tempo, adjust speed/pitch globally, and select samples.",
+            "version": "1.0.0",
+            "tags": [
+              "audio",
+              "loops",
+              "music",
+              "production",
+              "samples"
+            ],
+            "isSystem": true,
+            "isPublic": true,
+            "usageCount": 2,
+            "updatedAt": 1770871773233
+          },
+          {
+            "id": "system-photo-editor",
+            "name": "photo-editor",
+            "description": "Photo editor with brush masking and SAM-style point selection for marking regions. Supports brush tool with size presets (S/M/L/XL) and selection tool (left click=include, right click=exclude).",
+            "version": "2.0.0",
+            "tags": [
+              "annotation",
+              "brush",
+              "editor",
+              "image",
+              "mask",
+              "sam",
+              "selection"
+            ],
+            "isSystem": true,
+            "isPublic": true,
+            "usageCount": 2,
+            "updatedAt": 1770871773233
+          },
+          {
+            "id": "system-search-results",
+            "name": "search-results",
+            "description": "Display web search results with thumbnails, sources, and expandable cards. Use when displaying search engine results.",
+            "version": "1.0.0",
+            "tags": [
+              "citations",
+              "results",
+              "search",
+              "sources"
+            ],
+            "isSystem": true,
+            "isPublic": true,
+            "usageCount": 2,
+            "updatedAt": 1770871773229
+          },
+          {
+            "id": "system-shopping-cart",
+            "name": "shopping-cart",
+            "description": "Display a shopping cart with items, quantities, prices, and checkout action. Use for e-commerce flows.",
+            "version": "1.0.0",
+            "tags": [
+              "cart",
+              "checkout",
+              "ecommerce",
+              "shopping"
+            ],
+            "isSystem": true,
+            "isPublic": true,
+            "usageCount": 2,
+            "updatedAt": 1770871773230
+          },
+          {
+            "id": "system-shopping-item",
+            "name": "shopping-item",
+            "description": "Display a single product item with image, price, and add-to-cart action. Use for product recommendations.",
+            "version": "1.0.0",
+            "tags": [
+              "ecommerce",
+              "item",
+              "product",
+              "shopping"
+            ],
+            "isSystem": true,
+            "isPublic": true,
+            "usageCount": 2,
+            "updatedAt": 1770871773231
+          },
+          {
+            "id": "system-solana-wallet",
+            "name": "solana-wallet",
+            "description": "Display Solana wallet overview with balance, tokens, recent transactions, and actions. Use for crypto wallet views.",
+            "version": "1.0.0",
+            "tags": [
+              "balance",
+              "crypto",
+              "solana",
+              "tokens",
+              "wallet"
+            ],
+            "isSystem": true,
+            "isPublic": true,
+            "usageCount": 2,
+            "updatedAt": 1770871773232
+          },
+          {
+            "id": "system-stock-chart",
+            "name": "stock-chart",
+            "description": "Display stock price chart with key metrics, price change, and trading actions. Use for financial data.",
+            "version": "1.0.0",
+            "tags": [
+              "chart",
+              "finance",
+              "market",
+              "stock",
+              "trading"
+            ],
+            "isSystem": true,
+            "isPublic": true,
+            "usageCount": 2,
+            "updatedAt": 1770871773232
+          },
+          {
+            "id": "system-token-swap",
+            "name": "token-swap",
+            "description": "Display a token swap interface with input/output tokens, amounts, rates, and swap action. Use for DeFi swaps.",
+            "version": "1.0.0",
+            "tags": [
+              "defi",
+              "exchange",
+              "solana",
+              "swap",
+              "token"
+            ],
+            "isSystem": true,
+            "isPublic": true,
+            "usageCount": 2,
+            "updatedAt": 1770871773231
+          },
+          {
+            "id": "system-video-editor",
+            "name": "video-editor",
+            "description": "Video editor with timeline, keyframes, brush masking, and SAM-style point selection. Supports frame-by-frame navigation, play/pause, and per-frame annotations.",
+            "version": "1.0.0",
+            "tags": [
+              "annotation",
+              "brush",
+              "editor",
+              "keyframe",
+              "mask",
+              "selection",
+              "timeline",
+              "video"
+            ],
+            "isSystem": true,
+            "isPublic": true,
+            "usageCount": 2,
+            "updatedAt": 1770871773233
+          },
+          {
+            "id": "system-weather-card",
+            "name": "weather-card",
+            "description": "Display current weather conditions for a location. Use when showing weather information.",
+            "version": "1.0.0",
+            "tags": [
+              "forecast",
+              "temperature",
+              "weather"
+            ],
+            "isSystem": true,
+            "isPublic": true,
+            "usageCount": 2,
+            "updatedAt": 1770871773230
+          }
+        ]
       }
     },
     "summary": {
@@ -840,30 +1261,30 @@
       "stacknetStatus": "healthy",
       "mcpContract": null,
       "mcpOnHealth": false,
-      "inFlight": 1,
+      "inFlight": 0,
       "maxInFlight": 512,
       "taskCount": 0,
       "nodeId": "nk_key_FOpmPDVgCusTGcuL",
-      "nodes": null,
-      "totalNodes": null,
-      "gpus": null,
-      "vramGb": null,
-      "availableVramGb": null,
-      "vramAvailablePct": null,
-      "averageLoad": null,
-      "models": null,
+      "nodes": 8,
+      "totalNodes": 8,
+      "gpus": 7,
+      "vramGb": 882,
+      "availableVramGb": 253,
+      "vramAvailablePct": 29,
+      "averageLoad": 0,
+      "models": 29,
       "apiModels": 5,
-      "widgets": 0,
-      "capabilities": 0,
-      "solPriceUsd": null,
-      "treasuryAddress": null,
-      "treasuryCluster": null,
-      "treasuryStaleSeconds": null,
-      "treasuryTotalUsd": null,
-      "treasuryReceivableUsd": null,
-      "treasuryPending": null,
+      "widgets": 19,
+      "capabilities": 32,
+      "solPriceUsd": 76.53,
+      "treasuryAddress": "2W5gxAio1Bz76P58EaDtGC71MuyH4ZAdXHu3qqmeGy7g",
+      "treasuryCluster": "mainnet",
+      "treasuryStaleSeconds": 36,
+      "treasuryTotalUsd": 0,
+      "treasuryReceivableUsd": 0,
+      "treasuryPending": 0,
       "treasuryWarnings": 0,
-      "metaproofsTotal": null,
+      "metaproofsTotal": 0,
       "catalogModels": 0,
       "catalogSkipped": true,
       "catalogSkipReason": "Set GEOFF_COOKIE or GEOFF_PREVIEW_CODE to sniff authenticated catalogs",
@@ -884,9 +1305,9 @@
       "maxHubLive": true,
       "maxSolanaFingerprint": "a2a0c8ef",
       "maxSolanaRoutes": 4,
-      "healthySources": 9,
+      "healthySources": 12,
       "skippedSources": 1,
-      "failedSources": 3,
+      "failedSources": 0,
       "totalSources": 13,
       "coverage": [
         {
@@ -894,14 +1315,14 @@
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 208
+          "ms": 340
         },
         {
           "source": "geoff.deploy",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 452
+          "ms": 189
         },
         {
           "source": "geoff.catalog",
@@ -915,70 +1336,70 @@
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 166
+          "ms": 117
         },
         {
           "source": "geoff.docs.surface",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 181
+          "ms": 140
         },
         {
           "source": "geoff.explore",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 189
+          "ms": 206
         },
         {
           "source": "geoff.max.solana",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 156
+          "ms": 81
         },
         {
           "source": "stacknet.health",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 140
+          "ms": 64
         },
         {
           "source": "stacknet.root",
-          "ok": false,
+          "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 139
+          "ms": 79
         },
         {
           "source": "stacknet.network",
-          "ok": false,
+          "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 225
+          "ms": 95
         },
         {
           "source": "stacknet.node",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 139
+          "ms": 79
         },
         {
           "source": "stacknet.models",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 140
+          "ms": 63
         },
         {
           "source": "stacknet.widgets",
-          "ok": false,
+          "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 218
+          "ms": 108
         }
       ]
     }
@@ -1490,6 +1911,28 @@
       "severity": "info",
       "heat": 0,
       "vibe": "Whisper"
+    },
+    {
+      "id": "evt_msmha5yn_9gkud",
+      "at": "2026-08-10T00:13:19.151Z",
+      "kind": "agent",
+      "rank": "note",
+      "heat": 0,
+      "title": "Queue went quiet",
+      "summary": "Measured from public Stacknet counters: in-flight 3 → 0 (max 512). No private agent transcript — just queue/load telemetry.",
+      "details": {
+        "inferred": true,
+        "dataset": "queue",
+        "inFlight": 0,
+        "maxInFlight": 512,
+        "taskCount": 0,
+        "averageLoad": 0,
+        "signals": [
+          "in-flight 3 → 0 (max 512)"
+        ]
+      },
+      "severity": "low",
+      "vibe": "Note"
     },
     {
       "id": "evt_msmh2w20_1t0bs",
@@ -35106,9 +35549,9 @@
   ],
   "state": {
     "startedAt": "2026-08-07T06:15:12.347Z",
-    "lastPollAt": "2026-08-10T00:11:21.683Z",
+    "lastPollAt": "2026-08-10T00:13:18.811Z",
     "lastError": null,
-    "pollCount": 2560,
+    "pollCount": 2563,
     "temperature": 100
   }
 }
