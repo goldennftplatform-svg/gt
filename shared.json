@@ -1,25 +1,25 @@
 {
-  "updatedAt": "2026-08-10T04:55:22.266Z",
+  "updatedAt": "2026-08-10T04:56:39.859Z",
   "latest": {
-    "id": "snap_msmrcvvz",
-    "takenAt": "2026-08-10T04:55:21.767Z",
+    "id": "snap_msmrejqw",
+    "takenAt": "2026-08-10T04:56:21.786Z",
     "sources": {
       "geoff.version": {
         "source": "geoff.version",
         "ok": true,
         "status": 200,
-        "ms": 158,
-        "buildId": "e71c8f6741e02f11f0076821ca90f1227ee6b85e",
+        "ms": 241,
+        "buildId": "385b31661e2595f94da126535d19c996952462ac",
         "raw": {
-          "buildId": "e71c8f6741e02f11f0076821ca90f1227ee6b85e"
+          "buildId": "385b31661e2595f94da126535d19c996952462ac"
         }
       },
       "geoff.deploy": {
         "source": "geoff.deploy",
         "ok": true,
         "status": 200,
-        "ms": 195,
-        "deployId": "dpl_BwERiA9uzQZWSdHVYzQDEc16VJFG",
+        "ms": 1101,
+        "deployId": "dpl_2b6Zfngkyb2KFapN8jk1Aa2Ni2PN",
         "chunks": {
           "count": 53,
           "sample": [
@@ -32,7 +32,7 @@
             "03c9d3~-b3gbh.js",
             "03~yq9q893hmn.js"
           ],
-          "hash": "4c8c7112"
+          "hash": "9a5be69e"
         }
       },
       "geoff.catalog": {
@@ -49,7 +49,7 @@
         "source": "geoff.docs.pricing",
         "ok": true,
         "status": 200,
-        "ms": 84,
+        "ms": 78,
         "scraped": true,
         "fingerprint": "32510b23",
         "model": "One monthly token pool. Shared across text, speech, video, image, music, code, and files — no per-modality nickel-and-dime.",
@@ -347,7 +347,7 @@
         "source": "geoff.docs.surface",
         "ok": true,
         "status": 200,
-        "ms": 100,
+        "ms": 98,
         "scraped": 8,
         "total": 8,
         "fingerprint": "c93f4f72",
@@ -457,147 +457,24 @@
       },
       "geoff.explore": {
         "source": "geoff.explore",
-        "ok": true,
-        "status": 200,
-        "ms": 114,
+        "ok": false,
+        "status": 0,
+        "ms": 18003,
         "url": "https://www.geoff.ai/explore",
-        "feedUrl": "https://geoff.ai/api/explore/feed?limit=48",
-        "count": 48,
-        "hasMore": true,
-        "page": 1,
-        "fingerprint": "1096ebae",
-        "ids": [
-          "41835dcafae66c99f58d894d1ae33a431ab1f62fbfdb920bb72fb5c9a0792852",
-          "5f3ca9532f1cdb3f43f18765ce6abd6be9ea1d53085472d401f02e57362ebdba",
-          "aa15e412bd2cf5dda3833215535a7bcc4636df11a9bf6d06343f8d47453f4634",
-          "1f1511f2dfc656e926aabf53172ff86fbeec092efcd65024c2d25b124a6683a0",
-          "d387cad2c7b632dd2de680623d4c554d1ba6f039cf5aa8ed32c7675ce97eb910",
-          "c3bc891baa2d7a07fb4e93d610e67ace5f076c26d4c3cd10644f7fe6f1c3a2cf",
-          "773608c913356dc0751963fc269af5fa4b4f6ee62214f288b6a9b91916a381d4",
-          "092496b8e62ab9f1c64f0bcf1337e43683c9ee0c96fdedaff0ccddf0a31c19af",
-          "f330f77f8acdd664632ab6e13660086b5810359270027fe31d122e8f0047601e",
-          "8e556ead6a9241cab6b021219e8a994d7d7c2fc6f97ab7e8ae40bf46d824fa03",
-          "858946f24b2a50486d3f4e2333d6ab0cacc9462cd18c66c6203bc6dcfb1546c5",
-          "9f292dc5ff6b5b0d8d70d5a7da720daa0abbcc0c4a2d627de34c01df7442e6ad",
-          "f6a2cca1e0b2492dbcaa4c132a076624d7fc4accd743d7d8b243afb58e063a52",
-          "f696306b6bf1208e47591b3b5928c5c6ca09154efb52311fbcee20a3585d8cfd",
-          "68f74d80f4c90d867180735dfd5fde2e8a47a6de5e91c6bd038dd78aa269fb93",
-          "3e6fbf011faacb7c728644ae00ca304b6e5f5c2f973cc827f5d88d17d84cf735",
-          "c68627dd4db0feb079097341dba27824b26a1cb9a2a48acd7f9964adb328fa2d",
-          "3da849ee98b85ee353dfe4adf0029ebcfb510e03b8606b3853562efa7fed6fdb",
-          "ea5a7072d2b0a13edeeeea23e5cd8eddf91d83e78977f26dbef9264ba01350ba",
-          "2980edb857dfa97451200e2aedab0fe79656494f75e4a1d9aea317bdf888c57c",
-          "cc67886c5f9fd9fe9b1b724ae7730a205ffdec6fb517e2265c8c63732dcb6693",
-          "73e90096bd7833120dfe1315807390beea1f68d09fdc5aed3e8d730387cc70f5",
-          "8000223805c66a3d90bdf35f8799aa3fb30a5b47f436dcf26a17344c53c55c40",
-          "7199cc4c255d8b5b885e5fbe3b38b1f15eb57a42c4b3f4ca8971d217712ab4d0",
-          "aa3b87ae4db86b0297a2a84fd5d990944c74e2c274668a870b98d5e495af9121",
-          "7c228de875973b6adacf80d455c2d1e2f09d0dc4124d4745d833bc7628c68293",
-          "7dbfd4397bcd23f05036b5fcee9e969be18c7f8fcc13fc2dca505324117035fb",
-          "c7f9a89815261e7916691c40a381dabb55c6fbe418f55491458b119053aec03b",
-          "ea7b2b9eb767af6d82f6e343978f6cdca927549b2fb4462bc104605841e1e8ab",
-          "2a04b7e849741209933a94b6a1d2a322bb7d2bdf4c215fcf07c8f791653ebf4b",
-          "2c1828e5e84cb4ee3689aada9dcb2ab54bd6d65f499874b498dffe6b12cd310b",
-          "d835c2e5943176bf92e13358670a29995f358de2b09b8ea2e0e1171264026fcd",
-          "435577f2630f2f16daaa9b95ab224d209c1f7851b14a930128617602ac53ec7a",
-          "d80e29e824155a66bdfdba287a420426a3816bbdcf5f3cedc85f8004b9e2c259",
-          "5b5506f6691dc8e987ddd6c8fe451436468b515b02d55c10f408112c03cb5e61",
-          "20d34aa20f7393f0bc361a2ba121cc1a75442656ef7db2dbd4628d793690ac58",
-          "825a3bbc7969db7f80de7cf6b540998ff3d8b7019b69011de078d6b2e20d5ca0",
-          "a0e8e58054f8d286eeea57cf0e6b98531725f6321b3b9e6201bef1e6c45daed7",
-          "653b503599d552557ec55e6a4e3e12acb328b5f1abaa16d152bc3c788af5b19b",
-          "fabaa33dc8cc9a74a14ecae67506e0d998d6374b8ce077ce477a16a85026c1db",
-          "85f19fe3b67569902c35f5c72ea756f95f689a4337e26e676615e8dd54e786cd",
-          "d5c3cd190b556e39d6ddddb467c9820a766f1dac5d09337fb5150826fdab0012",
-          "d4e8fae206b8cc8984cb6062f6d49f78501d4048b71a6a0643be88e72ff038b1",
-          "e81f2a3405148f19eb7150aa61e9ae04eafdd6fe4fca79cc53e15adb84dc1ddc",
-          "d2386586cdc8d70157dfecb130d41f6503fcb73a5f28ce240fa460a137ea0db7",
-          "e2d6cc0c36d40c2c9aed0d725de310e6229394d5cc9407afa3943f0ac9d2170b",
-          "b1a7b3e07fb2d2719c2838a7990593c05d8dfb91bf54a8a26cbc9f666701d4d9",
-          "2de6bfec0719ddfaa551f2c2f73ac84034f5761fb9588b1933fa772b97534a6e"
-        ],
-        "mediaCounts": {
-          "audio": 12,
-          "image": 19,
-          "video": 17
-        },
-        "authors": [
-          "Sn0w",
-          "mistr",
-          "user_preview_",
-          "user_user_120",
-          "user_user_kz5"
-        ],
-        "authorCount": 5,
-        "sample": [
-          {
-            "id": "41835dcafae66c99f58d894d1ae33a431ab1f62fbfdb920bb72fb5c9a0792852",
-            "title": "Sitting Perky",
-            "author": "mistr",
-            "mediaType": "audio",
-            "createdAt": 1784788960078,
-            "likes": 0,
-            "views": 0,
-            "nsfw": false
-          },
-          {
-            "id": "5f3ca9532f1cdb3f43f18765ce6abd6be9ea1d53085472d401f02e57362ebdba",
-            "title": "incredible!",
-            "author": "Sn0w",
-            "mediaType": "audio",
-            "createdAt": 1771387082712,
-            "likes": 0,
-            "views": 0,
-            "nsfw": false
-          },
-          {
-            "id": "aa15e412bd2cf5dda3833215535a7bcc4636df11a9bf6d06343f8d47453f4634",
-            "title": "Imma Give Her That Salami",
-            "author": "mistr",
-            "mediaType": "audio",
-            "createdAt": 1785305774744,
-            "likes": 0,
-            "views": 0,
-            "nsfw": false
-          },
-          {
-            "id": "1f1511f2dfc656e926aabf53172ff86fbeec092efcd65024c2d25b124a6683a0",
-            "title": "Iago Recreation",
-            "author": "user_preview_",
-            "mediaType": "audio",
-            "createdAt": 1778985229684,
-            "likes": 0,
-            "views": 0,
-            "nsfw": false
-          },
-          {
-            "id": "d387cad2c7b632dd2de680623d4c554d1ba6f039cf5aa8ed32c7675ce97eb910",
-            "title": "r we doing it right?",
-            "author": "mistr",
-            "mediaType": "audio",
-            "createdAt": 1778930064223,
-            "likes": 0,
-            "views": 0,
-            "nsfw": false
-          },
-          {
-            "id": "c3bc891baa2d7a07fb4e93d610e67ace5f076c26d4c3cd10644f7fe6f1c3a2cf",
-            "title": "⏰⏰⏰⏰",
-            "author": "mistr",
-            "mediaType": "audio",
-            "createdAt": 1782859809140,
-            "likes": 0,
-            "views": 0,
-            "nsfw": false
-          }
-        ],
-        "reason": null
+        "count": 0,
+        "fingerprint": null,
+        "ids": [],
+        "mediaCounts": {},
+        "authors": [],
+        "authorCount": 0,
+        "sample": [],
+        "reason": "This operation was aborted"
       },
       "geoff.max.solana": {
         "source": "geoff.max.solana",
         "ok": true,
         "status": 200,
-        "ms": 92,
+        "ms": 163,
         "fingerprint": "a2a0c8ef",
         "liveCount": 4,
         "total": 4,
@@ -610,7 +487,7 @@
             "path": "/max",
             "label": "Max hub",
             "status": 307,
-            "ms": 84,
+            "ms": 71,
             "location": "/connect?redirectUrl=https%3A%2F%2Fwww.geoff.ai%2Fmax",
             "redirectUrl": "https://www.geoff.ai/max",
             "toConnect": true,
@@ -621,7 +498,7 @@
             "path": "/max/solana",
             "label": "Max × Solana",
             "status": 307,
-            "ms": 91,
+            "ms": 122,
             "location": "/connect?redirectUrl=https%3A%2F%2Fwww.geoff.ai%2Fmax%2Fsolana",
             "redirectUrl": "https://www.geoff.ai/max/solana",
             "toConnect": true,
@@ -632,7 +509,7 @@
             "path": "/max/solana/watch",
             "label": "Max × Solana nested",
             "status": 307,
-            "ms": 90,
+            "ms": 161,
             "location": "/connect?redirectUrl=https%3A%2F%2Fwww.geoff.ai%2Fmax%2Fsolana%2Fwatch",
             "redirectUrl": "https://www.geoff.ai/max/solana/watch",
             "toConnect": true,
@@ -643,7 +520,7 @@
             "path": "/max/solana/portfolio",
             "label": "Max × Solana portfolio",
             "status": 307,
-            "ms": 78,
+            "ms": 134,
             "location": "/connect?redirectUrl=https%3A%2F%2Fwww.geoff.ai%2Fmax%2Fsolana%2Fportfolio",
             "redirectUrl": "https://www.geoff.ai/max/solana/portfolio",
             "toConnect": true,
@@ -657,13 +534,13 @@
         "source": "stacknet.health",
         "ok": true,
         "status": 200,
-        "ms": 92,
+        "ms": 57,
         "statusText": "healthy",
         "reachable": true,
         "httpError": null,
         "version": "v3.8.346",
         "nodeId": "nk_key_FOpmPDVgCusTGcuL",
-        "inFlight": 3,
+        "inFlight": 5,
         "maxInFlight": 512,
         "remoteMcp": null,
         "error": null
@@ -672,17 +549,17 @@
         "source": "stacknet.root",
         "ok": true,
         "status": 200,
-        "ms": 427,
+        "ms": 4013,
         "version": "3.8.346"
       },
       "stacknet.network": {
         "source": "stacknet.network",
         "ok": true,
         "status": 200,
-        "ms": 436,
+        "ms": 7821,
         "totalNodes": 8,
         "availableNodes": 8,
-        "totalGpus": 7,
+        "totalGpus": 0,
         "totalVramGb": 882,
         "availableVramGb": 253,
         "averageLoad": 0,
@@ -719,60 +596,37 @@
           "stack-voice-pyro:max"
         ],
         "capabilities": [
-          "ai-prompt",
           "chat",
-          "chat-completion",
-          "coder-execute",
-          "coder-session",
-          "coder-tool",
-          "completion",
-          "e2b-code",
-          "e2b-execute",
-          "embedding",
-          "image-edit-pipeline",
-          "image-pipeline",
           "image_editing",
           "image_generation",
-          "mcp-tool",
-          "media-analyze",
-          "media-generate",
-          "media-orchestration",
           "media_generation",
-          "music-pipeline",
-          "prompt",
           "runtime:shell",
-          "sequential-thinking",
-          "sizzle-video-pipeline",
-          "skill-auto-execute",
           "streaming",
           "style_transfer",
           "text",
-          "tts-stream",
-          "tts-synthesize",
-          "video_generation",
-          "voice-session"
+          "video_generation"
         ],
         "treasury": {
-          "solPriceUsd": 76.51,
+          "solPriceUsd": 76.52,
           "cluster": "mainnet",
           "pendingObligations": 0,
           "totalUsd": 0,
           "receivableUsd": 0,
           "totalLamports": "0",
-          "staleSeconds": 56,
+          "staleSeconds": 0,
           "treasuryAddress": "2W5gxAio1Bz76P58EaDtGC71MuyH4ZAdXHu3qqmeGy7g",
           "warnings": []
         },
         "metaproofs": {
           "total": 0
         },
-        "timestamp": 1786337722211
+        "timestamp": 1786337789533
       },
       "stacknet.node": {
         "source": "stacknet.node",
         "ok": true,
         "status": 200,
-        "ms": 90,
+        "ms": 68,
         "nodeId": "nk_key_FOpmPDVgCusTGcuL",
         "version": "0.1.0",
         "coprocessorCount": 1,
@@ -782,7 +636,7 @@
         "source": "stacknet.models",
         "ok": true,
         "status": 200,
-        "ms": 95,
+        "ms": 86,
         "count": 5,
         "ids": [
           "magma",
@@ -819,7 +673,7 @@
               "think",
               "video"
             ],
-            "created": 1786337721
+            "created": 1786337781
           },
           {
             "id": "preview",
@@ -839,7 +693,7 @@
               "image",
               "think"
             ],
-            "created": 1786337721
+            "created": 1786337781
           },
           {
             "id": "pyro",
@@ -860,7 +714,7 @@
               "image",
               "think"
             ],
-            "created": 1786337721
+            "created": 1786337781
           },
           {
             "id": "pyro:max",
@@ -881,7 +735,7 @@
               "image",
               "think"
             ],
-            "created": 1786337721
+            "created": 1786337781
           },
           {
             "id": "stack-embed",
@@ -892,7 +746,7 @@
               "chat"
             ],
             "contentTypes": [],
-            "created": 1786337721
+            "created": 1786337781
           }
         ]
       },
@@ -900,7 +754,7 @@
         "source": "stacknet.widgets",
         "ok": true,
         "status": 200,
-        "ms": 437,
+        "ms": 4022,
         "count": 19,
         "ids": [
           "system-asset-report",
@@ -1253,21 +1107,21 @@
       }
     },
     "summary": {
-      "geoffBuildId": "e71c8f6741e02f11f0076821ca90f1227ee6b85e",
-      "geoffDeployId": "dpl_BwERiA9uzQZWSdHVYzQDEc16VJFG",
-      "chunkHash": "4c8c7112",
+      "geoffBuildId": "385b31661e2595f94da126535d19c996952462ac",
+      "geoffDeployId": "dpl_2b6Zfngkyb2KFapN8jk1Aa2Ni2PN",
+      "chunkHash": "9a5be69e",
       "chunkCount": 53,
       "stacknetVersion": "v3.8.346",
       "stacknetStatus": "healthy",
       "mcpContract": null,
       "mcpOnHealth": false,
-      "inFlight": 3,
+      "inFlight": 5,
       "maxInFlight": 512,
       "taskCount": 0,
       "nodeId": "nk_key_FOpmPDVgCusTGcuL",
       "nodes": 8,
       "totalNodes": 8,
-      "gpus": 7,
+      "gpus": 0,
       "vramGb": 882,
       "availableVramGb": 253,
       "vramAvailablePct": 29,
@@ -1275,11 +1129,11 @@
       "models": 29,
       "apiModels": 5,
       "widgets": 19,
-      "capabilities": 32,
-      "solPriceUsd": 76.51,
+      "capabilities": 9,
+      "solPriceUsd": 76.52,
       "treasuryAddress": "2W5gxAio1Bz76P58EaDtGC71MuyH4ZAdXHu3qqmeGy7g",
       "treasuryCluster": "mainnet",
-      "treasuryStaleSeconds": 56,
+      "treasuryStaleSeconds": 0,
       "treasuryTotalUsd": 0,
       "treasuryReceivableUsd": 0,
       "treasuryPending": 0,
@@ -1293,21 +1147,17 @@
       "tokenPlanFingerprint": "32510b23",
       "docsSurfaceScraped": 8,
       "docsSurfaceFingerprint": "c93f4f72",
-      "exploreCount": 48,
-      "exploreAuthors": 5,
-      "exploreFingerprint": "1096ebae",
-      "exploreMedia": {
-        "audio": 12,
-        "image": 19,
-        "video": 17
-      },
+      "exploreCount": 0,
+      "exploreAuthors": 0,
+      "exploreFingerprint": null,
+      "exploreMedia": {},
       "maxSolanaLive": true,
       "maxHubLive": true,
       "maxSolanaFingerprint": "a2a0c8ef",
       "maxSolanaRoutes": 4,
-      "healthySources": 12,
+      "healthySources": 11,
       "skippedSources": 1,
-      "failedSources": 0,
+      "failedSources": 1,
       "totalSources": 13,
       "coverage": [
         {
@@ -1315,14 +1165,14 @@
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 158
+          "ms": 241
         },
         {
           "source": "geoff.deploy",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 195
+          "ms": 1101
         },
         {
           "source": "geoff.catalog",
@@ -1336,75 +1186,120 @@
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 84
+          "ms": 78
         },
         {
           "source": "geoff.docs.surface",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 100
+          "ms": 98
         },
         {
           "source": "geoff.explore",
-          "ok": true,
+          "ok": false,
           "skipped": false,
-          "reason": null,
-          "ms": 114
+          "reason": "This operation was aborted",
+          "ms": 18003
         },
         {
           "source": "geoff.max.solana",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 92
+          "ms": 163
         },
         {
           "source": "stacknet.health",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 92
+          "ms": 57
         },
         {
           "source": "stacknet.root",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 427
+          "ms": 4013
         },
         {
           "source": "stacknet.network",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 436
+          "ms": 7821
         },
         {
           "source": "stacknet.node",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 90
+          "ms": 68
         },
         {
           "source": "stacknet.models",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 95
+          "ms": 86
         },
         {
           "source": "stacknet.widgets",
           "ok": true,
           "skipped": false,
           "reason": null,
-          "ms": 437
+          "ms": 4022
         }
       ]
     }
   },
   "events": [
+    {
+      "id": "evt_msmrejqx_eldwl",
+      "at": "2026-08-10T04:56:39.801Z",
+      "kind": "deploy",
+      "rank": "note",
+      "title": "Geoff website shipped",
+      "summary": "Live app update detected (build e71c8f67…e6b85e → 385b3166…2462ac; deploy dpl_BwER…16VJFG → dpl_2b6Z…2Ni2PN; assets 4c8c7112 → 9a5be69e). Routine unless the network version moves too.",
+      "details": {
+        "build": {
+          "from": "e71c8f6741e02f11f0076821ca90f1227ee6b85e",
+          "to": "385b31661e2595f94da126535d19c996952462ac"
+        },
+        "deploy": {
+          "from": "dpl_BwERiA9uzQZWSdHVYzQDEc16VJFG",
+          "to": "dpl_2b6Zfngkyb2KFapN8jk1Aa2Ni2PN"
+        },
+        "chunks": {
+          "from": "4c8c7112",
+          "to": "9a5be69e",
+          "chunkCount": 53
+        },
+        "coalesced": 1,
+        "legacyIds": [
+          "evt_msmrejqx_eldwl"
+        ]
+      },
+      "severity": "low",
+      "heat": 1,
+      "vibe": "Note"
+    },
+    {
+      "id": "evt_msmrejqx_qyw39",
+      "at": "2026-08-10T04:56:39.801Z",
+      "kind": "network",
+      "rank": "note",
+      "title": "GPU horsepower changed",
+      "summary": "GPUs available 7 → 0.",
+      "details": {
+        "from": 7,
+        "to": 0
+      },
+      "severity": "low",
+      "heat": 2,
+      "vibe": "Note"
+    },
     {
       "id": "evt_msmrakch_myqhd",
       "at": "2026-08-10T04:53:33.953Z",
@@ -38597,17 +38492,17 @@
     },
     {
       "day": "2026-08-10",
-      "count": 43,
-      "heat": 81,
+      "count": 45,
+      "heat": 84,
       "crazy": 0,
       "spike": 2
     }
   ],
   "state": {
     "startedAt": "2026-08-07T06:15:12.347Z",
-    "lastPollAt": "2026-08-10T04:55:21.767Z",
+    "lastPollAt": "2026-08-10T04:56:21.786Z",
     "lastError": null,
-    "pollCount": 2996,
+    "pollCount": 2997,
     "temperature": 100
   }
 }
