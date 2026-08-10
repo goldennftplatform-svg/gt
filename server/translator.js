@@ -398,9 +398,15 @@ export function translate(previous, current) {
         rank: "note",
         title: "Public docs surface moved",
         summary: moved.length
-          ? `Fingerprinted docs pages changed: ${moved.join(" · ")}. MCP / HQ / Claw / models / usage watched.`
+          ? `Docs moved: ${moved.slice(0, 8).join(" · ")}${moved.length > 8 ? ` (+${moved.length - 8} more)` : ""}. Full Stacknet docs surface (intro · token-plan · MCP · features · Geoff Code · cookbook).`
           : "Public docs fingerprint changed on docs.geoff.ai.",
-        details: { from: prevDocsFp, to: currDocsFp, pages: moved },
+        details: {
+          from: prevDocsFp,
+          to: currDocsFp,
+          pages: moved,
+          scraped: curr["geoff.docs.surface"]?.scraped,
+          total: curr["geoff.docs.surface"]?.total,
+        },
       }),
     );
   }
@@ -673,6 +679,82 @@ export function translate(previous, current) {
         }),
       );
     }
+  }
+
+  // Treasury rails beyond SOL mark — settlement / proofs scaffolding signals.
+  const tPrev = prev["stacknet.network"]?.treasury || {};
+  const tCurr = curr["stacknet.network"]?.treasury || {};
+  if (tPrev.treasuryAddress && tCurr.treasuryAddress && tPrev.treasuryAddress !== tCurr.treasuryAddress) {
+    events.push(
+      event({
+        kind: "treasury",
+        rank: "spike",
+        title: "Treasury wallet address changed",
+        summary: `Published treasuryAddress moved ${String(tPrev.treasuryAddress).slice(0, 6)}… → ${String(tCurr.treasuryAddress).slice(0, 6)}…`,
+        details: { from: tPrev.treasuryAddress, to: tCurr.treasuryAddress },
+      }),
+    );
+  }
+  if (tPrev.cluster && tCurr.cluster && tPrev.cluster !== tCurr.cluster) {
+    events.push(
+      event({
+        kind: "treasury",
+        rank: "move",
+        title: "Treasury cluster flipped",
+        summary: `Public treasury cluster ${tPrev.cluster} → ${tCurr.cluster}.`,
+        details: { from: tPrev.cluster, to: tCurr.cluster },
+      }),
+    );
+  }
+  if (isNumber(tPrev.pendingObligations) && isNumber(tCurr.pendingObligations) && tPrev.pendingObligations !== tCurr.pendingObligations) {
+    events.push(
+      event({
+        kind: "treasury",
+        rank: tCurr.pendingObligations > 0 ? "note" : "whisper",
+        title: "Treasury pending obligations moved",
+        summary: `pendingObligations ${tPrev.pendingObligations} → ${tCurr.pendingObligations}.`,
+        details: { from: tPrev.pendingObligations, to: tCurr.pendingObligations },
+      }),
+    );
+  }
+  if (isNumber(tPrev.totalUsd) && isNumber(tCurr.totalUsd) && tPrev.totalUsd !== tCurr.totalUsd) {
+    events.push(
+      event({
+        kind: "treasury",
+        rank: tCurr.totalUsd > 0 || tPrev.totalUsd > 0 ? "move" : "whisper",
+        title: "Treasury totalUsd moved",
+        summary: `totalUsd ${tPrev.totalUsd} → ${tCurr.totalUsd}.`,
+        details: { from: tPrev.totalUsd, to: tCurr.totalUsd },
+      }),
+    );
+  }
+  if (isNumber(tPrev.staleSeconds) && isNumber(tCurr.staleSeconds)) {
+    const woke = tPrev.staleSeconds < 120 && tCurr.staleSeconds >= 300;
+    const fresh = tPrev.staleSeconds >= 300 && tCurr.staleSeconds < 120;
+    if (woke || fresh) {
+      events.push(
+        event({
+          kind: "treasury",
+          rank: woke ? "note" : "whisper",
+          title: woke ? "Treasury feed went stale" : "Treasury feed freshened",
+          summary: `staleSeconds ${tPrev.staleSeconds} → ${tCurr.staleSeconds}.`,
+          details: { from: tPrev.staleSeconds, to: tCurr.staleSeconds },
+        }),
+      );
+    }
+  }
+  const warnPrev = Array.isArray(tPrev.warnings) ? tPrev.warnings.length : 0;
+  const warnCurr = Array.isArray(tCurr.warnings) ? tCurr.warnings.length : 0;
+  if (warnPrev !== warnCurr) {
+    events.push(
+      event({
+        kind: "treasury",
+        rank: warnCurr > warnPrev ? "note" : "whisper",
+        title: "Treasury warnings changed",
+        summary: `warnings ${warnPrev} → ${warnCurr}.`,
+        details: { from: warnPrev, to: warnCurr, warnings: (tCurr.warnings || []).slice(0, 4) },
+      }),
+    );
   }
 
   const prevApiIds = prev["stacknet.models"]?.ids;

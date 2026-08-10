@@ -308,25 +308,62 @@ async function sniffStacknetWidgets() {
 
 /** Public docs pages we fingerprint so silent surface moves show up in the feed. */
 const DOCS_SURFACE_PAGES = [
+  // Intro
+  { id: "api-overview", path: "/introduction/overview", label: "API Overview" },
+  { id: "quickstart", path: "/introduction/quickstart", label: "Quickstart" },
+  { id: "auth", path: "/introduction/authentication", label: "Authentication" },
   { id: "models", path: "/introduction/models", label: "Models" },
+  // Token plan
+  { id: "token-overview", path: "/token-plan/overview", label: "Token Plan Overview" },
+  { id: "pricing-docs", path: "/token-plan/pricing", label: "Pricing docs" },
   { id: "usage", path: "/token-plan/usage", label: "Usage & Limits" },
-  { id: "mcp-tools", path: "/mcp/tools", label: "MCP Tools" },
+  // MCP
   { id: "mcp-overview", path: "/mcp/overview", label: "MCP Overview" },
+  { id: "mcp-tools", path: "/mcp/tools", label: "MCP Tools" },
+  { id: "mcp-examples", path: "/mcp/examples", label: "MCP Examples" },
+  { id: "mcp-transports", path: "/mcp/transports", label: "MCP Transports" },
+  // Features (expanded nav)
   { id: "hq", path: "/features/hq", label: "HQ" },
   { id: "claw", path: "/features/agent-mode", label: "Agent Mode (Claw)" },
+  { id: "codev3", path: "/features/codev3", label: "Codev3" },
+  { id: "content-types", path: "/features/content-types", label: "Content Types" },
+  { id: "elements", path: "/features/elements", label: "Elements" },
+  { id: "skills", path: "/features/skills", label: "Skills" },
+  { id: "social", path: "/features/social", label: "Social" },
+  { id: "stacknet-proxy", path: "/features/stacknet-proxy", label: "StackNet Proxy" },
+  { id: "studio-mode", path: "/features/studio-mode", label: "Studio Mode" },
+  { id: "tool-catalog", path: "/features/tool-catalog", label: "Tool Catalog" },
+  // Product + ops docs
+  { id: "geoff-code", path: "/geoff-code/getting-started", label: "Geoff Code" },
+  { id: "api-reference", path: "/api-reference/overview", label: "API Reference" },
+  { id: "cookbook", path: "/cookbook/overview", label: "Cookbook" },
+  { id: "docs-overview", path: "/docs/overview", label: "Docs Overview" },
+  { id: "agents-docs", path: "/docs/agents", label: "Agent integration" },
   { id: "security", path: "/docs/security", label: "Security" },
   { id: "billing-docs", path: "/docs/billing", label: "Billing docs" },
 ];
 
-function extractDocsFingerprint(html = "") {
-  const title = (html.match(/<title>([^<]+)<\/title>/i) || [])[1] || "";
-  const text = html
+/** Prefer main/article/prose body so shared docs chrome doesn't fake-move every page. */
+function extractDocsBodyText(html = "") {
+  const chunk =
+    (html.match(/<main[\s\S]*?<\/main>/i) || [])[0] ||
+    (html.match(/<article[\s\S]*?<\/article>/i) || [])[0] ||
+    (html.match(/class="[^"]*prose[^"]*"[\s\S]{0,20000}/i) || [])[0] ||
+    html;
+  return chunk
     .replace(/<script[\s\S]*?<\/script>/gi, " ")
     .replace(/<style[\s\S]*?<\/style>/gi, " ")
+    .replace(/<nav[\s\S]*?<\/nav>/gi, " ")
+    .replace(/<aside[\s\S]*?<\/aside>/gi, " ")
+    .replace(/<footer[\s\S]*?<\/footer>/gi, " ")
     .replace(/<[^>]+>/g, " ")
     .replace(/\s+/g, " ")
-    .trim()
-    .slice(0, 4000);
+    .trim();
+}
+
+function extractDocsFingerprint(html = "") {
+  const title = (html.match(/<title>([^<]+)<\/title>/i) || [])[1] || "";
+  const text = extractDocsBodyText(html).slice(0, 6000);
   const modelHits = [
     ...new Set(
       [...text.matchAll(/\b(magma|duce|pyro(?::max)?|preview|stack-embed|mom-preview)\b/gi)].map((m) =>
@@ -334,13 +371,41 @@ function extractDocsFingerprint(html = "") {
       ),
     ),
   ].sort();
-  const toolHint = /57 tools|MCP tools|tool groups/i.test(text)
-    ? (text.match(/\b(\d+)\s+tools?\b/i) || [])[1] || "tools"
-    : null;
+  const featureHits = [
+    ...new Set(
+      [
+        "codev3",
+        "stacknet proxy",
+        "studio mode",
+        "skills",
+        "social",
+        "agent mode",
+        "claw",
+        "hq",
+        "mcp",
+        "geoff code",
+        "token plan",
+      ].filter((k) => new RegExp(`\\b${k.replace(/\s+/g, "\\s+")}\\b`, "i").test(text)),
+    ),
+  ].sort();
+  const transportHits = [
+    ...new Set(
+      ["sse", "stdio", "streamable http", "websocket", "http"]
+        .filter((k) => new RegExp(`\\b${k.replace(/\s+/g, "\\s+")}\\b`, "i").test(text)),
+    ),
+  ].sort();
+  const toolAcross = text.match(/(\d+)\s+tools?\s+across\s+(\d+)\s+groups?/i);
+  const toolHint = toolAcross
+    ? `${toolAcross[1]}/${toolAcross[2]}`
+    : /MCP tools|tool groups|\b\d+\s+tools?\b/i.test(text)
+      ? (text.match(/\b(\d+)\s+tools?\b/i) || [])[1] || "tools"
+      : null;
   return {
     title: title.replace(/&amp;/g, "&").slice(0, 120),
     chars: text.length,
     modelHits,
+    featureHits,
+    transportHits,
     toolHint,
     hash: simpleHash(`${title}|${text}`),
   };

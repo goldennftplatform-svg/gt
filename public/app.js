@@ -210,6 +210,8 @@ const els = {
   exploreMeta: document.getElementById("exploreMeta"),
   exploreCue: document.getElementById("exploreCue"),
   exploreCueLink: document.getElementById("exploreCueLink"),
+  docsCue: document.getElementById("docsCue"),
+  docsCueLink: document.getElementById("docsCueLink"),
   maxCue: document.getElementById("maxCue"),
   maxCueLink: document.getElementById("maxCueLink"),
   story: document.getElementById("story"),
@@ -261,7 +263,9 @@ const PIECE_ICONS = {
   network: "network",
   brains: "brain",
   tools: "tools",
+  docs: "book",
   explore: "spark",
+  maxSolana: "bolt",
 };
 const CAP_ICONS = {
   chat: "chat",
@@ -623,6 +627,34 @@ function renderExploreCue(board, events = []) {
     els.exploreCue.textContent = `No new posts in ${TRACK_HOURS}h · ${board.count} on the top board`;
   } else {
     els.exploreCue.textContent = "Watching for new posts…";
+  }
+}
+
+function renderDocsCue(board, events = []) {
+  if (!els.docsCue) return;
+  if (els.docsCueLink) els.docsCueLink.href = board?.url || "https://docs.geoff.ai/";
+
+  const recent = eventsInTrackWindow(events)
+    .filter((e) => e.kind === "docs" || e.kind === "pricing")
+    .sort((a, b) => Date.parse(b.at || 0) - Date.parse(a.at || 0))[0];
+
+  if (recent) {
+    const pages = recent.details?.pages || [];
+    const pageBit = pages.length ? ` · ${pages.slice(0, 2).join(", ")}` : "";
+    els.docsCue.textContent =
+      recent.kind === "pricing"
+        ? recent.title || "Token plan rates moved"
+        : `${recent.title || "Docs moved"}${pageBit}`;
+    els.docsCue.classList.add("hot");
+    return;
+  }
+
+  els.docsCue.classList.remove("hot");
+  if (board?.scraped != null) {
+    const total = board.total != null ? `/${board.total}` : "";
+    els.docsCue.textContent = `Armed · ${board.scraped}${total} pages watched`;
+  } else {
+    els.docsCue.textContent = "Fingerprinting docs…";
   }
 }
 
@@ -1510,6 +1542,7 @@ function applyPayload(payload) {
   renderCoverage(briefing?.coverage || null);
   renderHorsepower(briefing?.horsepower || null);
   renderTokenPlan(briefing?.tokenPlan || CLIENT_TOKEN_PLAN);
+  renderDocsCue(briefing?.docsBoard || null, feedEvents);
   renderExploreCue(briefing?.exploreBoard || null, feedEvents);
   renderMaxCue(latest, feedEvents);
   renderAgentDesk(payload.agentDesk || briefing?.agentDesk || null);

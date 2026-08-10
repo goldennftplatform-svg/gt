@@ -120,9 +120,17 @@ function healthStory(summary) {
       tone: "good",
       headline: `Queue live · ${q}`,
       sentence:
-        "Public /health shows work on the wire. Surface feed stays quiet until deploy/models/docs/explore actually change.",
+        "Public /health shows work on the wire. Surface stays quiet until deploy / models / docs / explore / Max×Solana actually change.",
     };
   }
+
+  const docsN = summary.docsSurfaceScraped;
+  const exploreN = summary.exploreCount;
+  const maxLive = summary.maxSolanaLive;
+  const gamedayBits = [];
+  if (typeof docsN === "number" && docsN > 0) gamedayBits.push(`${docsN} docs watched`);
+  if (typeof exploreN === "number" && exploreN > 0) gamedayBits.push(`Explore ${exploreN}`);
+  if (maxLive) gamedayBits.push("Max×Solana live");
 
   const tempHint =
     summary._temperatureLabel === "blazing"
@@ -131,7 +139,15 @@ function healthStory(summary) {
         ? "A spike showed up recently — check the feed."
         : summary._temperatureLabel === "warming"
           ? "Some measurable movement, nothing crazy."
-          : "No surface diffs lately — deploy/models/docs/explore unchanged.";
+          : "No ranked surface diffs in the window — desk is armed, not padded.";
+
+  if (gamedayBits.length) {
+    return {
+      tone: "good",
+      headline: "Gameday desk armed",
+      sentence: `${tempHint} Live watches: ${gamedayBits.join(" · ")}.`,
+    };
+  }
 
   return {
     tone: "good",
@@ -255,6 +271,55 @@ function pieceExplore(summary, explore = null) {
   };
 }
 
+function pieceMaxSolana(summary, maxSrc = null) {
+  const live = maxSrc?.liveCount ?? summary.maxSolanaRoutes;
+  const total = maxSrc?.total ?? null;
+  const solana = maxSrc?.solanaLive ?? summary.maxSolanaLive;
+  return {
+    id: "maxSolana",
+    title: "Max × Solana",
+    plain: "Auth-gated product lanes under /max and /max/solana/*",
+    status:
+      typeof live === "number"
+        ? `${live}${total != null ? `/${total}` : ""} routes answering · Solana ${solana ? "live" : "quiet"}`
+        : "Max routes not probed yet",
+    tone: solana || live > 0 ? "good" : "muted",
+    meaning:
+      "Public 307→/connect proves the lane exists. We don’t read wallets or portfolio contents.",
+    facts: [
+      summary.maxHubLive ? "Max hub connect-gated" : "Max hub quiet",
+      "Watch for route table diffs in What’s changing",
+    ],
+  };
+}
+
+function pieceDocs(summary, docsSrc = null) {
+  const scraped = docsSrc?.scraped ?? summary.docsSurfaceScraped;
+  const total = docsSrc?.total ?? null;
+  const mcpTools = (docsSrc?.pages || []).find((p) => p.id === "mcp-tools");
+  const toolBit = mcpTools?.toolHint
+    ? mcpTools.toolHint.includes("/")
+      ? `MCP tools doc: ${mcpTools.toolHint.replace("/", " tools / ")} groups`
+      : `MCP tools doc hints ${mcpTools.toolHint} tools`
+    : "MCP tools page watched";
+  return {
+    id: "docs",
+    title: "The docs",
+    plain: "docs.geoff.ai — intro, MCP, features, token plan, Geoff Code",
+    status:
+      typeof scraped === "number"
+        ? `${scraped}${total != null ? `/${total}` : ""} pages fingerprinted`
+        : "Docs surface not sniffed yet",
+    tone: scraped > 0 ? "good" : "muted",
+    meaning: "Body fingerprints on watched pages — What’s changing lights when copy moves. No fake changelog.",
+    facts: [
+      toolBit,
+      "Features watched: Codev3 · Skills · Social · StackNet Proxy · Studio · Claw/HQ",
+      "Source: public docs.geoff.ai HTML (main body, not shared chrome)",
+    ],
+  };
+}
+
 function buildExploreBoard(latest) {
   const src = latest?.sources?.["geoff.explore"];
   if (!src?.ok) return null;
@@ -362,13 +427,15 @@ function userTakeForEvent(event) {
     case "metaproofs":
       return "Network metaproofs counter moved — public summary field only.";
     case "docs":
-      return "Public docs pages we fingerprint moved (MCP / HQ / Claw / models / usage).";
+      return "Public docs pages moved (intro / token-plan / MCP / features / Geoff Code / security).";
     case "explore":
       return "Community Explore board moved — new or rotated public posts on geoff.ai/explore.";
     case "maxSolana":
       return "Max × Solana routes moved — public connect-gate probe on /max and /max/solana/*.";
     case "pricing":
       return "Public Token Plan rates on docs.geoff.ai changed — check what seats/tokens cost now.";
+    case "treasury":
+      return "Public treasury fields moved (SOL mark, obligations, cluster, stale, or warnings).";
     case "baseline":
       return "First reading captured — this is the starting snapshot.";
     case "agent":
@@ -401,6 +468,7 @@ export function compileBriefing({ latest, temperature, events = [], agentDesk = 
       coverage: null,
       tokenPlan: null,
       exploreBoard: null,
+      docsBoard: null,
       glossary: glossary(),
     };
   }
@@ -420,6 +488,8 @@ export function compileBriefing({ latest, temperature, events = [], agentDesk = 
   const tokenPlan = buildTokenPlan(latest);
   const exploreSrc = latest.sources?.["geoff.explore"] || null;
   const exploreBoard = buildExploreBoard(latest);
+  const maxSrc = latest.sources?.["geoff.max.solana"] || null;
+  const docsSrc = latest.sources?.["geoff.docs.surface"] || null;
 
   return {
     story,
@@ -428,12 +498,22 @@ export function compileBriefing({ latest, temperature, events = [], agentDesk = 
     horsepower,
     tokenPlan,
     exploreBoard,
+    docsBoard: docsSrc?.ok
+      ? {
+          scraped: docsSrc.scraped,
+          total: docsSrc.total,
+          fingerprint: docsSrc.fingerprint,
+          url: "https://docs.geoff.ai/",
+        }
+      : null,
     pieces: [
       pieceApp(summary),
       pieceNetwork(summary),
       pieceBrains(summary, models),
       pieceTools(summary, capabilityGroups, widgets),
+      pieceDocs(summary, docsSrc),
       pieceExplore(summary, exploreSrc),
+      pieceMaxSolana(summary, maxSrc),
     ],
     capabilityGroups,
     models,
@@ -555,6 +635,37 @@ function buildHorsepower(summary, models = [], lanes = [], widgets = [], coverag
   };
 }
 
+const COVERAGE_LABELS = {
+  "stacknet.health": "Health",
+  "stacknet.network": "Network",
+  "stacknet.node": "Node",
+  "stacknet.root": "Stacknet root",
+  "stacknet.models": "Models API",
+  "stacknet.widgets": "Widgets",
+  "geoff.version": "geoff.ai build",
+  "geoff.deploy": "geoff.ai deploy",
+  "geoff.docs.surface": "Docs surface",
+  "geoff.docs.pricing": "Token plan",
+  "geoff.explore": "Explore",
+  "geoff.max.solana": "Max × Solana",
+  "geoff.catalog": "Catalog (gated)",
+};
+
+const COVERAGE_PRIORITY = [
+  "stacknet.health",
+  "stacknet.network",
+  "stacknet.models",
+  "geoff.docs.surface",
+  "geoff.docs.pricing",
+  "geoff.explore",
+  "geoff.max.solana",
+  "stacknet.widgets",
+  "geoff.version",
+  "geoff.deploy",
+  "stacknet.node",
+  "stacknet.root",
+];
+
 function buildCoverage(latest, summary) {
   const rows = (summary.coverage || latest.summary?.coverage || []).map((row) => {
     let state = "fail";
@@ -563,8 +674,17 @@ function buildCoverage(latest, summary) {
     return {
       ...row,
       state,
-      label: row.source,
+      label: COVERAGE_LABELS[row.source] || row.source,
     };
+  });
+
+  const stateRank = { live: 0, skipped: 1, fail: 2 };
+  rows.sort((a, b) => {
+    const sr = (stateRank[a.state] ?? 9) - (stateRank[b.state] ?? 9);
+    if (sr !== 0) return sr;
+    const pa = COVERAGE_PRIORITY.indexOf(a.source);
+    const pb = COVERAGE_PRIORITY.indexOf(b.source);
+    return (pa === -1 ? 99 : pa) - (pb === -1 ? 99 : pb);
   });
 
   const catalogSkipped = Boolean(summary.catalogSkipped);
@@ -574,6 +694,15 @@ function buildCoverage(latest, summary) {
       summary.catalogSkipReason ||
         "Geoff /api/catalog/* is auth-gated — not measured without GEOFF_COOKIE / GEOFF_PREVIEW_CODE.",
     );
+  }
+  const docsScraped = summary.docsSurfaceScraped;
+  if (typeof docsScraped === "number" && docsScraped > 0) {
+    notes.push(
+      `Docs surface: ${docsScraped} public pages fingerprinted (intro · MCP · features · Geoff Code · cookbook).`,
+    );
+  }
+  if (summary.maxSolanaLive || summary.maxHubLive) {
+    notes.push("Max × Solana: public connect-gate probe only — no wallet/portfolio contents.");
   }
   notes.push("Temperature + ranks are derived from public diffs — not a physical sensor.");
   notes.push("Model roles marked guessed when /v1/models has no description.");
@@ -637,6 +766,11 @@ function glossary() {
       meaning: "Proof the geoff.ai website shipped a new version.",
     },
     {
+      term: "Docs surface",
+      meaning:
+        "28 public docs.geoff.ai pages (intro, token plan, MCP, features like Codev3/Skills/StackNet Proxy, Geoff Code, cookbook). Body fingerprints — not shared nav chrome.",
+    },
+    {
       term: "Explore",
       meaning:
         "Public community board on geoff.ai/explore. We fingerprint the top feed posts — new entries show up in What’s changing.",
@@ -645,6 +779,16 @@ function glossary() {
       term: "Max × Solana",
       meaning:
         "Auth-gated geoff.ai routes under /max and /max/solana/*. We only probe public redirects (307→connect) — not wallets or portfolio contents.",
+    },
+    {
+      term: "Skills",
+      meaning:
+        "Reusable agent behaviors as markdown + YAML (SKILL.md) on docs — discovery without bloating every prompt. Watched via the Skills docs page.",
+    },
+    {
+      term: "StackNet Proxy",
+      meaning:
+        "Geoff’s JWT re-signing / request-forwarding layer between users and Stacknet. Watched on the public docs page.",
     },
     {
       term: "Rank",
