@@ -1689,16 +1689,16 @@ function startMatrix() {
   function tick() {
     const w = window.innerWidth;
     const h = window.innerHeight;
-    ctx.fillStyle = "rgba(3, 6, 4, 0.085)";
+    ctx.fillStyle = "rgba(11, 11, 14, 0.1)";
     ctx.fillRect(0, 0, w, h);
     ctx.font = '12px "IBM Plex Mono", ui-monospace, Menlo, monospace';
     for (let i = 0; i < columns.length; i++) {
       const ch = glyphs[(Math.random() * glyphs.length) | 0];
       const x = i * step;
       const y = columns[i] * step;
-      ctx.fillStyle = "rgba(167, 243, 208, 0.9)";
+      ctx.fillStyle = "rgba(255, 214, 10, 0.78)";
       ctx.fillText(ch, x, y);
-      ctx.fillStyle = "rgba(52, 211, 153, 0.35)";
+      ctx.fillStyle = "rgba(147, 197, 253, 0.28)";
       ctx.fillText(glyphs[(Math.random() * glyphs.length) | 0], x, y - step);
       if (y > h && Math.random() > 0.968) columns[i] = 0;
       columns[i] += 0.72 + (i % 5) * 0.04;

@@ -1,5 +1,6 @@
 import { inferRank, normalizeEvents, prettyCapability, vibeForRank } from "./translator.js";
 import { buildPlanSheet, TOKEN_PLAN_URLS } from "./token-plan.js";
+import { brandStrip, GEOFF_BRAND } from "./geoff-brand.js";
 
 const CAPABILITY_GROUPS = [
   {
@@ -499,6 +500,7 @@ export function compileBriefing({ latest, temperature, events = [], agentDesk = 
       agentDesk: null,
       coverage: null,
       tokenPlan: null,
+      brand: brandStrip(),
       exploreBoard: null,
       docsBoard: null,
       lanesBoard: null,
@@ -527,6 +529,7 @@ export function compileBriefing({ latest, temperature, events = [], agentDesk = 
 
   return {
     story,
+    brand: brandStrip(),
     temperature: explainTemperature(temperature),
     coverage,
     horsepower,
@@ -766,6 +769,10 @@ function buildCoverage(latest, summary) {
 
 function glossary() {
   return [
+    {
+      term: "Geoff (brand)",
+      meaning: `${GEOFF_BRAND.tagline} Public meta from geoff.ai. /manifesto is not published yet.`,
+    },
     {
       term: "Temperature",
       meaning: "Derived score from ranked public diffs over 72h. Not a sensor. No padded floors.",

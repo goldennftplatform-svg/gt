@@ -267,15 +267,17 @@ function transparencyScorecard(scraped, live) {
 
 function buildManifesto() {
   return {
-    title: "Universal utility capacity isn’t a seat quote",
-    kicker: "Do your own research desk",
+    title: "The peoples Ai. Go Turbo.",
+    kicker: "Geoff brand · then the research desk",
     paragraphs: [
+      "Official Geoff voice (public site meta): Create, learn, build and play with the future of AI. One product surface — not five SKUs mid-draft.",
       "Most AI “coverage” quotes pretend every carrier sells the same fruit. They don’t. Grok and OpenAI bill like utilities per million tokens — one modality, one meter. Copilot sells a cockpit seat. Geoff publishes a monthly Token Plan: one shared pool across text, image, music, video, code, and agents.",
       "That’s why this page keeps saying non-apples. You’re comparing published receipts — not claiming $19 Geoff equals $19 of someone else’s chat-only burn.",
       "Geoff’s quieter pitch sits beside the spreadsheet: a creative shadow booster for storytellers. Not the protagonist. The presence over your shoulder that can widen a scene without forcing you into five product SKUs mid-draft.",
-      "If a carrier hides capacity, prices, or routing, that’s not enterprise elegance. That’s premium opacity. We scrape what’s public so you can see the difference.",
+      "If a carrier hides capacity, prices, or routing, that’s not enterprise elegance. That’s premium opacity. We scrape what’s public so you can see the difference. Note: geoff.ai/manifesto is not live yet — this block is research framing, not an invented Geoff essay.",
     ],
     bullets: [
+      "Lead with Geoff’s public tagline before ranking price.",
       "Name the billing unit before you rank the price.",
       "Ask what is public without logging in.",
       "Ask whether capacity is shared across modalities — or siloed.",
