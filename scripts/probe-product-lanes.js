@@ -7,6 +7,7 @@ const LANES = [
   "/skills",
   "/code",
   "/claw",
+  "/social",
   "/explore",
   "/connect",
 ];

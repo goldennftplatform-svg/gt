@@ -441,62 +441,72 @@ function normalizeExplorePost(post) {
 
 async function sniffGeoffExplore() {
   const started = Date.now();
-  const url = `${config.geoffBaseUrl}/api/explore/feed?limit=${EXPLORE_FEED_LIMIT}`;
-  try {
-    const res = await fetchJson(url, {
-      headers: { Accept: "application/json" },
-    });
-    const posts = Array.isArray(res.json?.posts)
-      ? res.json.posts.map(normalizeExplorePost).filter(Boolean)
-      : [];
-    const ids = posts.map((p) => p.id);
-    const mediaCounts = {};
-    for (const p of posts) {
-      mediaCounts[p.mediaType] = (mediaCounts[p.mediaType] || 0) + 1;
-    }
-    const authors = [...new Set(posts.map((p) => p.author).filter(Boolean))].sort();
-    const fingerprint = simpleHash(ids.slice().sort().join("|"));
+  // Prefer www — apex can redirect; feed is often slow under parallel sniffs.
+  const urls = [
+    "https://www.geoff.ai/api/explore/feed?limit=" + EXPLORE_FEED_LIMIT,
+    `${config.geoffBaseUrl}/api/explore/feed?limit=${EXPLORE_FEED_LIMIT}`,
+  ];
+  let lastError = null;
 
-    return {
-      source: "geoff.explore",
-      ok: res.ok && posts.length > 0,
-      status: res.status,
-      ms: Date.now() - started,
-      url: "https://www.geoff.ai/explore",
-      feedUrl: url,
-      count: posts.length,
-      hasMore: Boolean(res.json?.hasMore),
-      page: res.json?.page ?? null,
-      fingerprint,
-      ids,
-      mediaCounts,
-      authors,
-      authorCount: authors.length,
-      // Tiny sample for event titles only (no lyrics / heavy blobs).
-      sample: posts.slice(0, 6),
-      reason: res.ok
-        ? posts.length
-          ? null
-          : "Explore feed returned zero posts"
-        : `Explore feed HTTP ${res.status}`,
-    };
-  } catch (error) {
-    return {
-      source: "geoff.explore",
-      ok: false,
-      status: 0,
-      ms: Date.now() - started,
-      url: "https://www.geoff.ai/explore",
-      count: 0,
-      fingerprint: null,
-      ids: [],
-      mediaCounts: {},
-      authors: [],
-      authorCount: 0,
-      sample: [],
-      reason: error.message || String(error),
-    };
+  for (const url of [...new Set(urls)]) {
+    try {
+      const res = await fetchJson(url, {
+        headers: { Accept: "application/json" },
+        timeoutMs: 28_000,
+      });
+      const posts = Array.isArray(res.json?.posts)
+        ? res.json.posts.map(normalizeExplorePost).filter(Boolean)
+        : [];
+      const ids = posts.map((p) => p.id);
+      const mediaCounts = {};
+      for (const p of posts) {
+        mediaCounts[p.mediaType] = (mediaCounts[p.mediaType] || 0) + 1;
+      }
+      const authors = [...new Set(posts.map((p) => p.author).filter(Boolean))].sort();
+      const fingerprint = simpleHash(ids.slice().sort().join("|"));
+
+      return {
+        source: "geoff.explore",
+        ok: res.ok && posts.length > 0,
+        status: res.status,
+        ms: Date.now() - started,
+        url: "https://www.geoff.ai/explore",
+        feedUrl: url,
+        count: posts.length,
+        hasMore: Boolean(res.json?.hasMore),
+        page: res.json?.page ?? null,
+        fingerprint,
+        ids,
+        mediaCounts,
+        authors,
+        authorCount: authors.length,
+        sample: posts.slice(0, 6),
+        reason: res.ok
+          ? posts.length
+            ? null
+            : "Explore feed returned zero posts"
+          : `Explore feed HTTP ${res.status}`,
+      };
+    } catch (error) {
+      lastError = error;
+    }
   }
+
+  return {
+    source: "geoff.explore",
+    ok: false,
+    status: 0,
+    ms: Date.now() - started,
+    url: "https://www.geoff.ai/explore",
+    count: 0,
+    fingerprint: null,
+    ids: [],
+    mediaCounts: {},
+    authors: [],
+    authorCount: 0,
+    sample: [],
+    reason: lastError?.message || String(lastError) || "Explore feed failed",
+  };
 }
 
 /**
@@ -506,7 +516,7 @@ async function sniffGeoffExplore() {
 const MAX_SOLANA_ROUTES = [
   { id: "max", path: "/max", label: "Max hub" },
   { id: "max-solana", path: "/max/solana", label: "Max × Solana" },
-  { id: "max-solana-nested", path: "/max/solana/watch", label: "Max × Solana nested" },
+  { id: "max-solana-watch", path: "/max/solana/watch", label: "Max × Solana watch" },
   { id: "max-solana-portfolio", path: "/max/solana/portfolio", label: "Max × Solana portfolio" },
 ];
 
@@ -621,13 +631,14 @@ async function sniffGeoffMaxSolana() {
   };
 }
 
-/** Auth-gated product shells on geoff.ai — 307→/connect proves the lane ships. */
+/** Auth-gated product shells on geoff.ai — allowlisted from docs (catch-all /connect is NOT proof). */
 const PRODUCT_LANES = [
   { id: "hq", path: "/hq", label: "HQ" },
   { id: "studio", path: "/studio", label: "Studio" },
   { id: "skills", path: "/skills", label: "Skills" },
   { id: "code", path: "/code", label: "Geoff Code" },
   { id: "claw", path: "/claw", label: "Claw" },
+  { id: "social", path: "/social", label: "Social" },
   { id: "max", path: "/max", label: "Max" },
 ];
 
@@ -666,9 +677,10 @@ async function sniffGeoffProductLanes() {
     skillsLive: Boolean(routes.find((r) => r.id === "skills" && r.live)),
     codeLive: Boolean(routes.find((r) => r.id === "code" && r.live)),
     clawLive: Boolean(routes.find((r) => r.id === "claw" && r.live)),
+    socialLive: Boolean(routes.find((r) => r.id === "social" && r.live)),
     maxLive: Boolean(routes.find((r) => r.id === "max" && r.live)),
     routes,
-    note: "Public connect-gate probe — HQ / Studio / Skills / Code / Claw / Max. Not private contents.",
+    note: "Docs-allowlisted connect-gate probe — HQ / Studio / Skills / Code / Claw / Social / Max. Catch-all /connect alone is not proof.",
     reason: live.length
       ? null
       : "No product lanes answered with connect-gate or 200",

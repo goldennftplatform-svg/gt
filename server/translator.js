@@ -433,7 +433,7 @@ export function translate(previous, current) {
           added.length ? `+${added.map((id) => labels[id] || id).join(", ")}` : null,
           removed.length ? `-${removed.map((id) => labels[id] || id).join(", ")}` : null,
           `${currLanes.liveCount ?? 0}/${currLanes.total ?? "?"} lanes answering (connect-gate)`,
-          "HQ · Studio · Skills · Code · Claw · Max — public probe only.",
+          "HQ · Studio · Skills · Code · Claw · Social · Max — public probe only.",
         ]
           .filter(Boolean)
           .join(" · "),

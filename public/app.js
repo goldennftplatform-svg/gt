@@ -564,12 +564,12 @@ function renderMetrics(latest) {
   }
   els.widgetCount.textContent = s.widgets != null ? String(s.widgets) : "—";
   if (s.mcpContract) {
-    els.mcpContract.textContent = short(s.mcpContract, 18, 0);
-    els.mcpContract.title = "MCP contract id from Stacknet /health";
+    els.mcpContract.textContent = short(s.mcpContract, 22, 0);
+    els.mcpContract.title = `MCP contract from Stacknet /health · ${s.mcpContract}`;
   } else {
     els.mcpContract.textContent = "not on /health";
     els.mcpContract.title =
-      "remote_mcp not published on /health anymore — docs.geoff.ai/mcp is fingerprinted instead";
+      "remote_mcp missing on /health this sniff — docs.geoff.ai/mcp is still fingerprinted";
   }
   if (els.treasurySol) {
     els.treasurySol.textContent =

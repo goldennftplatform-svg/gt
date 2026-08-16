@@ -40,9 +40,31 @@ const MODEL_ROLE = {
   preview: { role: "Everyday multimodal", use: "Chat, code, images, and tool use." },
   pyro: { role: "Companion reasoning brain", use: "Multimodal chat with deep reasoning." },
   "pyro:max": { role: "Max reasoning lane", use: "1M-context pyro-class multimodal chat." },
+  "pyro-magma": { role: "Pyro × Magma blend", use: "Network-listed pyro/magma hybrid id." },
+  "pyro-preview": { role: "Pyro preview lane", use: "Preview-tier pyro family id." },
   "stack-chat": { role: "Chat specialist", use: "Conversation-focused replies." },
+  "stack-chat-magma": { role: "Chat · Magma", use: "Chat runtime on Magma layer." },
+  "stack-chat-preview": { role: "Chat · Preview", use: "Chat runtime on Preview layer." },
+  "stack-chat-pyro": { role: "Chat · Pyro", use: "Chat runtime on Pyro layer." },
+  "stack-chat-pyro:max": { role: "Chat · Pyro Max", use: "Chat runtime on Pyro Max layer." },
   "stack-embed": { role: "Search memory", use: "Turns text into embeddings for retrieval." },
-  "mom-preview": { role: "Mom preview", use: "Preview-tier experimental model." },
+  "stack-embed-magma": { role: "Embed · Magma", use: "Embeddings on Magma layer." },
+  "stack-embed-preview": { role: "Embed · Preview", use: "Embeddings on Preview layer." },
+  "stack-embed-pyro": { role: "Embed · Pyro", use: "Embeddings on Pyro layer." },
+  "stack-embed-pyro:max": { role: "Embed · Pyro Max", use: "Embeddings on Pyro Max layer." },
+  "stack-media-magma": { role: "Media · Magma", use: "Image/video/music runtime on Magma." },
+  "stack-media-preview": { role: "Media · Preview", use: "Media runtime on Preview." },
+  "stack-media-pyro": { role: "Media · Pyro", use: "Media runtime on Pyro." },
+  "stack-media-pyro:max": { role: "Media · Pyro Max", use: "Media runtime on Pyro Max." },
+  "stack-vision-magma": { role: "Vision · Magma", use: "Vision runtime on Magma." },
+  "stack-vision-preview": { role: "Vision · Preview", use: "Vision runtime on Preview." },
+  "stack-vision-pyro": { role: "Vision · Pyro", use: "Vision runtime on Pyro." },
+  "stack-vision-pyro:max": { role: "Vision · Pyro Max", use: "Vision runtime on Pyro Max." },
+  "stack-voice-magma": { role: "Voice · Magma", use: "Voice/TTS runtime on Magma." },
+  "stack-voice-preview": { role: "Voice · Preview", use: "Voice/TTS runtime on Preview." },
+  "stack-voice-pyro": { role: "Voice · Pyro", use: "Voice/TTS runtime on Pyro." },
+  "stack-voice-pyro:max": { role: "Voice · Pyro Max", use: "Voice/TTS runtime on Pyro Max." },
+  "mom-preview": { role: "Mixture of Models · preview", use: "MoM preview lane listed on the public network map." },
   duce: { role: "Retired naming", use: "Older docs/catalog name — live Stacknet menu uses pyro." },
 };
 
@@ -304,13 +326,13 @@ function pieceProductLanes(summary, lanesSrc = null) {
   return {
     id: "productLanes",
     title: "Product lanes",
-    plain: "HQ · Studio · Skills · Code · Claw · Max — connect-gated shells",
+    plain: "HQ · Studio · Skills · Code · Claw · Social · Max — docs-allowlisted shells",
     status:
       typeof live === "number"
         ? `${live}${total != null ? `/${total}` : ""} lanes answering`
         : "Product lanes not probed yet",
     tone: live > 0 ? "good" : "muted",
-    meaning: "Public 307→/connect means the product shell ships. We don’t read signed-in contents.",
+    meaning: "Public 307→/connect on docs-backed paths. Catch-all connect alone is not proof of a product.",
     facts: [
       labels.length ? `Live: ${labels.join(" · ")}` : "Waiting for first lane probe",
       "Separate from Max×Solana nested routes (/max/solana/*)",
@@ -466,7 +488,7 @@ function userTakeForEvent(event) {
     case "maxSolana":
       return "Max × Solana routes moved — public connect-gate probe on /max and /max/solana/*.";
     case "productLanes":
-      return "Product lanes moved — HQ / Studio / Skills / Code / Claw / Max connect-gate probe.";
+      return "Product lanes moved — HQ / Studio / Skills / Code / Claw / Social / Max (docs-allowlisted).";
     case "pricing":
       return "Public Token Plan rates on docs.geoff.ai changed — check what seats/tokens cost now.";
     case "baseline":
@@ -830,7 +852,7 @@ function glossary() {
     {
       term: "Product lanes",
       meaning:
-        "Auth-gated geoff.ai shells: /hq, /studio, /skills, /code, /claw, /max. Public 307→/connect proves they ship — we don’t read signed-in contents.",
+        "Auth-gated geoff.ai shells allowlisted from docs: /hq, /studio, /skills, /code, /claw, /social, /max. Catch-all /connect on random paths is ignored.",
     },
     {
       term: "Max × Solana",
