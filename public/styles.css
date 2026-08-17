@@ -2212,7 +2212,7 @@ details[open] > .fold-summary::after {
   gap: 0.15rem;
   flex: 1 1 auto;
   min-height: 480px;
-  max-height: 640px;
+  max-height: min(72vh, 920px);
   overflow: auto;
 }
 

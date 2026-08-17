@@ -13,6 +13,7 @@ const RANK_WEIGHT = { crazy: 5, spike: 4, move: 3, note: 2, whisper: 1 };
 const VIBE = { crazy: "Crazy", spike: "Spike", move: "Move", note: "Note", whisper: "Whisper" };
 const TRACK_HOURS = 72;
 const TRACK_MS = TRACK_HOURS * 60 * 60 * 1000;
+const FEED_RECENT_LIMIT = 20;
 const MAX_MEMORY_EVENTS = 2000;
 const HEATMAP_DAYS = DEFAULT_HEATMAP_DAYS;
 const MAX_DAILY_INGEST_IDS = 800;
@@ -815,7 +816,11 @@ function eventsInTrackWindow(events = []) {
 }
 
 function setFeedMeta({ surface = 0, queue = 0, pollCount = 0 } = {}) {
-  els.tempMeta.textContent = `${surface} surface · ${queue} queue · ${pollCount} refreshes · ${TRACK_HOURS}h`;
+  const shown = Math.min(surface, FEED_RECENT_LIMIT);
+  els.tempMeta.textContent =
+    surface > FEED_RECENT_LIMIT
+      ? `showing ${shown} newest of ${surface} · ${queue} queue · ${pollCount} refreshes · ${TRACK_HOURS}h`
+      : `${surface} surface · ${queue} queue · ${pollCount} refreshes · ${TRACK_HOURS}h`;
 }
 
 function hourBuckets(now = Date.now()) {
@@ -1308,6 +1313,11 @@ function sortFeed(events = []) {
   });
 }
 
+/** Newest first — What’s changing is a recent tape, not a severity leaderboard. */
+function sortFeedRecent(events = []) {
+  return [...events].sort((a, b) => Date.parse(b.at || 0) - Date.parse(a.at || 0));
+}
+
 function renderCoverage(coverage) {
   if (!els.coverageMeta) return;
   if (!coverage) {
@@ -1409,13 +1419,13 @@ function renderEventCard(event, { compact = false } = {}) {
 
 function renderFeed(events = [], { pollCount = 0 } = {}) {
   const { updates, queue, total } = splitDatasets(events);
-  const windowed = sortFeed(updates);
-  setFeedMeta({ surface: windowed.length, queue: queue.length, pollCount });
+  const recent = sortFeedRecent(updates).slice(0, FEED_RECENT_LIMIT);
+  setFeedMeta({ surface: updates.length, queue: queue.length, pollCount });
 
-  if (!windowed.length) {
+  if (!recent.length) {
     els.feed.innerHTML = `<p class="empty">Surface quiet in ${TRACK_HOURS}h — no deploy / models / docs / pricing diffs. Live activity is queue/in-flight (${queue.length} edges below). Not a sync miss.</p>`;
   } else {
-    els.feed.innerHTML = windowed.slice(0, 80).map((e) => renderEventCard(e)).join("");
+    els.feed.innerHTML = recent.map((e) => renderEventCard(e)).join("");
   }
 
   if (els.queueMeta) {
@@ -1427,8 +1437,8 @@ function renderFeed(events = [], { pollCount = 0 } = {}) {
     if (!queue.length) {
       els.queueFeed.innerHTML = `<p class="empty">No queue edges yet — in-flight / load / tasks stay here when they move.</p>`;
     } else {
-      els.queueFeed.innerHTML = sortFeed(queue)
-        .slice(0, 60)
+      els.queueFeed.innerHTML = sortFeedRecent(queue)
+        .slice(0, FEED_RECENT_LIMIT)
         .map((e) => renderEventCard(e, { compact: true }))
         .join("");
     }
